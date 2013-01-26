@@ -37,15 +37,15 @@ public class SensorNetwork extends Graph implements Runnable {
 		for (Robot robot : getRobots()) {
 			sensedAreas.add(new Circle(robot, robot.sensorRange));
 			robot.iterate();
-			// isConnected = isConnected();
-			// if (!isConnected) {
-			// alwaysConnected = false;
-			// stopFlag = true;
-			// }
+			isConnected = isConnected();
+			if (!isConnected) {
+				alwaysConnected = false;
+				stopFlag = true;
+			}
 		}
-		// if (iterateNo > maxIteration) {
-		// stopFlag = true;
-		// }
+		if (iterateNo > maxIteration) {
+			stopFlag = true;
+		}
 	}
 
 	public void move(Double seconds) {
@@ -106,5 +106,20 @@ public class SensorNetwork extends Graph implements Runnable {
 		HashSet<Point2D> allPoints = getAllPoints();
 		coveredPoints.retainAll(allPoints);
 		return (double) coveredPoints.size() / (double) allPoints.size();
+	}
+
+	public Boolean isConnected() {
+		HashSet<Robot> visitedRobots = new HashSet<Robot>();
+		visitForConnectionTest(get(0), visitedRobots);
+		return visitedRobots.containsAll(this);
+	}
+
+	public void visitForConnectionTest(Robot robot, HashSet<Robot> visitedRobots) {
+		visitedRobots.add(robot);
+		for (Robot connectedRobot : robot.getSensibleRobots()) {
+			if (!visitedRobots.contains(connectedRobot)) {
+				visitForConnectionTest(connectedRobot, visitedRobots);
+			}
+		}
 	}
 }

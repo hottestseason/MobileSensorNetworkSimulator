@@ -13,15 +13,15 @@ public class Graph extends ArrayList<Node> {
 
 	public Boolean isConnected() {
 		HashSet<Node> visitedNodes = new HashSet<Node>();
-		visit(get(0), visitedNodes);
+		visitForConnectionTest(get(0), visitedNodes);
 		return visitedNodes.containsAll(this);
 	}
 
-	public void visit(Node node, HashSet<Node> visitedNodes) {
+	public void visitForConnectionTest(Node node, HashSet<Node> visitedNodes) {
 		visitedNodes.add(node);
 		for (Node connectedNode : node.connectedNodes) {
 			if (!visitedNodes.contains(connectedNode)) {
-				visit(connectedNode, visitedNodes);
+				visitForConnectionTest(connectedNode, visitedNodes);
 			}
 		}
 	}

@@ -12,8 +12,8 @@ import java.util.Random;
 public class MobileSensorNetworkSimulation {
 	static Double iterateInterval = 1.0;
 	static Integer robotCount = 3;
-	static Double wirelessRange = 25.0;
-	static Double sensorRange = 10.0;
+	static Double wirelessRange = 20.0;
+	static Double sensorRange = 8.0;
 	static Double robotWeight = 1.0;
 	static Double robotSize = 0.5;
 	static Double idealDistance = sensorRange * Math.sqrt(3);
@@ -24,22 +24,35 @@ public class MobileSensorNetworkSimulation {
 
 		// getEVSMSimulator().start();
 		// getSpringVFSimulation().start();
-		// getYAVFSimulator(2.0, 0.5).start();
+		// getYAVFSimulator(20, 0.25, 0.7).start();
 
-		// int[] robotCounts = { 2, 3, 4, 5, 6, 8, 10, 15, 20 };
-		// // int[] robotCounts = { 25, 50 };
-		// for (int robotCount : robotCounts) {
-		// for (int seed = 0; seed < 50; seed++) {
-		// random = new Random(seed);
-		// for (Double dampingCoefficient = 0.2; dampingCoefficient < 5;
-		// dampingCoefficient += 0.01) {
-		// System.out.print(seed + " ");
-		// getSpringVFSimulator(robotCount, 0.1, dampingCoefficient).start();
-		// }
-		// }
-		// }
+		// getSpringVFSimulator(75, 0.1, 3.1).start();
+		getSpringConstantAndDampingCoefficientRelation(0.25);
+	}
 
-		getSpringVFSimulator(75, 0.1, 3.1).start();
+	public static void getSpringConstantAndDampingCoefficientRelation(double springConstant) {
+		SensorNetworkSimulator.gui = false;
+		int[] robotCounts = { 2, 3, 4, 5, 6, 8, 10, 15, 20 };
+		for (int robotCount : robotCounts) {
+			for (int seed = 0; seed < 50; seed++) {
+				random = new Random(seed);
+				for (Double dampingCoefficient = 0.2; dampingCoefficient < 5.0; dampingCoefficient += 0.01) {
+					System.out.print(seed + " ");
+
+					SensorNetwork sensorNetwork = new SensorNetwork();
+
+					for (int i = 0; i < robotCount; i++) {
+						Robot robot = new SpringVFRobot(sensorNetwork, i, wirelessRange, sensorRange, robotWeight, robotSize, iterateInterval, idealDistance, springConstant, dampingCoefficient);
+						sensorNetwork.add(robot);
+						robot.setPoint(Vector2D.random(10.0, 10.0, random).add(50.0, 50.0).toPoint2D());
+					}
+					sensorNetwork.obstacles.add(new Obstacle2D(Polygon2D.rectangle(new Point2D(), 100.0, 100.0), true, true));
+
+					SensorNetworkSimulator sensorNetworkSimulator = new SensorNetworkSimulator(sensorNetwork);
+					sensorNetworkSimulator.start();
+				}
+			}
+		}
 	}
 
 	public static SensorNetworkSimulator getEVSMSimulator() {
@@ -76,25 +89,6 @@ public class MobileSensorNetworkSimulation {
 		return sensorNetworkSimulator;
 	}
 
-	public static SensorNetworkSimulator getEVFSimulator() {
-		SensorNetwork sensorNetwork = new SensorNetwork();
-
-		for (int i = 0; i < robotCount; i++) {
-			EVFRobot robot = new EVFRobot(sensorNetwork, i, wirelessRange, sensorRange, robotWeight, robotSize, iterateInterval);
-			robot.idealDistance = idealDistance;
-			robot.dampingCoefficient = 0.5;
-			robot.alpha = 0.25 * idealDistance * idealDistance;
-			robot.beta = 2.0;
-			robot.setPoint(Vector2D.random(50.0, 50.0).add(50.0, 50.0).toPoint2D());
-			sensorNetwork.add(robot);
-		}
-		sensorNetwork.obstacles.add(new Obstacle2D(Polygon2D.rectangle(new Point2D(), 100.0, 100.0), true, true));
-
-		SensorNetworkSimulator sensorNetworkSimulator = new SensorNetworkSimulator(sensorNetwork, new VFMobileSensorNetworkCanvas(sensorNetwork));
-
-		return sensorNetworkSimulator;
-	}
-
 	public static SensorNetworkSimulator getSpringVFSimulator(Integer robotCount, Double springConstant, Double dampingCoefficient) {
 		SensorNetwork sensorNetwork = new SensorNetwork();
 
@@ -116,7 +110,7 @@ public class MobileSensorNetworkSimulation {
 		return sensorNetworkSimulator;
 	}
 
-	public static SensorNetworkSimulator getYAVFSimulator(Double springConstant, Double dampingCoefficient) {
+	public static SensorNetworkSimulator getYAVFSimulator(Integer robotCount, Double springConstant, Double dampingCoefficient) {
 		SensorNetwork sensorNetwork = new SensorNetwork();
 
 		for (int i = 0; i < robotCount; i++) {

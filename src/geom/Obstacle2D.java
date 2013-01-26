@@ -15,9 +15,6 @@ public class Obstacle2D extends Polygon2D {
 		obstacles.add(new Obstacle2D(Polygon2D.rectangle(new Point2D(75, 50), 12.5, 12.5)));
 		obstacles.add(new Obstacle2D(Polygon2D.rectangle(new Point2D(50, 75), 12.5, 12.5)));
 		obstacles.add(new Obstacle2D(Polygon2D.rectangle(new Point2D(75, 75), 12.5, 12.5)));
-		obstacles.add(new Obstacle2D(Polygon2D.rectangle(new Point2D(0.0, 25.0), 12.5, 12.5)));
-		// obstacles.add(new Obstacle2D(Polygon2D.rectangle(new Point2D(25.0,
-		// 0.0), 12.5, 12.5)));
 		obstacles.add(new Obstacle2D(Polygon2D.rectangle(new Point2D(50.0, 37.5), 12.5, 12.5)));
 		obstacles.add(new Obstacle2D(Polygon2D.rectangle(new Point2D(62.5, 0.0), 12.5, 25.0)));
 		obstacles.add(new Obstacle2D(Polygon2D.rectangle(new Point2D(75.0, 12.5), 12.5, 12.5)));

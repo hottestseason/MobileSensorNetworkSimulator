@@ -12,10 +12,6 @@ public class YAVFRobot extends VFRobot {
 		super(sensorNetwork, id, wirelessRange, sensorRange, weight, size, iterateInterval);
 	}
 
-	public void setUpForIteration() {
-		super.setUpForIteration();
-	}
-
 	public Vector2D getVirtualForce() {
 		Vector2D force = new Vector2D();
 		// for (LineSegment2D wall : getSensibleWalls()) {
@@ -26,11 +22,6 @@ public class YAVFRobot extends VFRobot {
 
 	public void createConnections() {
 		ArrayList<Robot> sensibleRobots = getSensibleRobots();
-		// for (Robot robot : sensibleRobots) {
-		// if (acuteAngleTest(robot)) {
-		// connect(robot);
-		// }
-		// }
 		if (sensibleRobots.size() == 1) {
 			connect(sensibleRobots.get(0));
 			sensibleRobots.get(0).connect(this);

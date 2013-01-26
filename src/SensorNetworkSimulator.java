@@ -32,21 +32,13 @@ public class SensorNetworkSimulator implements Runnable {
 			frame.setVisible(true);
 			thread.start();
 		} else {
-			// while (!sensorNetwork.stopFlag) {
-			// sensorNetwork.iterate();
-			// sensorNetwork.move(sensorNetwork.get(0).iterateInterval);
-			// }
-			while (true) {
+			while (!sensorNetwork.stopFlag) {
 				sensorNetwork.iterate();
 				sensorNetwork.move(sensorNetwork.get(0).iterateInterval);
 			}
-			// SpringVFRobot robot = (SpringVFRobot) sensorNetwork.get(0);
-			// Boolean converged = sensorNetwork.iterateNo <
-			// sensorNetwork.maxIteration;
-			// System.out.println(sensorNetwork.size() + " " +
-			// robot.springConstant + " " + robot.dampingCoefficient + " " +
-			// sensorNetwork.iterateNo + " " + sensorNetwork.sumMovedDistance +
-			// " " + sensorNetwork.alwaysConnected + " " + converged);
+			SpringVFRobot robot = (SpringVFRobot) sensorNetwork.get(0);
+			Boolean converged = sensorNetwork.iterateNo < sensorNetwork.maxIteration;
+			System.out.println(sensorNetwork.size() + " " + robot.springConstant + " " + robot.dampingCoefficient + " " + sensorNetwork.iterateNo + " " + sensorNetwork.sumMovedDistance + " " + sensorNetwork.alwaysConnected + " " + converged);
 		}
 	}
 
