@@ -55,40 +55,6 @@ public class MobileSensorNetworkSimulation {
 		}
 	}
 
-	public static SensorNetworkSimulator getEVSMSimulator() {
-		SensorNetwork sensorNetwork = new SensorNetwork();
-
-		for (int i = 0; i < robotCount; i++) {
-			Robot robot = new EvsmRobot(sensorNetwork, i, wirelessRange, sensorRange, robotWeight, robotSize, iterateInterval);
-			robot.setPoint(Vector2D.random(50.0, 50.0).add(50.0, 50.0).toPoint2D());
-			// robot.point = new Point2D((i / 10) + 1, (i % 10) + 1);
-			sensorNetwork.add(robot);
-		}
-		sensorNetwork.obstacles.add(new Obstacle2D(Polygon2D.rectangle(new Point2D(), 100.0, 100.0), true, true));
-
-		SensorNetworkSimulator sensorNetworkSimulator = new SensorNetworkSimulator(sensorNetwork, new EvsmSensorNetworkCanvas(sensorNetwork));
-
-		return sensorNetworkSimulator;
-	}
-
-	public static SensorNetworkSimulator getVFSimulator() {
-		Double attractiveCoefficient = 0.25 * idealDistance * idealDistance;
-		Double repulsiveCoefficient = attractiveCoefficient;
-
-		SensorNetwork sensorNetwork = new SensorNetwork();
-
-		for (int i = 0; i < robotCount; i++) {
-			Robot robot = new VFRobot(sensorNetwork, i, wirelessRange, sensorRange, robotWeight, robotSize, iterateInterval, idealDistance, attractiveCoefficient, repulsiveCoefficient, 0.5);
-			robot.setPoint(Vector2D.random(50.0, 50.0).add(50.0, 50.0).toPoint2D());
-			sensorNetwork.add(robot);
-		}
-		sensorNetwork.obstacles.add(new Obstacle2D(Polygon2D.rectangle(new Point2D(), 100.0, 100.0), true, true));
-
-		SensorNetworkSimulator sensorNetworkSimulator = new SensorNetworkSimulator(sensorNetwork, new VFMobileSensorNetworkCanvas(sensorNetwork));
-
-		return sensorNetworkSimulator;
-	}
-
 	public static SensorNetworkSimulator getSpringVFSimulator(Integer robotCount, Double springConstant, Double dampingCoefficient) {
 		SensorNetwork sensorNetwork = new SensorNetwork();
 
@@ -97,9 +63,6 @@ public class MobileSensorNetworkSimulation {
 			sensorNetwork.add(robot);
 			// robot.setPoint(Vector2D.random(10.0, 10.0, random).add(50.0,
 			// 50.0).toPoint2D());
-			// robot.setPoint(new Point2D((i / Math.sqrt(robotCount) -
-			// Math.sqrt(robotCount) / 2) + 50, (i % Math.sqrt(robotCount) -
-			// Math.sqrt(robotCount) / 2) + 50));
 			robot.setPoint(new Point2D((i / 10) + 1, (i % 10) + 1));
 		}
 		sensorNetwork.obstacles.add(new Obstacle2D(Polygon2D.rectangle(new Point2D(), 100.0, 100.0), true, true));
