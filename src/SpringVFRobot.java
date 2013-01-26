@@ -25,12 +25,12 @@ public class SpringVFRobot extends VFRobot {
 		} else {
 			for (Robot robot1 : sensibleRobots) {
 				for (Robot robot2 : sensibleRobots) {
-					if (!robot1.equals(robot2) && robot1.canSense(robot2)) {
-						if (!robot1.canSense(robot2) || isDelaunayTriangle(robot1, robot2)) {
-							connect(robot1);
-							connect(robot2);
-							robot1.connect(robot2);
-						}
+					if (robot1.equals(robot2) || !robot1.canSense(robot2)) {
+						continue;
+					}
+					if (isDelaunayTriangle(robot1, robot2)) {
+						connect(robot1);
+						connect(robot2);
 					}
 				}
 			}

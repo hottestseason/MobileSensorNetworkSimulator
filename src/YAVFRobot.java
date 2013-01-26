@@ -3,9 +3,8 @@ import geom.Spring;
 import geom.Vector2D;
 
 import java.awt.Graphics;
-import java.util.ArrayList;
 
-public class YAVFRobot extends VFRobot {
+public class YAVFRobot extends SpringVFRobot {
 	Double springConstant = 0.0;
 
 	public YAVFRobot(SensorNetwork sensorNetwork, Integer id, Double wirelessRange, Double sensorRange, Double weight, Double size, Double iterateInterval) {
@@ -18,26 +17,6 @@ public class YAVFRobot extends VFRobot {
 		// force = force.add(getVirtualForceFrom(wall));
 		// }
 		return super.getVirtualForce().add(force);
-	}
-
-	public void createConnections() {
-		ArrayList<Robot> sensibleRobots = getSensibleRobots();
-		if (sensibleRobots.size() == 1) {
-			connect(sensibleRobots.get(0));
-			sensibleRobots.get(0).connect(this);
-		} else {
-			for (Robot robot1 : sensibleRobots) {
-				for (Robot robot2 : sensibleRobots) {
-					if (!robot1.equals(robot2) && robot1.canSense(robot2)) {
-						if (!robot1.canSense(robot2) || isDelaunayTriangle(robot1, robot2)) {
-							connect(robot1);
-							connect(robot2);
-							robot1.connect(robot2);
-						}
-					}
-				}
-			}
-		}
 	}
 
 	public Vector2D getVirtualForceFrom(Robot robot) {
