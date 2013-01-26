@@ -19,6 +19,7 @@ public class Robot extends Node {
 	Double minSpeed = 0.01;
 	Double maxAcceleration = 1.0;
 	Boolean isEdge = false;
+	ArrayList<Robot> sensibleRobots = null;
 
 	public Robot(SensorNetwork sensorNetwork, Integer id, Double wirelessRange, Double sensorRange, Double weight, Double size, Double iterateInterval) {
 		graph = sensorNetwork;
@@ -46,6 +47,7 @@ public class Robot extends Node {
 
 	public void setUpForIteration() {
 		appliedForce = new Vector2D();
+		sensibleRobots = null;
 		resetConnections();
 		createConnections();
 		if (isEdgeNode()) {
@@ -93,13 +95,15 @@ public class Robot extends Node {
 	}
 
 	public ArrayList<Robot> getSensibleRobots() {
-		ArrayList<Robot> robots = new ArrayList<Robot>();
-		for (Robot robot : ((SensorNetwork) graph).getRobots()) {
-			if (canSense(robot)) {
-				robots.add(robot);
+		if (sensibleRobots == null) {
+			sensibleRobots = new ArrayList<Robot>();
+			for (Robot robot : ((SensorNetwork) graph).getRobots()) {
+				if (canSense(robot)) {
+					sensibleRobots.add(robot);
+				}
 			}
 		}
-		return robots;
+		return sensibleRobots;
 	}
 
 	public ArrayList<LineSegment2D> getSensibleWalls() {
@@ -201,5 +205,21 @@ public class Robot extends Node {
 			maxDistance = Math.max(maxDistance, getDistanceFrom(robot));
 		}
 		return maxDistance;
+	}
+
+	public Boolean isDelaunayTriangle(Node node2, Node node3) {
+		if (this.equals(node2) || this.equals(node3) || node2.equals(node3)) {
+			return false;
+		} else {
+			Circle circle = new Circle(this, node2, node3);
+			for (Node node : getSensibleRobots()) {
+				if (!node.equals(this) && !node.equals(node2) && !node.equals(node3)) {
+					if (circle.contains(node)) {
+						return false;
+					}
+				}
+			}
+			return true;
+		}
 	}
 }
