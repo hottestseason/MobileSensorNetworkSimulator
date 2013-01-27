@@ -69,8 +69,7 @@ public class SensorNetwork extends Graph implements Runnable {
 		while (!stopFlag) {
 			if (sensedAreasHistory.size() - 1 > coverageHistroy.size()) {
 				coverageHistroy.add(calcurateCoverage(sensedAreasHistory.get(coverageHistroy.size())));
-				// System.out.println(coverageHistroy.size() + " : " +
-				// coverageHistroy.get(coverageHistroy.size() - 1));
+				System.out.println(coverageHistroy.size() + " : " + coverageHistroy.get(coverageHistroy.size() - 1));
 			}
 			try {
 				Thread.sleep(0);
