@@ -17,7 +17,7 @@ public class SensorNetworkCanvas extends Canvas {
 	SensorNetwork sensorNetwork;
 	Vector2D originDisplacement = new Vector2D(50, 50);
 	Integer width, height;
-	Double zoom = 4.0;
+	Double zoom = 3.0;
 	Double minRobotSize = 0.0;
 
 	protected Image buffer;
@@ -36,9 +36,9 @@ public class SensorNetworkCanvas extends Canvas {
 		drawConnections(bufferG);
 		drawRobots(bufferG);
 		drawObstacles(bufferG);
-		drawString("iterate No. : " + sensorNetwork.iterateNo, new Point2D(1, -2), bufferG, Color.black);
-		drawString("all movded distance : " + sensorNetwork.sumMovedDistance, new Point2D(1, -4), bufferG, Color.black);
-		drawString("connectivity : " + sensorNetwork.isConnected, new Point2D(1, -6), bufferG, Color.black);
+		drawString("iterate No. : " + sensorNetwork.iterateNo, new Point2D(4 / zoom, -12 / zoom), bufferG, Color.black);
+		drawString("all movded distance : " + sensorNetwork.sumMovedDistance, new Point2D(4 / zoom, -24 / zoom), bufferG, Color.black);
+		drawString("connectivity : " + sensorNetwork.isConnected, new Point2D(4 / zoom, -36 / zoom), bufferG, Color.black);
 		debug(bufferG);
 	}
 
@@ -87,7 +87,7 @@ public class SensorNetworkCanvas extends Canvas {
 		if (robot.isEdge) {
 			drawCircle(new Circle(robot, Math.max(robot.size, minRobotSize)), g, Color.red, true);
 		}
-		drawCircle(new Circle(robot, robot.wirelessRange), g, new Color(0, 255, 0, 64), false);
+		drawCircle(new Circle(robot, robot.wirelessRange), g, new Color(0, 255, 0, 32), false);
 		drawString(robot.id.toString(), robot, g, Color.black);
 	}
 
