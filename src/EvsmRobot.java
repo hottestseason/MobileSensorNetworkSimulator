@@ -48,7 +48,7 @@ public class EvsmRobot extends SpringVFRobot {
 	}
 
 	public Boolean canSense(Robot robot) {
-		return super.canSense(robot) && acuteAngleTest(robot);
+		return super.canSense(robot) && ggTest(robot);
 	}
 
 	public CircularSector getSweepCircularSector() {

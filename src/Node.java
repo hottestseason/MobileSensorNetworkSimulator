@@ -1,5 +1,3 @@
-import geom.Circle;
-import geom.LineSegment2D;
 import geom.Point2D;
 
 import java.util.ArrayList;
@@ -56,38 +54,6 @@ public class Node extends Point2D {
 			if (!graph.directed) {
 				node.connectedNodes.add(this);
 			}
-		}
-	}
-
-	public Boolean acuteAngleTest(Node node) {
-		Circle circle = new Circle(new LineSegment2D(this, node));
-		if (node == this) {
-			return false;
-		} else {
-			for (Node another : graph) {
-				if (!another.equals(this) && !another.equals(node)) {
-					if (circle.containsExcludeEdge(another)) {
-						return false;
-					}
-				}
-			}
-			return true;
-		}
-	}
-
-	public Boolean isDelaunayTriangle(Node node2, Node node3) {
-		if (this.equals(node2) || this.equals(node3) || node2.equals(node3)) {
-			return false;
-		} else {
-			Circle circle = new Circle(this, node2, node3);
-			for (Node node : graph) {
-				if (!node.equals(this) && !node.equals(node2) && !node.equals(node3)) {
-					if (circle.contains(node)) {
-						return false;
-					}
-				}
-			}
-			return true;
 		}
 	}
 }
