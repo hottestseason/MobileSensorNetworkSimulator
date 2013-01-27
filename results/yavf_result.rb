@@ -1,6 +1,6 @@
 class YavfResult
-  attr_reader :seed, :robot_count, :spring_constant, :damping_coefficient
-  attr_reader :iteration, :moved_distance, :connectivity
+  COLUMNS = [:seed, :robot_count, :spring_constant, :damping_coefficient, :iteration, :moved_distance, :connectivity, :converged]
+  COLUMNS.each(&method(:attr_reader))
 
   def [](key)
     send(key)
@@ -38,6 +38,10 @@ class YavfResult
     @connectivity = value == "TRUE"
   end
 
+  def converged=(value)
+    @converged = value == "TRUE"
+  end
+
   def similar?(result)
     robot_count == result.robot_count &&
      spring_constant == result.spring_constant &&
@@ -45,6 +49,6 @@ class YavfResult
   end
 
   def to_a
-    [seed, robot_count, spring_constant, damping_coefficient, iteration, moved_distance, connectivity]
+    COLUMNS.map { |column| send(column) }
   end
 end

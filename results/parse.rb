@@ -30,7 +30,7 @@ CSV.parse(STDIN.read).tap do |csv|
         result[col_name] = col
       end
     end.tap do |result|
-      if result.connectivity #&& [20].include?(result.robot_count)
+      if result.connectivity && result.converged #&& [20].include?(result.robot_count)
         results << result
         robot_counts << result.robot_count
       end
@@ -52,16 +52,18 @@ if ARGV.first == "average"
   end
 
   CSV.open(ARGV.last, "w") do |csv|
+    csv << YavfResult::COLUMNS
     results.each do |result|
       csv << result.to_a
     end
   end
 else
   puts "Generating graph"
+  spring_constant = results.first.spring_constant
   %w(iteration moved_distance).each do |y|
     Gnuplot.open do |gp|
       Gnuplot::Plot.new(gp) do |plot|
-        plot.title  "simlation (spring constant : #{spring_constant})"
+        plot.title  "simluation (spring constant : #{spring_constant})"
         plot.xlabel "damping coefficient"
         # plot.xtics 0.1
 
