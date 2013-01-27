@@ -22,21 +22,18 @@ public class MobileSensorNetworkSimulation {
 	public static void main(String[] args) {
 		// test();
 
-		// getEVSMSimulator().start();
-		// getSpringVFSimulation().start();
-		// getYAVFSimulator(20, 0.25, 0.7).start();
-
-		// getSpringVFSimulator(75, 0.1, 3.1).start();
+		// getYAVFSimulator(20, 0.25, 0.8).start();
+		// getSpringVFSimulator(20, 0.25, 0.7).start();
 		getSpringConstantAndDampingCoefficientRelation(0.25);
 	}
 
 	public static void getSpringConstantAndDampingCoefficientRelation(double springConstant) {
 		SensorNetworkSimulator.gui = false;
-		int[] robotCounts = { 2, 3, 4, 5, 6, 8, 10, 15, 20 };
+		int[] robotCounts = { 2, 4, 8, 16, 32 };
 		for (int robotCount : robotCounts) {
-			for (int seed = 0; seed < 50; seed++) {
+			for (int seed = 0; seed < 10; seed++) {
 				random = new Random(seed);
-				for (Double dampingCoefficient = 0.2; dampingCoefficient < 5.0; dampingCoefficient += 0.01) {
+				for (Double dampingCoefficient = 0.2; dampingCoefficient < 3.0; dampingCoefficient += 0.01) {
 					System.out.print(seed + " ");
 
 					SensorNetwork sensorNetwork = new SensorNetwork();
