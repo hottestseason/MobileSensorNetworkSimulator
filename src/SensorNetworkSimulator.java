@@ -11,12 +11,6 @@ public class SensorNetworkSimulator implements Runnable {
 	public SensorNetworkSimulator(SensorNetwork sensorNetwork, SensorNetworkCanvas sensorNetworkCanvas) {
 		this.sensorNetwork = sensorNetwork;
 		this.sensorNetworkCanvas = sensorNetworkCanvas;
-		if (gui) {
-			frame = new JFrame("MobileSensorNetworkSimulator");
-			frame.add(sensorNetworkCanvas);
-			frame.setSize(sensorNetworkCanvas.width, sensorNetworkCanvas.height + 50);
-			frame.setVisible(true);
-		}
 	}
 
 	public SensorNetworkSimulator(SensorNetwork sensorNetwork) {
