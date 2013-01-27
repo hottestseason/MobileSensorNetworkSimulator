@@ -19,20 +19,9 @@ public class SpringVFRobot extends VFRobot {
 
 	public void createConnections() {
 		ArrayList<Robot> sensibleRobots = getSensibleRobots();
-		if (sensibleRobots.size() == 1) {
-			connect(sensibleRobots.get(0));
-			sensibleRobots.get(0).connect(this);
-		} else {
-			for (Robot robot1 : sensibleRobots) {
-				for (Robot robot2 : sensibleRobots) {
-					if (robot1.equals(robot2) || !robot1.canSense(robot2)) {
-						continue;
-					}
-					if (isDelaunayTriangle(robot1, robot2)) {
-						connect(robot1);
-						connect(robot2);
-					}
-				}
+		for (Robot robot : sensibleRobots) {
+			if (ggTest(robot)) {
+				connect(robot);
 			}
 		}
 	}

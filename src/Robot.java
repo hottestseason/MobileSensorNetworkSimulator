@@ -222,4 +222,36 @@ public class Robot extends Node {
 			return true;
 		}
 	}
+
+	public Boolean ggTest(Robot robot) {
+		if (robot.equals(this)) {
+			return false;
+		} else {
+			Circle circle = new Circle(new LineSegment2D(this, robot));
+			for (Robot another : getSensibleRobots()) {
+				if (!another.equals(this) && !another.equals(robot)) {
+					if (circle.containsExcludeEdge(another)) {
+						return false;
+					}
+				}
+			}
+			return true;
+		}
+	}
+
+	public Boolean rngTest(Robot robot) {
+		if (robot.equals(this)) {
+			return false;
+		} else {
+			Double distance = getDistanceFrom(robot);
+			for (Robot another : getSensibleRobots()) {
+				if (!another.equals(this) && !another.equals(robot)) {
+					if (Math.max(getDistanceFrom(another), robot.getDistanceFrom(another)) < distance) {
+						return false;
+					}
+				}
+			}
+			return true;
+		}
+	}
 }
