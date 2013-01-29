@@ -32,13 +32,13 @@ public class SensorNetworkSimulator implements Runnable {
 			}
 			SpringVFRobot robot = (SpringVFRobot) sensorNetwork.get(0);
 			Boolean converged = sensorNetwork.iterateNo < sensorNetwork.maxIteration;
-			System.out.println(sensorNetwork.size() + " " + robot.springConstant + " " + robot.dampingCoefficient + " " + sensorNetwork.iterateNo + " " + sensorNetwork.sumMovedDistance + " " + sensorNetwork.alwaysConnected + " " + converged);
+			System.out.println(sensorNetwork.size() + "\t" + robot.springConstant + "\t" + robot.dampingCoefficient + "\t" + sensorNetwork.iterateNo + "\t" + sensorNetwork.sumMovedDistance + "\t" + sensorNetwork.alwaysConnected + "\t" + converged);
 		}
 	}
 
 	public void run() {
 		Integer fps = 10;
-		Double speed = 20.0;
+		Double speed = 100.0;
 		Integer count = 0;
 		Double iterateInterval = sensorNetwork.get(0).iterateInterval;
 		long oldTime;
