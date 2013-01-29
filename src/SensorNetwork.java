@@ -14,7 +14,10 @@ public class SensorNetwork extends Graph implements Runnable {
 	Double sumMovedDistance = 0.0;
 	Boolean isConnected = true;
 	Boolean alwaysConnected = true;
-	Integer maxIteration = 16000;
+	Integer maxIteration = 6400;
+	Boolean mustAlwaysConnected = false;
+	Boolean calculatesCavarege = true;
+	Boolean stopsOnNotConnectedBoolean = true;
 	protected HashSet<Point2D> allPoints;
 	protected ArrayList<ArrayList<Circle>> sensedAreasHistory = new ArrayList<ArrayList<Circle>>();
 	protected ArrayList<Double> coverageHistroy = new ArrayList<Double>();
@@ -40,7 +43,9 @@ public class SensorNetwork extends Graph implements Runnable {
 			isConnected = isConnected();
 			if (!isConnected) {
 				alwaysConnected = false;
-				stopFlag = true;
+				if (mustAlwaysConnected) {
+					stopFlag = true;
+				}
 			}
 		}
 		if (iterateNo > maxIteration) {
@@ -61,8 +66,10 @@ public class SensorNetwork extends Graph implements Runnable {
 	}
 
 	public void start() {
-		// getAllPoints();
-		// thread.start();
+		if (calculatesCavarege) {
+			getAllPoints();
+			thread.start();
+		}
 	}
 
 	public void run() {

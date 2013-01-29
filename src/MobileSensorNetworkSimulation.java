@@ -22,28 +22,33 @@ public class MobileSensorNetworkSimulation {
 	public static void main(String[] args) {
 		// test();
 
-		// getYAVFSimulator(20, 0.25, 0.8).start();
+		// getYAVFSimulator(20, 0.2, 1.0).start();
 		// getSpringVFSimulator(20, 0.25, 0.7).start();
-		getSpringConstantAndDampingCoefficientRelation(0.25);
+		getSpringConstantAndDampingCoefficientRelation(0.5);
 	}
 
 	public static void getSpringConstantAndDampingCoefficientRelation(double springConstant) {
 		SensorNetworkSimulator.gui = false;
 		int[] robotCounts = { 2, 4, 8, 16, 32 };
+		Double dampingCoefficientFrom = 0.2, dampingCoefficientTo = 5.0, dampingCoefficientStep = 0.2;
+		int maxSeed = 50;
 		for (int robotCount : robotCounts) {
-			for (int seed = 0; seed < 10; seed++) {
+			for (int seed = 0; seed < maxSeed; seed++) {
 				random = new Random(seed);
-				for (Double dampingCoefficient = 0.2; dampingCoefficient < 3.0; dampingCoefficient += 0.01) {
+				for (Double dampingCoefficient = dampingCoefficientFrom; dampingCoefficient < dampingCoefficientTo; dampingCoefficient += dampingCoefficientStep) {
 					System.out.print(seed + " ");
 
 					SensorNetwork sensorNetwork = new SensorNetwork();
+					sensorNetwork.calculatesCavarege = false;
+					sensorNetwork.maxIteration = 1600;
+					sensorNetwork.mustAlwaysConnected = true;
 
 					for (int i = 0; i < robotCount; i++) {
 						Robot robot = new SpringVFRobot(sensorNetwork, i, wirelessRange, sensorRange, robotWeight, robotSize, iterateInterval, idealDistance, springConstant, dampingCoefficient);
 						sensorNetwork.add(robot);
-						robot.setPoint(Vector2D.random(10.0, 10.0, random).add(50.0, 50.0).toPoint2D());
+						robot.setPoint(Vector2D.random(10.0, 10.0, random).add(100.0, 100.0).toPoint2D());
 					}
-					sensorNetwork.obstacles.add(new Obstacle2D(Polygon2D.rectangle(new Point2D(), 100.0, 100.0), true, true));
+					sensorNetwork.obstacles.add(new Obstacle2D(Polygon2D.rectangle(new Point2D(), 200.0, 200.0), true, true));
 
 					SensorNetworkSimulator sensorNetworkSimulator = new SensorNetworkSimulator(sensorNetwork);
 					sensorNetworkSimulator.start();
