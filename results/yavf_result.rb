@@ -1,5 +1,15 @@
+Array.class_eval do
+  def sum; inject(&:+).to_f end
+  def mean; sum / size end
+  def filter_by(value)
+    select do |element|
+      yield(element) == value
+    end
+  end
+end
+
 class YavfResult
-  COLUMNS = [:seed, :robot_count, :spring_constant, :damping_coefficient, :iteration, :moved_distance, :connectivity, :converged]
+  COLUMNS = [:seed, :robot_count, :spring_constant, :damping_coefficient, :iteration, :moved_distance, :connectivity, :converged, :sensing_interval]
   COLUMNS.each(&method(:attr_reader))
 
   def [](key)
@@ -35,17 +45,22 @@ class YavfResult
   end
 
   def connectivity=(value)
-    @connectivity = value == "TRUE"
+    @connectivity = value == "TRUE" || value == "true"
   end
 
   def converged=(value)
-    @converged = value == "TRUE"
+    @converged = value == "TRUE" || value == "true"
+  end
+
+  def sensing_interval=(value)
+    @sensing_interval = value.to_f
   end
 
   def similar?(result)
     robot_count == result.robot_count &&
      spring_constant == result.spring_constant &&
-     damping_coefficient == result.damping_coefficient
+     damping_coefficient == result.damping_coefficient &&
+     sensing_interval == result.sensing_interval
   end
 
   def to_a
