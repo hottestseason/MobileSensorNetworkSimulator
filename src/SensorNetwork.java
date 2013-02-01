@@ -24,6 +24,12 @@ public class SensorNetwork extends Graph implements Runnable {
 	protected Boolean stopFlag = false;
 	protected Thread thread = new Thread(this);
 
+	public boolean add(Robot robot) {
+		robot.graph = this;
+		robot.id = size();
+		return super.add(robot);
+	}
+
 	public Robot get(int index) {
 		return (Robot) super.get(index);
 	}
@@ -38,7 +44,7 @@ public class SensorNetwork extends Graph implements Runnable {
 		ArrayList<Circle> sensedAreas = new ArrayList<Circle>();
 		sensedAreasHistory.add(sensedAreas);
 		for (Robot robot : getRobots()) {
-			sensedAreas.add(new Circle(robot, robot.sensorRange));
+			sensedAreas.add(robot.getSensorCircle());
 			robot.iterate();
 			isConnected = isConnected();
 			if (!isConnected) {

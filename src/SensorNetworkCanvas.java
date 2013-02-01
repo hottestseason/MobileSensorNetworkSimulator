@@ -46,7 +46,7 @@ public class SensorNetworkCanvas extends Canvas {
 		synchronized (sensorNetwork) {
 			for (Node node : sensorNetwork) {
 				Robot robot = (Robot) node;
-				drawCircle(new Circle(robot, robot.wirelessRange), g, new Color(0, 255, 0, 32), false);
+				drawCircle(robot.getWirelessCircle(), g, new Color(0, 255, 0, 32), false);
 			}
 		}
 	}
@@ -55,8 +55,8 @@ public class SensorNetworkCanvas extends Canvas {
 		synchronized (sensorNetwork) {
 			for (Node node : sensorNetwork) {
 				Robot robot = (Robot) node;
-				drawCircle(new Circle(robot, robot.sensorRange), g, new Color(0, 0, 0, 32), false);
-				drawCircle(new Circle(robot, robot.sensorRange), g, new Color(255, 255, 0, 64), true);
+				drawCircle(robot.getSensorCircle(), g, new Color(0, 0, 0, 32), false);
+				drawCircle(robot.getSensorCircle(), g, new Color(255, 255, 0, 64), true);
 			}
 		}
 	}
@@ -83,11 +83,10 @@ public class SensorNetworkCanvas extends Canvas {
 	}
 
 	public void drawRobot(Robot robot, Graphics g) {
-		drawCircle(new Circle(robot, Math.max(robot.size, minRobotSize)), g, Color.black, true);
-		if (robot.isEdge) {
-			drawCircle(new Circle(robot, Math.max(robot.size, minRobotSize)), g, Color.red, true);
-		}
-		drawCircle(new Circle(robot, robot.wirelessRange), g, new Color(0, 255, 0, 32), false);
+		drawCircle(new Circle(robot, Math.max(robot.getSize(), minRobotSize)), g, Color.black, true);
+		drawCircle(robot.getWirelessCircle(), g, new Color(0, 255, 0, 32), false);
+		drawVector(robot, fixForce(robot.virutalForce), g, Color.magenta);
+		drawVector(robot, fixForce(robot.dampingForce), g, Color.blue);
 		drawString(robot.id.toString(), robot, g, Color.black);
 	}
 

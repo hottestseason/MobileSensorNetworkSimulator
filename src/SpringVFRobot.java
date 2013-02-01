@@ -1,20 +1,30 @@
+import geom.Circle;
 import geom.Spring;
 import geom.Vector2D;
 
+import java.awt.Color;
+import java.awt.Graphics;
 import java.util.ArrayList;
 
-public class SpringVFRobot extends VFRobot {
+public class SpringVFRobot extends Robot {
+	Double idealDistance = 0.0;
 	Double springConstant = 0.0;
 
-	public SpringVFRobot(SensorNetwork sensorNetwork, Integer id, Double wirelessRange, Double sensorRange, Double weight, Double size, Double iterateInterval) {
-		super(sensorNetwork, id, wirelessRange, sensorRange, weight, size, iterateInterval);
+	public static Double calculateIdealDistance(Double wirelessRange, Double sensorRange) {
+		return sensorRange * Math.sqrt(3);
 	}
 
-	public SpringVFRobot(SensorNetwork sensorNetwork, Integer id, Double wirelessRange, Double sensorRange, Double weight, Double size, Double iterateInterval, Double idealDistance, Double springConstant, Double dampingCoefficient) {
-		this(sensorNetwork, id, wirelessRange, sensorRange, weight, size, iterateInterval);
-		this.idealDistance = idealDistance;
-		this.springConstant = springConstant;
-		this.dampingCoefficient = dampingCoefficient;
+	public SpringVFRobot(RobotParameters parameters) {
+		super(parameters);
+		idealDistance = calculateIdealDistance(getWirelessRange(), getSensorRange());
+	}
+
+	public SpringVFRobot clone() {
+		SpringVFRobot cloned = (SpringVFRobot) super.clone();
+		cloned.idealDistance = idealDistance;
+		cloned.springConstant = springConstant;
+		cloned.dampingCoefficient = dampingCoefficient;
+		return cloned;
 	}
 
 	public void createConnections() {
@@ -32,5 +42,17 @@ public class SpringVFRobot extends VFRobot {
 		} else {
 			return Spring.getForce(getVector2DTo(robot), idealDistance, springConstant);
 		}
+	}
+}
+
+@SuppressWarnings("serial")
+class SpringVFMobileSensorNetworkCanvas extends SensorNetworkCanvas {
+	public SpringVFMobileSensorNetworkCanvas(SensorNetwork sensorNetwork) {
+		super(sensorNetwork);
+	}
+
+	public void drawRobot(Robot robot, Graphics g) {
+		super.drawRobot(robot, g);
+		drawCircle(new Circle(robot, ((SpringVFRobot) robot).idealDistance), g, new Color(0, 0, 0, 32), false);
 	}
 }

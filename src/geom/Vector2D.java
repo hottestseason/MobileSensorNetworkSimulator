@@ -38,7 +38,15 @@ public class Vector2D implements Cloneable {
 	}
 
 	public Vector2D clone() {
-		return new Vector2D(x, y);
+		Vector2D cloned = null;
+		try {
+			cloned = (Vector2D) super.clone();
+			cloned.x = x;
+			cloned.y = y;
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+		return cloned;
 	}
 
 	public boolean equals(Object obj) {

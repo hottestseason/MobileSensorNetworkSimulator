@@ -10,54 +10,105 @@ import java.util.List;
 public class Robot extends Node {
 	Vector2D appliedForce = new Vector2D();
 	Vector2D speed = new Vector2D();
-	Double weight;
-	Double wirelessRange;
-	Double sensorRange;
+	Vector2D virutalForce = new Vector2D();
+	Vector2D dampingForce = new Vector2D();
 	Double iterateInterval;
-	Double size;
-	Double maxSpeed = 5.0;
-	Double minSpeed = 0.01;
-	Double maxAcceleration = 1.0;
-	Boolean isEdge = false;
+	Double dampingCoefficient = 0.0;
 	ArrayList<Robot> sensibleRobots = null;
+	RobotParameters parameters;
 
-	public Robot(SensorNetwork sensorNetwork, Integer id, Double wirelessRange, Double sensorRange, Double weight, Double size, Double iterateInterval) {
-		graph = sensorNetwork;
-		this.id = id;
-		this.wirelessRange = wirelessRange;
-		this.sensorRange = sensorRange;
-		this.weight = weight;
-		this.size = size;
-		this.iterateInterval = iterateInterval;
+	public Robot(RobotParameters parameters) {
+		this.parameters = parameters;
+	}
+
+	public Double getSize() {
+		return parameters.size;
+	}
+
+	public Double getWeight() {
+		return parameters.weight;
+	}
+
+	public Double getWirelessRange() {
+		return parameters.wirelessRange;
+	}
+
+	public Double getSensorRange() {
+		return parameters.sensorRange;
+	}
+
+	public Double getMaxSpeed() {
+		return parameters.maxSpeed;
+	}
+
+	public Double getMinSpeed() {
+		return parameters.minSpeed;
+	}
+
+	public Double getMaxAcceleration() {
+		return parameters.maxAcceleration;
+	}
+
+	public Circle getCircle() {
+		return new Circle(this, getSize());
+	}
+
+	public Circle getWirelessCircle() {
+		return new Circle(this, getWirelessRange());
+	}
+
+	public Circle getSensorCircle() {
+		return new Circle(this, getSensorRange());
 	}
 
 	public String toString() {
 		String ret = id + " : ";
 		ret += toPoint2D() + " -> " + getNextPoint() + "\n";
 		ret += "speed : " + speed + "\n";
+		ret += "virtualForce: " + virutalForce + "\ndampingForce: " + dampingForce + "\n";
 		ret += "appliedForce : " + appliedForce + "\n";
 		ret += "acceleration : " + getAcceleration();
 		return ret;
 	}
 
 	public void iterate() {
+		resetState();
 		setUpForIteration();
 		calculateForce();
 	}
 
-	public void setUpForIteration() {
+	public void resetState() {
 		appliedForce = new Vector2D();
 		sensibleRobots = null;
-		resetConnections();
+		virutalForce = new Vector2D();
+		dampingForce = new Vector2D();
+		clearConnections();
+	}
+
+	public void setUpForIteration() {
 		createConnections();
-		if (isEdgeNode()) {
-			isEdge = true;
-		} else {
-			isEdge = false;
-		}
 	}
 
 	public void calculateForce() {
+		virutalForce = getVirtualForce();
+		dampingForce = getDampingForce();
+		applyForce(virutalForce.add(dampingForce));
+	}
+
+	public Vector2D getVirtualForce() {
+		Vector2D force = new Vector2D();
+		for (Robot robot : getConnectedRobots()) {
+			force = force.add(getVirtualForceFrom(robot));
+		}
+		return force;
+	}
+
+	public Vector2D getVirtualForceFrom(Robot robot) {
+		return new Vector2D();
+	}
+
+	public Vector2D getDampingForce() {
+		return speed.multiply(dampingCoefficient).reverse();
 	}
 
 	public void createConnections() {
@@ -72,7 +123,7 @@ public class Robot extends Node {
 	}
 
 	public Boolean canSense(Point2D point) {
-		if (!new Circle(this, wirelessRange).contains(point)) {
+		if (!new Circle(this, getWirelessRange()).contains(point)) {
 			return false;
 		} else {
 			for (Obstacle2D obstacle : getSensorNetwork().obstacles) {
@@ -91,7 +142,7 @@ public class Robot extends Node {
 	}
 
 	public Boolean canSense(LineSegment2D lineSegment) {
-		return new Circle(this, wirelessRange).contains(lineSegment);
+		return new Circle(this, getWirelessRange()).contains(lineSegment);
 	}
 
 	public ArrayList<Robot> getSensibleRobots() {
@@ -132,17 +183,17 @@ public class Robot extends Node {
 	}
 
 	public Vector2D getAcceleration() {
-		Vector2D acceleration = appliedForce.multiply(1 / weight);
-		if (acceleration.getNorm() > maxAcceleration) {
-			return acceleration.expandTo(maxAcceleration);
+		Vector2D acceleration = appliedForce.multiply(1 / getWeight());
+		if (acceleration.getNorm() > getMaxAcceleration()) {
+			return acceleration.expandTo(getMaxAcceleration());
 		} else {
 			return acceleration;
 		}
 	}
 
 	public Double getAccelerateTime(Double seconds) {
-		if (speed.add(getAcceleration().multiply(seconds)).getNorm() > maxSpeed) {
-			return (maxSpeed - speed.getNorm()) / getAcceleration().getNorm();
+		if (speed.add(getAcceleration().multiply(seconds)).getNorm() > getMaxSpeed()) {
+			return (getMaxSpeed() - speed.getNorm()) / getAcceleration().getNorm();
 		} else {
 			return seconds;
 		}
@@ -150,16 +201,16 @@ public class Robot extends Node {
 
 	public Vector2D getDisplacement(Double seconds) {
 		Vector2D displacement = speed.multiply(seconds).add(getAcceleration().multiply(Math.pow(seconds, 2.0) / 2)).add(getAcceleration().multiply(Math.pow(seconds - getAccelerateTime(seconds), 2) / 2));
-		if (displacement.getNorm() / seconds < minSpeed) {
+		if (displacement.getNorm() / seconds < getMinSpeed()) {
 			return new Vector2D();
 		}
 		for (Robot robot : getConnectedRobots()) {
 			if (robot != this) {
-				displacement = new Circle(this, size).getDisplacementToAvoidCollisionFrom(displacement, new Circle(robot, robot.size));
+				displacement = getCircle().getDisplacementToAvoidCollisionFrom(displacement, robot.getCircle());
 			}
 		}
 		for (Obstacle2D obstacle : getSensorNetwork().obstacles) {
-			displacement = obstacle.getDisplacementToAvoidCollision(new Circle(this, size), displacement);
+			displacement = obstacle.getDisplacementToAvoidCollision(getCircle(), displacement);
 		}
 		return displacement;
 	}
@@ -175,36 +226,8 @@ public class Robot extends Node {
 		return displacement;
 	}
 
-	public Boolean isEdgeNode() {
-		int splitSize = 36;
-		Double maxEdgeDistance = getMaxEdgeDistance();
-		for (int i = 0; i < splitSize; i++) {
-			Double angle = 2 * Math.PI * i / splitSize;
-			Point2D aroundPoint = add(new Vector2D(Math.cos(angle), Math.sin(angle)).multiply(wirelessRange));
-			Boolean flag = true;
-			for (Robot robot : getConnectedRobots()) {
-				if (new Circle(robot, maxEdgeDistance * 1.05).contains(aroundPoint)) {
-					flag = false;
-					break;
-				}
-			}
-			if (flag) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 	protected SensorNetwork getSensorNetwork() {
 		return (SensorNetwork) graph;
-	}
-
-	protected Double getMaxEdgeDistance() {
-		Double maxDistance = 0.0;
-		for (Robot robot : getConnectedRobots()) {
-			maxDistance = Math.max(maxDistance, getDistanceFrom(robot));
-		}
-		return maxDistance;
 	}
 
 	public Boolean isDelaunayTriangle(Node node2, Node node3) {
@@ -254,4 +277,14 @@ public class Robot extends Node {
 			return true;
 		}
 	}
+}
+
+class RobotParameters {
+	Double size;
+	Double weight;
+	Double wirelessRange;
+	Double sensorRange;
+	Double maxSpeed;
+	Double minSpeed;
+	Double maxAcceleration;
 }

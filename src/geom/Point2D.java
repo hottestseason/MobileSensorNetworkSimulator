@@ -14,7 +14,7 @@ public class Point2D extends Vector2D {
 	}
 
 	public Point2D clone() {
-		return super.clone().toPoint2D();
+		return (Point2D) super.clone();
 	}
 
 	public Point2D add(Vector2D vector) {

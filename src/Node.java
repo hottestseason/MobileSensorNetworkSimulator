@@ -27,11 +27,15 @@ public class Node extends Point2D {
 		return id;
 	}
 
+	public Node clone() {
+		return (Node) super.clone();
+	}
+
 	public Boolean atSamePoint(Point2D point) {
 		return super.equals(point);
 	}
 
-	public void resetConnections() {
+	public void clearConnections() {
 		connectedNodes.clear();
 	}
 
@@ -55,5 +59,13 @@ public class Node extends Point2D {
 				node.connectedNodes.add(this);
 			}
 		}
+	}
+
+	protected Double getMaxEdgeDistance() {
+		Double maxDistance = 0.0;
+		for (Node node : connectedNodes) {
+			maxDistance = Math.max(maxDistance, getDistanceFrom(node));
+		}
+		return maxDistance;
 	}
 }

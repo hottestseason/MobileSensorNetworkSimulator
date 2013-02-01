@@ -2,36 +2,43 @@ import geom.LineSegment2D;
 import geom.Spring;
 import geom.Vector2D;
 
+import java.awt.Color;
 import java.awt.Graphics;
+import java.util.ArrayList;
 
 public class YAVFRobot extends SpringVFRobot {
-	Double springConstant = 0.0;
+	Vector2D forceFromNeighborRobots = new Vector2D();
+	Vector2D expulsiveForceFromWall = new Vector2D();
 
-	public YAVFRobot(SensorNetwork sensorNetwork, Integer id, Double wirelessRange, Double sensorRange, Double weight, Double size, Double iterateInterval) {
-		super(sensorNetwork, id, wirelessRange, sensorRange, weight, size, iterateInterval);
+	public YAVFRobot(RobotParameters parameters) {
+		super(parameters);
 	}
 
 	public Vector2D getVirtualForce() {
-		Vector2D force = new Vector2D();
-		// for (LineSegment2D wall : getSensibleWalls()) {
-		// force = force.add(getVirtualForceFrom(wall));
-		// }
-		return super.getVirtualForce().add(force);
+		forceFromNeighborRobots = new Vector2D();
+		for (Robot robot : getConnectedRobots()) {
+			forceFromNeighborRobots = forceFromNeighborRobots.add(getVirtualForceFrom(robot));
+		}
+		expulsiveForceFromWall = new Vector2D();
+		ArrayList<LineSegment2D> sensibleWalls = getSensibleWalls();
+		for (LineSegment2D wall : sensibleWalls) {
+			expulsiveForceFromWall = expulsiveForceFromWall.add(getVirtualForceFrom(wall).divide((double) sensibleWalls.size()));
+		}
+		return forceFromNeighborRobots.add(expulsiveForceFromWall);
 	}
 
 	public Vector2D getVirtualForceFrom(Robot robot) {
 		if (atSamePoint(robot)) {
 			return new Vector2D();
 		} else {
-			Vector2D vector = getVector2DTo(robot);
-			Vector2D force = Spring.getForce(vector, idealDistance, springConstant);
-			return force;
+			return Spring.getForce(getVector2DTo(robot), idealDistance, springConstant);
 		}
 	}
 
 	public Vector2D getVirtualForceFrom(LineSegment2D wall) {
-		if (getDistanceFrom(wall) > 0 && getDistanceFrom(wall) < sensorRange / 2) {
-			return Spring.getForce(getVector2DTo(wall), sensorRange / 2, 0.4);
+		Double distanceFromWall = getDistanceFrom(wall);
+		if (distanceFromWall > 0 && distanceFromWall < getSensorRange() / 2) {
+			return Spring.getForce(getVector2DTo(wall), getSensorRange() / 2, springConstant * 8);
 		} else {
 			return new Vector2D();
 		}
@@ -39,13 +46,15 @@ public class YAVFRobot extends SpringVFRobot {
 }
 
 @SuppressWarnings("serial")
-class YAVFMobileSensorNetworkCanvas extends VFMobileSensorNetworkCanvas {
+class YAVFMobileSensorNetworkCanvas extends SpringVFMobileSensorNetworkCanvas {
 	public YAVFMobileSensorNetworkCanvas(SensorNetwork sensorNetwork) {
 		super(sensorNetwork);
 	}
 
 	public void drawRobot(Robot robot, Graphics g) {
 		super.drawRobot(robot, g);
+		YAVFRobot yavfRobot = (YAVFRobot) robot;
+		drawVector(yavfRobot, fixForce(yavfRobot.expulsiveForceFromWall), g, Color.green);
 	}
 
 	public void debug(Graphics g) {
