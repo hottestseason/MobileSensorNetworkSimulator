@@ -5,17 +5,19 @@ import geom.Point2D;
 import geom.Vector2D;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Robot extends Node {
-	Vector2D appliedForce = new Vector2D();
+	RobotParameters parameters;
+	Double iterateInterval;
+	Double dampingCoefficient = 0.0;
 	Vector2D speed = new Vector2D();
 	Vector2D virutalForce = new Vector2D();
 	Vector2D dampingForce = new Vector2D();
-	Double iterateInterval;
-	Double dampingCoefficient = 0.0;
-	ArrayList<Robot> sensibleRobots = null;
-	RobotParameters parameters;
+
+	Double movedDistance = 0.0;
+	HashMap<String, Object> memory = new HashMap<String, Object>();
 
 	public Robot(RobotParameters parameters) {
 		this.parameters = parameters;
@@ -61,12 +63,24 @@ public class Robot extends Node {
 		return new Circle(this, getSensorRange());
 	}
 
+	public Vector2D getAppliedForce() {
+		return virutalForce.add(dampingForce);
+	}
+
+	public Object getMemory(String key) {
+		return memory.get(key);
+	}
+
+	public void setMemory(String key, Object value) {
+		memory.put(key, value);
+	}
+
 	public String toString() {
 		String ret = id + " : ";
 		ret += toPoint2D() + " -> " + getNextPoint() + "\n";
 		ret += "speed : " + speed + "\n";
 		ret += "virtualForce: " + virutalForce + "\ndampingForce: " + dampingForce + "\n";
-		ret += "appliedForce : " + appliedForce + "\n";
+		ret += "appliedForce : " + getAppliedForce() + "\n";
 		ret += "acceleration : " + getAcceleration();
 		return ret;
 	}
@@ -78,10 +92,9 @@ public class Robot extends Node {
 	}
 
 	public void resetState() {
-		appliedForce = new Vector2D();
-		sensibleRobots = null;
 		virutalForce = new Vector2D();
 		dampingForce = new Vector2D();
+		setMemory("sensibleRobots", null);
 		clearConnections();
 	}
 
@@ -92,7 +105,6 @@ public class Robot extends Node {
 	public void calculateForce() {
 		virutalForce = getVirtualForce();
 		dampingForce = getDampingForce();
-		applyForce(virutalForce.add(dampingForce));
 	}
 
 	public Vector2D getVirtualForce() {
@@ -146,6 +158,7 @@ public class Robot extends Node {
 	}
 
 	public ArrayList<Robot> getSensibleRobots() {
+		ArrayList<Robot> sensibleRobots = (ArrayList<Robot>) getMemory("sensibleRobots");
 		if (sensibleRobots == null) {
 			sensibleRobots = new ArrayList<Robot>();
 			for (Robot robot : ((SensorNetwork) graph).getRobots()) {
@@ -178,12 +191,8 @@ public class Robot extends Node {
 		return walls;
 	}
 
-	public void applyForce(Vector2D force) {
-		appliedForce = appliedForce.add(force);
-	}
-
 	public Vector2D getAcceleration() {
-		Vector2D acceleration = appliedForce.multiply(1 / getWeight());
+		Vector2D acceleration = getAppliedForce().multiply(1 / getWeight());
 		if (acceleration.getNorm() > getMaxAcceleration()) {
 			return acceleration.expandTo(getMaxAcceleration());
 		} else {
@@ -223,6 +232,7 @@ public class Robot extends Node {
 		Vector2D displacement = getDisplacement(seconds);
 		setPoint(add(displacement));
 		speed = displacement.expandTo(speed.add(getAcceleration().multiply(getAccelerateTime(seconds))).innerProduct(displacement.normalize()));
+		movedDistance += displacement.getNorm();
 		return displacement;
 	}
 

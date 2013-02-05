@@ -71,6 +71,16 @@ public class SensorNetwork extends Graph implements Runnable {
 		}
 	}
 
+	public Double getMaxMovedDistance() {
+		Double maxMovedDistance = 0.0;
+		for (Robot robot : getRobots()) {
+			if (robot.movedDistance > maxMovedDistance) {
+				maxMovedDistance = robot.movedDistance;
+			}
+		}
+		return maxMovedDistance;
+	}
+
 	public void start() {
 		if (calculatesCavarege) {
 			getAllPoints();

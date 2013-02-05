@@ -14,7 +14,10 @@ public class SensorNetworkSimulator implements Runnable {
 	}
 
 	public SensorNetworkSimulator(SensorNetwork sensorNetwork) {
-		this(sensorNetwork, new SensorNetworkCanvas(sensorNetwork));
+		this.sensorNetwork = sensorNetwork;
+		if (gui) {
+			this.sensorNetworkCanvas = new SensorNetworkCanvas(sensorNetwork);
+		}
 	}
 
 	public void start() {
@@ -32,7 +35,7 @@ public class SensorNetworkSimulator implements Runnable {
 			}
 			SpringVFRobot robot = (SpringVFRobot) sensorNetwork.get(0);
 			Boolean converged = sensorNetwork.iterateNo < sensorNetwork.maxIteration;
-			System.out.println(sensorNetwork.size() + "," + robot.springConstant + "," + robot.dampingCoefficient + "," + sensorNetwork.iterateNo + "," + sensorNetwork.sumMovedDistance + "," + sensorNetwork.alwaysConnected + "," + converged + "," + sensorNetwork.get(0).iterateInterval);
+			System.out.println(sensorNetwork.size() + "," + sensorNetwork.get(0).iterateInterval + "," + robot.springConstant + "," + robot.dampingCoefficient + "," + sensorNetwork.iterateNo + "," + sensorNetwork.sumMovedDistance + "," + sensorNetwork.getMaxMovedDistance() + "," + sensorNetwork.alwaysConnected + "," + converged);
 		}
 	}
 

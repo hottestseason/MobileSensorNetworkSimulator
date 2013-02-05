@@ -10,7 +10,7 @@ import geom.Vector2D;
 import java.util.Random;
 
 public class MobileSensorNetworkSimulation {
-	static Double iterateInterval = 2.0;
+	static Double iterateInterval = 0.1;
 	static Integer robotCount = 3;
 	static RobotParameters robotParameters;
 	static private Random random = new Random(0);
@@ -27,20 +27,20 @@ public class MobileSensorNetworkSimulation {
 
 		// test();
 		// getYAVFSimulator(20, 0.25, 1.0).start();
-		getSpringVFSimulator(40, 0.1, 0.5).start();
+		// getSpringVFSimulator(40, 0.1, 0.5).start();
 		// getSmartSpringVFSimulator(40, 0.1, 0.5, iterateInterval / 10,
 		// 10).start();
-		// getSpringConstantAndDampingCoefficientRelation(0.25);
+		getSpringConstantAndDampingCoefficientRelation(2.0);
 		// getConvergedRatioOfSpringVFandSmartSpringVF(25, 0.25, 1.0, 5);
 	}
 
 	public static void getSpringConstantAndDampingCoefficientRelation(double springConstant) {
 		SensorNetworkSimulator.gui = false;
-		int[] robotCounts = { 32, 64 };
-		Double dampingCoefficientFrom = 0.1, dampingCoefficientTo = 5.0, dampingCoefficientStep = 0.05;
-		int maxSeed = 20;
+		int[] robotCounts = { 32 };
+		Double dampingCoefficientFrom = 0.5, dampingCoefficientTo = 10.0, dampingCoefficientStep = 0.05;
+		int minSeed = 20, maxSeed = 50;
 		for (int robotCount : robotCounts) {
-			for (int seed = 0; seed < maxSeed; seed++) {
+			for (int seed = minSeed; seed < maxSeed; seed++) {
 				random = new Random(seed);
 				for (Double dampingCoefficient = dampingCoefficientFrom; dampingCoefficient < dampingCoefficientTo; dampingCoefficient += dampingCoefficientStep) {
 					System.out.print(seed + ",");
@@ -58,7 +58,6 @@ public class MobileSensorNetworkSimulation {
 						sensorNetwork.add(robot);
 						robot.setPoint(Vector2D.random(10.0, 10.0, random).add(100.0, 100.0).toPoint2D());
 					}
-					sensorNetwork.obstacles.add(new Obstacle2D(Polygon2D.rectangle(new Point2D(), 200.0, 200.0), true, true));
 
 					SensorNetworkSimulator sensorNetworkSimulator = new SensorNetworkSimulator(sensorNetwork);
 					sensorNetworkSimulator.start();

@@ -43,7 +43,8 @@ public class SmartSpringVFRobot extends SpringVFRobot {
 			cloneOfThis.setPoint(this);
 			cloneOfThis.speed = speed.clone();
 			iterateLasteSensedNeighbors();
-			appliedForce = cloneOfThis.appliedForce.clone();
+			virutalForce = cloneOfThis.virutalForce.clone();
+			dampingForce = cloneOfThis.dampingForce.clone();
 		}
 	}
 
@@ -51,7 +52,6 @@ public class SmartSpringVFRobot extends SpringVFRobot {
 		lastSensedNeighbors.iterate();
 		for (Robot robot : lastSensedNeighbors.getRobots()) {
 			robot.virutalForce = robot.virutalForce.divide(Math.max(neighborConnectedRobots.get(robot.id), 1.0));
-			robot.appliedForce = robot.virutalForce.add(robot.dampingForce);
 		}
 	}
 
@@ -70,7 +70,7 @@ class SmartSpringVFMobileSensorNetworkCanvas extends SpringVFMobileSensorNetwork
 	public void drawRobot(Robot robot, Graphics g) {
 		super.drawRobot(robot, g);
 		SmartSpringVFRobot smartSpringVFRobot = (SmartSpringVFRobot) robot;
-		synchronized (sensorNetwork) {
+		synchronized (smartSpringVFRobot.lastSensedNeighbors) {
 			for (Robot neighborRobot : smartSpringVFRobot.lastSensedNeighbors.getRobots()) {
 				drawCircle(new Circle(neighborRobot, Math.max(neighborRobot.getSize(), minRobotSize) / 2), g, Color.red, true);
 			}
