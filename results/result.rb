@@ -2,6 +2,26 @@ require 'rubygems'
 require 'csv'
 require 'active_support/core_ext'
 
+TrueClass.class_eval do
+  def to_i
+    1
+  end
+
+  def to_f
+    to_i.to_f
+  end
+end
+
+FalseClass.class_eval do
+  def to_i
+    0
+  end
+
+  def to_f
+    to_i.to_f
+  end
+end
+
 Array.class_eval do
   def sum; inject(&:+).to_f end
   def mean; sum / size end
@@ -31,7 +51,8 @@ class Results < Array
       similar_results.first.clone.tap do |result|
         result.iteration = similar_results.map(&:iteration).mean
         result.moved_distance = similar_results.map(&:moved_distance).mean
-        result.max_moved_distance = similar_results.map(&:max_moved_distance).mean
+        result.sum_consumed_energy = similar_results.map(&:sum_consumed_energy).mean
+        result.max_consumed_energy = similar_results.map(&:max_consumed_energy).mean
         result.converged = similar_results.map do |similar_result|
           similar_result.connectivity && similar_result.converged ? 1 : 0
         end.mean
@@ -42,7 +63,7 @@ end
 
 class Result
   PARAMETERS = [:seed, :robot_count, :spring_constant, :damping_coefficient, :iteration_interval]
-  RESULTS = [:iteration, :moved_distance, :max_moved_distance, :connectivity, :converged]
+  RESULTS = [:iteration, :moved_distance, :sum_consumed_energy, :max_consumed_energy, :connectivity, :converged]
   COLUMNS = PARAMETERS + RESULTS
   COLUMNS.each(&method(:attr_reader))
 
@@ -78,8 +99,12 @@ class Result
     @moved_distance = value.to_f
   end
 
-  def max_moved_distance=(value)
-    @max_moved_distance = value.to_f
+  def sum_consumed_energy=(value)
+    @sum_consumed_energy = value.to_f
+  end
+
+  def max_consumed_energy=(value)
+    @max_consumed_energy = value.to_f
   end
 
   def connectivity=(value)
