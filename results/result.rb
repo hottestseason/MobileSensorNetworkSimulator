@@ -22,6 +22,12 @@ FalseClass.class_eval do
   end
 end
 
+NilClass.class_eval do
+  def +(value)
+    nil
+  end
+end
+
 Array.class_eval do
   def sum; inject(&:+).to_f end
   def mean; sum / size end
@@ -64,8 +70,27 @@ end
 class Result
   PARAMETERS = [:seed, :robot_count, :spring_constant, :damping_coefficient, :iteration_interval]
   RESULTS = [:iteration, :moved_distance, :sum_consumed_energy, :max_consumed_energy, :connectivity, :converged]
+  INTEGERS = [:seed, :robot_count, :iteration]
+  FLOATS = [:spring_constant, :damping_coefficient, :moved_distance, :sum_consumed_energy, :max_consumed_energy, :iteration_interval]
+  BOOLEANS = [:connectivity, :converged]
   COLUMNS = PARAMETERS + RESULTS
   COLUMNS.each(&method(:attr_reader))
+  INTEGERS.each do |parameter|
+    define_method("#{parameter}=") do |value|
+      instance_variable_set("@#{parameter}", value.to_i)
+    end
+  end
+  FLOATS.each do |parameter|
+    define_method("#{parameter}=") do |value|
+      instance_variable_set("@#{parameter}", value.to_f)
+    end
+  end
+  BOOLEANS.each do |parameter|
+    define_method("#{parameter}=") do |value|
+      value = value == "TRUE" || value == "true" if value.is_a? String
+      instance_variable_set("@#{parameter}", value)
+    end
+  end
 
   def [](key)
     send(key)
@@ -75,66 +100,22 @@ class Result
     send("#{key}=", value)
   end
 
-  def seed=(value)
-    @seed = value.to_i
+  def real_converged
+    connectivity && converged
   end
 
-  def robot_count=(value)
-    @robot_count = value.to_i
+  def sum_consumed_energy
+    real_converged ? @sum_consumed_energy : 0
   end
 
-  def spring_constant=(value)
-    @spring_constant = value.to_f
-  end
-
-  def damping_coefficient=(value)
-    @damping_coefficient = value.to_f
-  end
-
-  def iteration=(value)
-    @iteration = value.to_i
-  end
-
-  def moved_distance=(value)
-    @moved_distance = value.to_f
-  end
-
-  def sum_consumed_energy=(value)
-    @sum_consumed_energy = value.to_f
-  end
-
-  def max_consumed_energy=(value)
-    @max_consumed_energy = value.to_f
-  end
-
-  def connectivity=(value)
-    @connectivity = value == "TRUE" || value == "true"
-  end
-
-  def converged=(value)
-    @converged = if value.is_a? String
-                   value == "TRUE" || value == "true"
-                 else
-                   value
-                 end
-  end
-
-  def iteration_interval=(value)
-    @iteration_interval = value.to_f
-  end
-
-  def score
-    iteration + moved_distance
+  def converged_time
+    real_converged ? iteration * iteration_interval : 0
   end
 
   def parameters(seed = false)
     parameters = PARAMETERS
     parameters -= [:seed] unless seed
     parameters.map(&method(:[]))
-  end
-
-  def similar?(result)
-    parameters == result.parameters
   end
 
   def to_a
