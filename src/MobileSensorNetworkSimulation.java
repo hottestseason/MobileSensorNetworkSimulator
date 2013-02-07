@@ -23,6 +23,7 @@ public class MobileSensorNetworkSimulation {
 		robotParameters.maxSpeed = 1.0;
 		robotParameters.minSpeed = 0.01;
 		robotParameters.maxAcceleration = 0.5;
+		robotParameters.maxBattery = 30000.0;
 
 		// test();
 		// getYAVFSimulator(20, 0.25, 1.0).start();

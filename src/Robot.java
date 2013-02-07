@@ -15,6 +15,7 @@ public class Robot extends Node {
 	Vector2D speed = new Vector2D();
 	Vector2D virutalForce = new Vector2D();
 	Vector2D dampingForce = new Vector2D();
+	HashMap<Integer, Double> potentials = new HashMap<Integer, Double>();
 
 	Double consumedEnergy = 0.0;
 	Double movedDistance = 0.0;
@@ -52,6 +53,10 @@ public class Robot extends Node {
 		return parameters.maxAcceleration;
 	}
 
+	public Double getMaxBattery() {
+		return parameters.maxBattery;
+	}
+
 	public Circle getCircle() {
 		return new Circle(this, getSize());
 	}
@@ -68,12 +73,37 @@ public class Robot extends Node {
 		return virutalForce.add(dampingForce);
 	}
 
+	public Double getPotential(Integer iterateNo) {
+		Double potential = potentials.get(iterateNo);
+		if (potential == null) {
+			return 0.0;
+		} else {
+			return potential;
+		}
+	}
+
+	public Double getRemainedBattery() {
+		return getMaxBattery() - consumedEnergy;
+	}
+
+	public Double getRemainedBatteryRatio() {
+		return getRemainedBattery() / getMaxBattery();
+	}
+
+	public void setPotential(Integer iterateNo, Double value) {
+		potentials.put(iterateNo, value);
+	}
+
 	public Object getMemory(String key) {
 		return memory.get(key);
 	}
 
 	public void setMemory(String key, Object value) {
 		memory.put(key, value);
+	}
+
+	public Integer getIterateNo() {
+		return getSensorNetwork().iterateNo;
 	}
 
 	public String toString() {
@@ -103,7 +133,20 @@ public class Robot extends Node {
 		for (Robot robot : getSensibleRobots()) {
 			sendTo(robot, 1 * 1000.0 * 8);
 		}
+		// setPotential(getIterateNo(), calculatePotential());
 		createConnections();
+	}
+
+	public Double calculatePotential() {
+		if (id == 0) {
+			return 0.0;
+		}
+		Double potential = getPotential(getIterateNo() - 1);
+		for (Robot robot : getSensibleRobots()) {
+			potential += (robot.getPotential(getIterateNo() - 1) - getPotential(getIterateNo() - 1)) * 0.9 / getSensibleRobots().size();
+		}
+		potential += 0.5;
+		return potential;
 	}
 
 	public void calculateForce() {
@@ -317,4 +360,5 @@ class RobotParameters {
 	Double maxSpeed;
 	Double minSpeed;
 	Double maxAcceleration;
+	Double maxBattery;
 }

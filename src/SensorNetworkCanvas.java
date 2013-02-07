@@ -88,6 +88,8 @@ public class SensorNetworkCanvas extends Canvas {
 		drawVector(robot, fixForce(robot.virutalForce), g, Color.magenta);
 		drawVector(robot, fixForce(robot.dampingForce), g, Color.blue);
 		drawString(robot.id.toString(), robot, g, Color.black);
+		drawString(String.format("%.1f", robot.getRemainedBatteryRatio() * 100.0), robot.add(10.0, 10.0), g, Color.black);
+		drawString(String.format("%.2f", robot.getPotential(sensorNetwork.iterateNo - 1)), robot.add(-20.0, 10.0), g, Color.black);
 	}
 
 	public void drawObstacles(Graphics g) {
