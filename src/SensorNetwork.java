@@ -62,6 +62,9 @@ public class SensorNetwork extends Graph implements Runnable {
 	public void move(Double seconds) {
 		Double movedDistance = 0.0;
 		for (Robot robot : getRobots()) {
+			if (robot.id == 0) {
+				continue;
+			}
 			movedDistance += robot.move(seconds).getNorm();
 		}
 		if (movedDistance > 0) {
