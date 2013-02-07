@@ -17,7 +17,7 @@ public class SensorNetworkCanvas extends Canvas {
 	SensorNetwork sensorNetwork;
 	Vector2D originDisplacement = new Vector2D(50, 50);
 	Integer width, height;
-	Double zoom = 4.0;
+	Double zoom = 1.0;
 	Double minRobotSize = 0.0;
 
 	protected Image buffer;

@@ -27,7 +27,7 @@ public class MobileSensorNetworkSimulation {
 
 		// test();
 		// getYAVFSimulator(20, 0.25, 1.0).start();
-		// getSpringVFSimulator(40, 0.1, 0.5).start();
+		// getSpringVFSimulator(40, 0.075, 0.37).start();
 		// getSmartSpringVFSimulator(40, 0.1, 0.5, iterateInterval / 10,
 		// 10).start();
 		getSpringConstantAndDampingCoefficientRelation(0.07);
@@ -137,10 +137,10 @@ public class MobileSensorNetworkSimulation {
 			robot.dampingCoefficient = dampingCoefficient;
 			robot.springConstant = springConstant;
 			sensorNetwork.add(robot);
-			robot.setPoint(Vector2D.random(10.0, 10.0, random).add(50.0, 50.0).toPoint2D());
+			robot.setPoint(Vector2D.random(10.0, 10.0, random).add(250.0, 250.0).toPoint2D());
 			// robot.setPoint(new Point2D((i / 10) + 1, (i % 10) + 1));
 		}
-		sensorNetwork.obstacles.add(new Obstacle2D(Polygon2D.rectangle(new Point2D(), 100.0, 100.0), true, true));
+		sensorNetwork.obstacles.add(new Obstacle2D(Polygon2D.rectangle(new Point2D(), 500.0, 500.0), true, true));
 		// sensorNetwork.obstacles.addAll(Obstacle2D.getType1());
 
 		SensorNetworkSimulator sensorNetworkSimulator = new SensorNetworkSimulator(sensorNetwork);
