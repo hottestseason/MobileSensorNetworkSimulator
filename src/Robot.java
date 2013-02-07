@@ -16,8 +16,9 @@ public class Robot extends Node {
 	Vector2D virutalForce = new Vector2D();
 	Vector2D dampingForce = new Vector2D();
 
+	Double consumedEnergy = 0.0;
 	Double movedDistance = 0.0;
-	HashMap<String, Object> memory = new HashMap<String, Object>();
+	private HashMap<String, Object> memory = new HashMap<String, Object>();
 
 	public Robot(RobotParameters parameters) {
 		this.parameters = parameters;
@@ -99,6 +100,9 @@ public class Robot extends Node {
 	}
 
 	public void setUpForIteration() {
+		for (Robot robot : getSensibleRobots()) {
+			sendTo(robot, 5 * 1000.0 * 8);
+		}
 		createConnections();
 	}
 
@@ -166,6 +170,7 @@ public class Robot extends Node {
 					sensibleRobots.add(robot);
 				}
 			}
+			setMemory("sensibleRobots", sensibleRobots);
 		}
 		return sensibleRobots;
 	}
@@ -230,10 +235,25 @@ public class Robot extends Node {
 
 	public Vector2D move(Double seconds) {
 		Vector2D displacement = getDisplacement(seconds);
+		Double distance = displacement.getNorm();
 		setPoint(add(displacement));
 		speed = displacement.expandTo(speed.add(getAcceleration().multiply(getAccelerateTime(seconds))).innerProduct(displacement.normalize()));
-		movedDistance += displacement.getNorm();
+		movedDistance += distance;
+		consumedEnergy += distance * 0.8 * getWeight();
 		return displacement;
+	}
+
+	public void send(Double distance, Double bit) {
+		consumedEnergy += (bit * 50 + 0.1 * bit * distance * distance) * Math.pow(10, -9);
+	}
+
+	public void sendTo(Robot to, Double bit) {
+		send(getDistanceFrom(to), bit);
+		to.receive(bit);
+	}
+
+	public void receive(Double bit) {
+		consumedEnergy += bit * 50 * Math.pow(10, -9);
 	}
 
 	protected SensorNetwork getSensorNetwork() {

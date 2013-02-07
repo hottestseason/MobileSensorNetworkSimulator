@@ -11,18 +11,17 @@ import java.util.Random;
 
 public class MobileSensorNetworkSimulation {
 	static Double iterateInterval = 0.1;
-	static Integer robotCount = 3;
 	static RobotParameters robotParameters;
 	static private Random random = new Random(0);
 
 	public static void main(String[] args) {
 		robotParameters = new RobotParameters();
 		robotParameters.size = 0.5;
-		robotParameters.weight = 1.0;
-		robotParameters.wirelessRange = 20.0;
-		robotParameters.sensorRange = 8.0;
+		robotParameters.weight = 2.5;
+		robotParameters.wirelessRange = 50.0;
+		robotParameters.sensorRange = 25.0;
 		robotParameters.maxSpeed = 1.0;
-		robotParameters.minSpeed = 0.02;
+		robotParameters.minSpeed = 0.001;
 		robotParameters.maxAcceleration = 0.5;
 
 		// test();
@@ -30,15 +29,16 @@ public class MobileSensorNetworkSimulation {
 		// getSpringVFSimulator(40, 0.1, 0.5).start();
 		// getSmartSpringVFSimulator(40, 0.1, 0.5, iterateInterval / 10,
 		// 10).start();
-		getSpringConstantAndDampingCoefficientRelation(2.0);
+		getSpringConstantAndDampingCoefficientRelation(0.07);
+		// getConvergedRatio();
 		// getConvergedRatioOfSpringVFandSmartSpringVF(25, 0.25, 1.0, 5);
 	}
 
 	public static void getSpringConstantAndDampingCoefficientRelation(double springConstant) {
 		SensorNetworkSimulator.gui = false;
 		int[] robotCounts = { 32 };
-		Double dampingCoefficientFrom = 0.5, dampingCoefficientTo = 10.0, dampingCoefficientStep = 0.05;
-		int minSeed = 20, maxSeed = 50;
+		Double dampingCoefficientFrom = 0.1, dampingCoefficientTo = 2.0, dampingCoefficientStep = 0.025;
+		int minSeed = 0, maxSeed = 20;
 		for (int robotCount : robotCounts) {
 			for (int seed = minSeed; seed < maxSeed; seed++) {
 				random = new Random(seed);
@@ -47,7 +47,7 @@ public class MobileSensorNetworkSimulation {
 
 					SensorNetwork sensorNetwork = new SensorNetwork();
 					sensorNetwork.calculatesCavarege = false;
-					sensorNetwork.maxIteration = 3200;
+					sensorNetwork.maxIteration = 12800;
 					sensorNetwork.mustAlwaysConnected = true;
 
 					for (int i = 0; i < robotCount; i++) {
@@ -87,6 +87,41 @@ public class MobileSensorNetworkSimulation {
 					robot.setPoint(Vector2D.random(10.0, 10.0, random).add(100.0, 100.0).toPoint2D());
 				}
 				sensorNetwork.obstacles.add(new Obstacle2D(Polygon2D.rectangle(new Point2D(), 200.0, 200.0), true, true));
+				new SensorNetworkSimulator(sensorNetwork).start();
+			}
+		}
+	}
+
+	public static void getConvergedRatio() {
+		SensorNetworkSimulator.gui = false;
+		// double springConstant = 0.05, dampingCoefficient = 0.29;
+		double springConstant = 0.075, dampingCoefficient = 0.37;
+		// double springConstant = 0.1, dampingCoefficient = 0.42;
+		// double springConstant = 0.15, dampingCoefficient = 0.51;
+		// double springConstant = 0.2, dampingCoefficient = 0.59;
+		// double springConstant = 0.25, dampingCoefficient = 0.66;
+		// double springConstant = 0.5, dampingCoefficient = 0.95;
+		// double springConstant = 1.0, dampingCoefficient = 1.36;
+		// double springConstant = 2.0, dampingCoefficient = 1.91;
+		int robotCount = 32;
+
+		int maxSeed = 20;
+		for (int seed = 0; seed < maxSeed; seed++) {
+			for (double iterateInterval = 0.1; iterateInterval < 2.5; iterateInterval += 0.025) {
+				System.out.print(seed + ",");
+				random = new Random(seed);
+				SensorNetwork sensorNetwork = new SensorNetwork();
+				sensorNetwork.calculatesCavarege = false;
+				sensorNetwork.maxIteration = 3200;
+				sensorNetwork.mustAlwaysConnected = true;
+				for (int i = 0; i < robotCount; i++) {
+					SpringVFRobot robot = new SpringVFRobot(robotParameters);
+					robot.iterateInterval = iterateInterval;
+					robot.dampingCoefficient = dampingCoefficient;
+					robot.springConstant = springConstant;
+					sensorNetwork.add(robot);
+					robot.setPoint(Vector2D.random(10.0, 10.0, random).add(100.0, 100.0).toPoint2D());
+				}
 				new SensorNetworkSimulator(sensorNetwork).start();
 			}
 		}

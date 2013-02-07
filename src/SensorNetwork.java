@@ -71,6 +71,24 @@ public class SensorNetwork extends Graph implements Runnable {
 		}
 	}
 
+	public Double getsumConsumedEnergy() {
+		Double sumConsumedEnergy = 0.0;
+		for (Robot robot : getRobots()) {
+			sumConsumedEnergy += robot.consumedEnergy;
+		}
+		return sumConsumedEnergy;
+	}
+
+	public Double getMaxConsumedEnergy() {
+		Double maxConsumedEnergy = 0.0;
+		for (Robot robot : getRobots()) {
+			if (robot.consumedEnergy > maxConsumedEnergy) {
+				maxConsumedEnergy = robot.consumedEnergy;
+			}
+		}
+		return maxConsumedEnergy;
+	}
+
 	public Double getMaxMovedDistance() {
 		Double maxMovedDistance = 0.0;
 		for (Robot robot : getRobots()) {
