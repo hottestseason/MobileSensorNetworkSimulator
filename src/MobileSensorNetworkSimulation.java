@@ -21,7 +21,7 @@ public class MobileSensorNetworkSimulation {
 		robotParameters.wirelessRange = 50.0;
 		robotParameters.sensorRange = 25.0;
 		robotParameters.maxSpeed = 1.0;
-		robotParameters.minSpeed = 0.001;
+		robotParameters.minSpeed = 0.01;
 		robotParameters.maxAcceleration = 0.5;
 
 		// test();

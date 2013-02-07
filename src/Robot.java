@@ -101,7 +101,7 @@ public class Robot extends Node {
 
 	public void setUpForIteration() {
 		for (Robot robot : getSensibleRobots()) {
-			sendTo(robot, 5 * 1000.0 * 8);
+			sendTo(robot, 1 * 1000.0 * 8);
 		}
 		createConnections();
 	}
