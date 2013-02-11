@@ -1,3 +1,5 @@
+package mobilesensornetwork;
+
 import geom.Circle;
 import geom.Vector2D;
 
@@ -7,7 +9,7 @@ import java.util.HashMap;
 
 public class SmartSpringVFRobot extends SpringVFRobot {
 	Integer sensingInterval;
-	SensorNetwork lastSensedNeighbors = new SensorNetwork();
+	MobileSensorNetwork lastSensedNeighbors = new MobileSensorNetwork();
 	HashMap<Integer, Integer> neighborConnectedRobots = new HashMap<Integer, Integer>();
 
 	public SmartSpringVFRobot(RobotParameters parameters) {
@@ -16,18 +18,18 @@ public class SmartSpringVFRobot extends SpringVFRobot {
 
 	public SpringVFRobot cloneToSpringVFRobot() {
 		SpringVFRobot cloned = new SpringVFRobot(parameters);
-		cloned.dampingCoefficient = dampingCoefficient;
-		cloned.springConstant = springConstant;
-		cloned.iterateInterval = iterateInterval;
+		cloned.setDampingCoefficient(dampingCoefficient);
+		cloned.setSpringConstant(springConstant);
+		cloned.setIterateInterval(getIterateInterval());
 		cloned.setPoint(this);
-		cloned.speed = speed;
+		cloned.setSpeed(getSpeed());
 		return cloned;
 	}
 
 	public void iterate() {
-		if (getSensorNetwork().iterateNo % sensingInterval == 1) {
+		if (getSensorNetwork().getIterationNo() % sensingInterval == 1) {
 			super.iterate();
-			lastSensedNeighbors = new SensorNetwork();
+			lastSensedNeighbors = new MobileSensorNetwork();
 			lastSensedNeighbors.add(cloneToSpringVFRobot());
 			neighborConnectedRobots.put(0, getConnectedRobots().size());
 			for (Robot robot : getSensibleRobots()) {
@@ -41,7 +43,7 @@ public class SmartSpringVFRobot extends SpringVFRobot {
 			setUpForIteration();
 			SpringVFRobot cloneOfThis = (SpringVFRobot) lastSensedNeighbors.get(0);
 			cloneOfThis.setPoint(this);
-			cloneOfThis.speed = speed.clone();
+			cloneOfThis.setSpeed(getSpeed().clone());
 			iterateLasteSensedNeighbors();
 			virutalForce = cloneOfThis.virutalForce.clone();
 			dampingForce = cloneOfThis.dampingForce.clone();
@@ -51,7 +53,8 @@ public class SmartSpringVFRobot extends SpringVFRobot {
 	public void iterateLasteSensedNeighbors() {
 		lastSensedNeighbors.iterate();
 		for (Robot robot : lastSensedNeighbors.getRobots()) {
-			robot.virutalForce = robot.virutalForce.divide(Math.max(neighborConnectedRobots.get(robot.id), 1.0));
+			VFRobot vfRobot = (VFRobot) robot;
+			vfRobot.virutalForce = vfRobot.virutalForce.divide(Math.max(neighborConnectedRobots.get(robot.getId()), 1.0));
 		}
 	}
 
@@ -63,7 +66,7 @@ public class SmartSpringVFRobot extends SpringVFRobot {
 
 @SuppressWarnings("serial")
 class SmartSpringVFMobileSensorNetworkCanvas extends SpringVFMobileSensorNetworkCanvas {
-	public SmartSpringVFMobileSensorNetworkCanvas(SensorNetwork sensorNetwork) {
+	public SmartSpringVFMobileSensorNetworkCanvas(MobileSensorNetwork sensorNetwork) {
 		super(sensorNetwork);
 	}
 

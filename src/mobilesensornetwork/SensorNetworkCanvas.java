@@ -1,3 +1,5 @@
+package mobilesensornetwork;
+
 import geom.Circle;
 import geom.CircularSector;
 import geom.LineSegment2D;
@@ -5,6 +7,7 @@ import geom.Obstacle2D;
 import geom.Point2D;
 import geom.Polygon2D;
 import geom.Vector2D;
+import graph.Node;
 
 import java.awt.Canvas;
 import java.awt.Color;
@@ -13,21 +16,22 @@ import java.awt.Graphics;
 import java.awt.Image;
 
 @SuppressWarnings("serial")
-public class SensorNetworkCanvas extends Canvas {
-	SensorNetwork sensorNetwork;
+public class SensorNetworkCanvas extends Canvas implements TimerListener {
+	MobileSensorNetwork sensorNetwork;
 	Vector2D originDisplacement = new Vector2D(50, 50);
-	Integer width, height;
 	Double zoom = 1.0;
 	Double minRobotSize = 0.0;
 
 	protected Image buffer;
 	protected Graphics bufferG;
 
-	public SensorNetworkCanvas(SensorNetwork sensorNetwork) {
+	private Timer timer;
+
+	public SensorNetworkCanvas(MobileSensorNetwork sensorNetwork) {
 		this.sensorNetwork = sensorNetwork;
 		Polygon2D surroundedRectangle = sensorNetwork.obstacles.get(0).getSurroundedRectangle();
-		this.width = (int) ((surroundedRectangle.vertexes.get(1).x - surroundedRectangle.vertexes.get(0).x) * zoom + originDisplacement.x * 2);
-		this.height = (int) ((surroundedRectangle.vertexes.get(3).y - surroundedRectangle.vertexes.get(0).y) * zoom + originDisplacement.x * 2);
+		int width = (int) ((surroundedRectangle.vertexes.get(1).x - surroundedRectangle.vertexes.get(0).x) * zoom + originDisplacement.x * 2);
+		int height = (int) ((surroundedRectangle.vertexes.get(3).y - surroundedRectangle.vertexes.get(0).y) * zoom + originDisplacement.x * 2);
 		setSize(width, height);
 	}
 
@@ -36,9 +40,6 @@ public class SensorNetworkCanvas extends Canvas {
 		drawConnections(bufferG);
 		drawRobots(bufferG);
 		drawObstacles(bufferG);
-		drawString("iterate No. : " + sensorNetwork.iterateNo, new Point2D(4 / zoom, -12 / zoom), bufferG, Color.black);
-		drawString("all movded distance : " + sensorNetwork.sumMovedDistance, new Point2D(4 / zoom, -24 / zoom), bufferG, Color.black);
-		drawString("connectivity : " + sensorNetwork.isConnected, new Point2D(4 / zoom, -36 / zoom), bufferG, Color.black);
 		debug(bufferG);
 	}
 
@@ -64,7 +65,7 @@ public class SensorNetworkCanvas extends Canvas {
 	public void drawConnections(Graphics g) {
 		synchronized (sensorNetwork) {
 			for (Robot robot : sensorNetwork.getRobots()) {
-				synchronized (robot.connectedNodes) {
+				synchronized (robot.getConnectedNodes()) {
 					for (Robot connectedRobot : robot.getConnectedRobots()) {
 						drawLineSegment2D(robot, connectedRobot, g, Color.gray);
 					}
@@ -85,11 +86,11 @@ public class SensorNetworkCanvas extends Canvas {
 	public void drawRobot(Robot robot, Graphics g) {
 		drawCircle(new Circle(robot, Math.max(robot.getSize(), minRobotSize)), g, Color.black, true);
 		drawCircle(robot.getWirelessCircle(), g, new Color(0, 255, 0, 32), false);
-		drawVector(robot, fixForce(robot.virutalForce), g, Color.magenta);
-		drawVector(robot, fixForce(robot.dampingForce), g, Color.blue);
-		drawString(robot.id.toString(), robot, g, Color.black);
+		// drawVector(robot, fixForce(robot.virutalForce), g, Color.magenta);
+		// drawVector(robot, fixForce(robot.dampingForce), g, Color.blue);
+		drawString(robot.getId().toString(), robot, g, Color.black);
 		drawString(String.format("%.1f", robot.getRemainedBatteryRatio() * 100.0), robot.add(10.0, 10.0), g, Color.black);
-		drawString(String.format("%.2f", robot.getPotential(sensorNetwork.iterateNo - 1)), robot.add(-20.0, 10.0), g, Color.black);
+		drawString(String.format("%.2f", robot.getPotential(sensorNetwork.getIterationNo() - 1)), robot.add(-20.0, 10.0), g, Color.black);
 	}
 
 	public void drawObstacles(Graphics g) {
@@ -172,7 +173,7 @@ public class SensorNetworkCanvas extends Canvas {
 
 	protected Point2D fixPoint(Point2D point) {
 		point = point.multiply(zoom).toPoint2D().add(originDisplacement);
-		return new Point2D(point.x, height - point.y);
+		return new Point2D(point.x, getHeight() - point.y);
 	}
 
 	protected void debug(Graphics g) {
@@ -181,5 +182,14 @@ public class SensorNetworkCanvas extends Canvas {
 
 	protected Vector2D fixForce(Vector2D force) {
 		return force.expandTo(force.getNorm());
+	}
+
+	public void start() {
+		timer = new Timer(this, 0.1);
+		timer.start();
+	}
+
+	public void iterate() {
+		repaint();
 	}
 }

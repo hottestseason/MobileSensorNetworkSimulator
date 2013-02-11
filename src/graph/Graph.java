@@ -1,13 +1,19 @@
+package graph;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 
 @SuppressWarnings("serial")
 public class Graph extends ArrayList<Node> {
-	Boolean directed = false;
+	private Boolean directed = false;
+
+	public Boolean isDirected() {
+		return directed;
+	}
 
 	public void resetEdges() {
 		for (Node node : this) {
-			node.connectedNodes.clear();
+			node.clearEdges();
 		}
 	}
 
@@ -17,9 +23,9 @@ public class Graph extends ArrayList<Node> {
 		return visitedNodes.containsAll(this);
 	}
 
-	public void visitForConnectionTest(Node node, HashSet<Node> visitedNodes) {
+	private void visitForConnectionTest(Node node, HashSet<Node> visitedNodes) {
 		visitedNodes.add(node);
-		for (Node connectedNode : node.connectedNodes) {
+		for (Node connectedNode : node.getConnectedNodes()) {
 			if (!visitedNodes.contains(connectedNode)) {
 				visitForConnectionTest(connectedNode, visitedNodes);
 			}

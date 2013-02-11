@@ -4,201 +4,233 @@ import geom.Line2D;
 import geom.LineSegment2D;
 import geom.Obstacle2D;
 import geom.Point2D;
-import geom.Polygon2D;
+import geom.Rectangle2D;
 import geom.Vector2D;
 
 import java.util.Random;
 
+import mobilesensornetwork.MobileSensorNetwork;
+import mobilesensornetwork.RobotParameters;
+import mobilesensornetwork.SensorNetworkSimulator;
+import mobilesensornetwork.YAVFRobot;
+
 public class MobileSensorNetworkSimulation {
-	static Double iterateInterval = 0.1;
+	static Obstacle2D sensingArea = new Obstacle2D(new Rectangle2D(new Point2D(), 500.0, 500.0), true, true);
+	static Double iterateInterval = 1.0;
 	static RobotParameters robotParameters;
 	static private Random random = new Random(0);
 
 	public static void main(String[] args) {
 		robotParameters = new RobotParameters();
-		robotParameters.size = 0.5;
-		robotParameters.weight = 2.5;
-		robotParameters.wirelessRange = 50.0;
-		robotParameters.sensorRange = 25.0;
-		robotParameters.maxSpeed = 1.0;
-		robotParameters.minSpeed = 0.01;
-		robotParameters.maxAcceleration = 0.5;
-		robotParameters.maxBattery = 30000.0;
+		robotParameters.setSize(0.5);
+		robotParameters.setWeight(2.5);
+		robotParameters.setWirelessRange(50.0);
+		robotParameters.setSensorRange(25.0);
+		robotParameters.setMaxSpeed(1.0);
+		robotParameters.setMinSpeed(0.01);
+		robotParameters.setMaxAcceleration(0.5);
+		robotParameters.setMaxEnergy(30000.0);
 
 		// test();
 		// getYAVFSimulator(20, 0.25, 1.0).start();
-		// getSpringVFSimulator(40, 0.075, 0.37).start();
+		getSpringVFSimulator(200, 0.075, 0.37).start();
 		// getSmartSpringVFSimulator(40, 0.1, 0.5, iterateInterval / 10,
 		// 10).start();
-		getSpringConstantAndDampingCoefficientRelation(0.07);
+		// getSpringConstantAndDampingCoefficientRelation(0.2);
 		// getConvergedRatio();
 		// getConvergedRatioOfSpringVFandSmartSpringVF(25, 0.25, 1.0, 5);
 	}
 
-	public static void getSpringConstantAndDampingCoefficientRelation(double springConstant) {
-		SensorNetworkSimulator.gui = false;
-		int[] robotCounts = { 32 };
-		Double dampingCoefficientFrom = 0.1, dampingCoefficientTo = 2.0, dampingCoefficientStep = 0.025;
-		int minSeed = 0, maxSeed = 20;
-		for (int robotCount : robotCounts) {
-			for (int seed = minSeed; seed < maxSeed; seed++) {
-				random = new Random(seed);
-				for (Double dampingCoefficient = dampingCoefficientFrom; dampingCoefficient < dampingCoefficientTo; dampingCoefficient += dampingCoefficientStep) {
-					System.out.print(seed + ",");
-
-					SensorNetwork sensorNetwork = new SensorNetwork();
-					sensorNetwork.calculatesCavarege = false;
-					sensorNetwork.maxIteration = 12800;
-					sensorNetwork.mustAlwaysConnected = true;
-
-					for (int i = 0; i < robotCount; i++) {
-						SpringVFRobot robot = new SpringVFRobot(robotParameters);
-						robot.iterateInterval = iterateInterval;
-						robot.dampingCoefficient = dampingCoefficient;
-						robot.springConstant = springConstant;
-						sensorNetwork.add(robot);
-						robot.setPoint(Vector2D.random(10.0, 10.0, random).add(100.0, 100.0).toPoint2D());
-					}
-
-					SensorNetworkSimulator sensorNetworkSimulator = new SensorNetworkSimulator(sensorNetwork);
-					sensorNetworkSimulator.start();
-				}
-			}
-		}
-	}
-
-	public static void getConvergedRatioOfSpringVFandSmartSpringVF(Integer robotCount, Double springConstant, Double dampingCoefficient, Integer sensingInterval) {
-		SensorNetworkSimulator.gui = false;
-
-		int maxSeed = 20;
-		for (double iterateInterval = 0.5; iterateInterval < 7.5; iterateInterval += 0.2) {
-			for (int seed = 0; seed < maxSeed; seed++) {
-				System.out.print(seed + ",");
-				random = new Random(seed);
-				SensorNetwork sensorNetwork = new SensorNetwork();
-				sensorNetwork.calculatesCavarege = false;
-				sensorNetwork.maxIteration = 1600 * sensingInterval;
-				sensorNetwork.mustAlwaysConnected = true;
-				for (int i = 0; i < robotCount; i++) {
-					SpringVFRobot robot = new SpringVFRobot(robotParameters);
-					robot.iterateInterval = iterateInterval;
-					robot.dampingCoefficient = dampingCoefficient;
-					robot.springConstant = springConstant;
-					sensorNetwork.add(robot);
-					robot.setPoint(Vector2D.random(10.0, 10.0, random).add(100.0, 100.0).toPoint2D());
-				}
-				sensorNetwork.obstacles.add(new Obstacle2D(Polygon2D.rectangle(new Point2D(), 200.0, 200.0), true, true));
-				new SensorNetworkSimulator(sensorNetwork).start();
-			}
-		}
-	}
-
-	public static void getConvergedRatio() {
-		SensorNetworkSimulator.gui = false;
-		// double springConstant = 0.05, dampingCoefficient = 0.29;
-		double springConstant = 0.075, dampingCoefficient = 0.37;
-		// double springConstant = 0.1, dampingCoefficient = 0.42;
-		// double springConstant = 0.15, dampingCoefficient = 0.51;
-		// double springConstant = 0.2, dampingCoefficient = 0.59;
-		// double springConstant = 0.25, dampingCoefficient = 0.66;
-		// double springConstant = 0.5, dampingCoefficient = 0.95;
-		// double springConstant = 1.0, dampingCoefficient = 1.36;
-		// double springConstant = 2.0, dampingCoefficient = 1.91;
-		int robotCount = 32;
-
-		int maxSeed = 20;
-		for (int seed = 0; seed < maxSeed; seed++) {
-			for (double iterateInterval = 0.1; iterateInterval < 2.5; iterateInterval += 0.025) {
-				System.out.print(seed + ",");
-				random = new Random(seed);
-				SensorNetwork sensorNetwork = new SensorNetwork();
-				sensorNetwork.calculatesCavarege = false;
-				sensorNetwork.maxIteration = 3200;
-				sensorNetwork.mustAlwaysConnected = true;
-				for (int i = 0; i < robotCount; i++) {
-					SpringVFRobot robot = new SpringVFRobot(robotParameters);
-					robot.iterateInterval = iterateInterval;
-					robot.dampingCoefficient = dampingCoefficient;
-					robot.springConstant = springConstant;
-					sensorNetwork.add(robot);
-					robot.setPoint(Vector2D.random(10.0, 10.0, random).add(100.0, 100.0).toPoint2D());
-				}
-				new SensorNetworkSimulator(sensorNetwork).start();
-			}
-		}
-	}
+	// public static void getSpringConstantAndDampingCoefficientRelation(double
+	// springConstant) {
+	// int[] robotCounts = { 64 };
+	// Double dampingCoefficientFrom = 0.1, dampingCoefficientTo = 2.5,
+	// dampingCoefficientStep = 0.025;
+	// int minSeed = 0, maxSeed = 20;
+	// for (int robotCount : robotCounts) {
+	// for (int seed = minSeed; seed < maxSeed; seed++) {
+	// random = new Random(seed);
+	// for (Double dampingCoefficient = dampingCoefficientFrom;
+	// dampingCoefficient < dampingCoefficientTo; dampingCoefficient +=
+	// dampingCoefficientStep) {
+	// System.out.print(seed + ",");
+	//
+	// SensorNetwork sensorNetwork = new SensorNetwork();
+	// sensorNetwork.setCalculatesCavarege(false);
+	// sensorNetwork.setMaxIteration(12800);
+	// sensorNetwork.setMustAlwaysConnected(true);
+	//
+	// for (int i = 0; i < robotCount; i++) {
+	// SpringVFRobot robot = new SpringVFRobot(robotParameters);
+	// robot.setIterateInterval(iterateInterval);
+	// robot.setDampingCoefficient(dampingCoefficient);
+	// robot.setSpringConstant(springConstant);
+	// sensorNetwork.add(robot);
+	// robot.setPoint(Vector2D.random(10.0, 10.0, random).add(100.0,
+	// 100.0).toPoint2D());
+	// }
+	//
+	// SensorNetworkSimulator sensorNetworkSimulator = new
+	// SensorNetworkSimulator(sensorNetwork);
+	// sensorNetworkSimulator.setGui(false);
+	// sensorNetworkSimulator.start();
+	// }
+	// }
+	// }
+	// }
+	//
+	// public static void getConvergedRatioOfSpringVFandSmartSpringVF(Integer
+	// robotCount, Double springConstant, Double dampingCoefficient, Integer
+	// sensingInterval) {
+	// SensorNetworkSimulator.setGui(false);
+	//
+	// int maxSeed = 20;
+	// for (double iterateInterval = 0.5; iterateInterval < 7.5; iterateInterval
+	// += 0.2) {
+	// for (int seed = 0; seed < maxSeed; seed++) {
+	// System.out.print(seed + ",");
+	// random = new Random(seed);
+	// SensorNetwork sensorNetwork = new SensorNetwork();
+	// sensorNetwork.setCalculatesCavarege(false);
+	// sensorNetwork.setMaxIteration(1600 * sensingInterval);
+	// sensorNetwork.setMustAlwaysConnected(true);
+	// for (int i = 0; i < robotCount; i++) {
+	// SpringVFRobot robot = new SpringVFRobot(robotParameters);
+	// robot.setIterateInterval(iterateInterval);
+	// robot.setDampingCoefficient(dampingCoefficient);
+	// robot.setSpringConstant(springConstant);
+	// sensorNetwork.add(robot);
+	// robot.setPoint(Vector2D.random(10.0, 10.0, random).add(100.0,
+	// 100.0).toPoint2D());
+	// }
+	// sensorNetwork.obstacles.add(new Obstacle2D(new Rectangle2D(new Point2D(),
+	// 200.0, 200.0), true, true));
+	// new SensorNetworkSimulator(sensorNetwork).start();
+	// }
+	// }
+	// }
+	//
+	// public static void getConvergedRatio() {
+	// SensorNetworkSimulator.setGui(false);
+	// // double springConstant = 0.05, dampingCoefficient = 0.29;
+	// double springConstant = 0.075, dampingCoefficient = 0.37;
+	// // double springConstant = 0.1, dampingCoefficient = 0.42;
+	// // double springConstant = 0.15, dampingCoefficient = 0.51;
+	// // double springConstant = 0.2, dampingCoefficient = 0.59;
+	// // double springConstant = 0.25, dampingCoefficient = 0.66;
+	// // double springConstant = 0.5, dampingCoefficient = 0.95;
+	// // double springConstant = 1.0, dampingCoefficient = 1.36;
+	// // double springConstant = 2.0, dampingCoefficient = 1.91;
+	// int robotCount = 32;
+	//
+	// int maxSeed = 20;
+	// for (int seed = 0; seed < maxSeed; seed++) {
+	// for (double iterateInterval = 0.1; iterateInterval < 2.5; iterateInterval
+	// += 0.025) {
+	// System.out.print(seed + ",");
+	// random = new Random(seed);
+	// SensorNetwork sensorNetwork = new SensorNetwork();
+	// sensorNetwork.setCalculatesCavarege(false);
+	// sensorNetwork.setMaxIteration(3200);
+	// sensorNetwork.setMustAlwaysConnected(true);
+	// for (int i = 0; i < robotCount; i++) {
+	// SpringVFRobot robot = new SpringVFRobot(robotParameters);
+	// robot.setIterateInterval(iterateInterval);
+	// robot.setDampingCoefficient(dampingCoefficient);
+	// robot.setSpringConstant(springConstant);
+	// sensorNetwork.add(robot);
+	// robot.setPoint(Vector2D.random(10.0, 10.0, random).add(100.0,
+	// 100.0).toPoint2D());
+	// }
+	// new SensorNetworkSimulator(sensorNetwork).start();
+	// }
+	// }
+	// }
 
 	public static SensorNetworkSimulator getSpringVFSimulator(Integer robotCount, Double springConstant, Double dampingCoefficient) {
-		SensorNetwork sensorNetwork = new SensorNetwork();
+		MobileSensorNetwork sensorNetwork = new MobileSensorNetwork();
 
 		for (int i = 0; i < robotCount; i++) {
-			SpringVFRobot robot = new SpringVFRobot(robotParameters);
-			robot.iterateInterval = iterateInterval;
-			robot.dampingCoefficient = dampingCoefficient;
-			robot.springConstant = springConstant;
+			// SpringVFRobot robot = new SpringVFRobot(robotParameters);
+			YAVFRobot robot = new YAVFRobot(robotParameters);
+			robot.setIterateInterval(iterateInterval);
+			robot.setDampingCoefficient(dampingCoefficient);
+			robot.setSpringConstant(springConstant);
 			sensorNetwork.add(robot);
 			robot.setPoint(Vector2D.random(10.0, 10.0, random).add(250.0, 250.0).toPoint2D());
 			// robot.setPoint(new Point2D((i / 10) + 1, (i % 10) + 1));
 		}
-		sensorNetwork.obstacles.add(new Obstacle2D(Polygon2D.rectangle(new Point2D(), 500.0, 500.0), true, true));
-		// sensorNetwork.obstacles.addAll(Obstacle2D.getType1());
+		sensorNetwork.addObstacle(sensingArea);
+		// sensorNetwork.addObstacles(Obstacle2D.getType1(500, 500));
 
 		SensorNetworkSimulator sensorNetworkSimulator = new SensorNetworkSimulator(sensorNetwork);
 
 		return sensorNetworkSimulator;
 	}
 
-	public static SensorNetworkSimulator getSmartSpringVFSimulator(Integer robotCount, Double springConstant, Double dampingCoefficient, Double iterateInterval, Integer sensingInterval) {
-		SensorNetwork sensorNetwork = new SensorNetwork();
-
-		for (int i = 0; i < robotCount; i++) {
-			SmartSpringVFRobot robot = new SmartSpringVFRobot(robotParameters);
-			robot.iterateInterval = iterateInterval;
-			robot.dampingCoefficient = dampingCoefficient;
-			robot.springConstant = springConstant;
-			robot.sensingInterval = sensingInterval;
-			sensorNetwork.add(robot);
-			robot.setPoint(Vector2D.random(10.0, 10.0, random).add(50.0, 50.0).toPoint2D());
-			// robot.setPoint(new Point2D((i / 10) + 1, (i % 10) + 1));
-		}
-		sensorNetwork.obstacles.add(new Obstacle2D(Polygon2D.rectangle(new Point2D(), 100.0, 100.0), true, true));
-		// sensorNetwork.obstacles.addAll(Obstacle2D.getType1());
-
-		SensorNetworkSimulator sensorNetworkSimulator = new SensorNetworkSimulator(sensorNetwork, new SmartSpringVFMobileSensorNetworkCanvas(sensorNetwork));
-
-		return sensorNetworkSimulator;
-	}
-
-	public static SensorNetworkSimulator getYAVFSimulator(Integer robotCount, Double springConstant, Double dampingCoefficient) {
-		SensorNetwork sensorNetwork = new SensorNetwork();
-
-		Double size = 100.0;
-
-		robotCount = (int) (Math.pow(Math.ceil(size / SpringVFRobot.calculateIdealDistance(dampingCoefficient, size)) + 1, 2) * 1.2);
-		robotCount = 100;
-
-		for (int i = 0; i < robotCount; i++) {
-			YAVFRobot robot = new YAVFRobot(robotParameters);
-			robot.iterateInterval = iterateInterval;
-			robot.dampingCoefficient = dampingCoefficient;
-			robot.springConstant = springConstant;
-			// robot.setPoint(Vector2D.random(10.0, 10.0).add(50.0,
-			// 50.0).toPoint2D());
-			robot.setPoint(new Point2D((i / 10) + 1, (i % 10) + 1).multiply(2.0).toPoint2D());
-			sensorNetwork.add(robot);
-		}
-		sensorNetwork.obstacles.add(new Obstacle2D(Polygon2D.rectangle(new Point2D(), size, size), true, true));
-		sensorNetwork.obstacles.addAll(Obstacle2D.getType1());
-
-		SensorNetworkSimulator sensorNetworkSimulator = new SensorNetworkSimulator(sensorNetwork, new YAVFMobileSensorNetworkCanvas(sensorNetwork));
-
-		return sensorNetworkSimulator;
-	}
+	// public static SensorNetworkSimulator getSmartSpringVFSimulator(Integer
+	// robotCount, Double springConstant, Double dampingCoefficient, Double
+	// iterateInterval, Integer sensingInterval) {
+	// SensorNetwork sensorNetwork = new SensorNetwork();
+	//
+	// for (int i = 0; i < robotCount; i++) {
+	// SmartSpringVFRobot robot = new SmartSpringVFRobot(robotParameters);
+	// robot.setIterateInterval(iterateInterval);
+	// robot.setDampingCoefficient(dampingCoefficient);
+	// robot.setSpringConstant(springConstant);
+	// robot.sensingInterval = sensingInterval;
+	// sensorNetwork.add(robot);
+	// robot.setPoint(Vector2D.random(10.0, 10.0, random).add(50.0,
+	// 50.0).toPoint2D());
+	// // robot.setPoint(new Point2D((i / 10) + 1, (i % 10) + 1));
+	// }
+	// sensorNetwork.obstacles.add(new Obstacle2D(new Rectangle2D(new Point2D(),
+	// 100.0, 100.0), true, true));
+	// // sensorNetwork.obstacles.addAll(Obstacle2D.getType1());
+	//
+	// SensorNetworkSimulator sensorNetworkSimulator = new
+	// SensorNetworkSimulator(sensorNetwork, new
+	// SmartSpringVFMobileSensorNetworkCanvas(sensorNetwork));
+	//
+	// return sensorNetworkSimulator;
+	// }
+	//
+	// public static SensorNetworkSimulator getYAVFSimulator(Integer robotCount,
+	// Double springConstant, Double dampingCoefficient) {
+	// SensorNetwork sensorNetwork = new SensorNetwork();
+	//
+	// Double size = 500.0;
+	//
+	// robotCount = (int) (Math.pow(Math.ceil(size /
+	// SpringVFRobot.calculateIdealDistance(dampingCoefficient, size)) + 1, 2) *
+	// 1.2);
+	// robotCount = 100;
+	//
+	// for (int i = 0; i < robotCount; i++) {
+	// YAVFRobot robot = new YAVFRobot(robotParameters);
+	// robot.setIterateInterval(iterateInterval);
+	// robot.setDampingCoefficient(dampingCoefficient);
+	// robot.setSpringConstant(springConstant);
+	// // robot.setPoint(Vector2D.random(10.0, 10.0).add(50.0,
+	// // 50.0).toPoint2D());
+	// robot.setPoint(new Point2D((i / 10) + 1, (i % 10) +
+	// 1).multiply(2.0).toPoint2D());
+	// sensorNetwork.add(robot);
+	// }
+	// sensorNetwork.obstacles.add(sensingArea);
+	// sensorNetwork.obstacles.addAll(Obstacle2D.getType1(sensingArea));
+	//
+	// SensorNetworkSimulator sensorNetworkSimulator = new
+	// SensorNetworkSimulator(sensorNetwork, new
+	// YAVFMobileSensorNetworkCanvas(sensorNetwork));
+	//
+	// return sensorNetworkSimulator;
+	// }
 
 	public static void test() {
 		System.out.println(!new Circle(new Point2D(), 0.0).containsExcludeEdge(new Point2D()));
 		System.out.println(new Point2D(100, 100).onTheLeftSideOf(new Line2D(new Point2D(), new Vector2D(100, 0))));
-		Obstacle2D o = new Obstacle2D(Polygon2D.rectangle(new Point2D(), 100.0, 100.0));
+		Obstacle2D o = new Obstacle2D(new Rectangle2D(new Point2D(), 100.0, 100.0));
 		System.out.println(o.getAreaSize() == 10000);
 		// System.out.println(o.getPoints().get(new Point2D(50, 50)));
 		// System.out.println(o.getPoints().get(new Point2D()));
@@ -208,12 +240,12 @@ public class MobileSensorNetworkSimulation {
 		System.out.println(o.contains(new Point2D(50, 50)));
 		System.out.println(!o.contains(new Point2D(50, 150)));
 		System.out.println(o.getDisplacementToAvoidCollisionWithEdge(new Point2D(100, 100), new Vector2D(10, -10), o.getEdges().get(2)).y == 0);
-		o = new Obstacle2D(Polygon2D.rectangle(new Point2D(), 100.0, 100.0), true);
+		o = new Obstacle2D(new Rectangle2D(new Point2D(), 100.0, 100.0), true);
 		System.out.println(o.contains(new Point2D(50, 0)));
 		System.out.println(!o.contains(new Point2D(50, 0), false));
 		System.out.println(!o.contains(new Point2D(50, 50)));
 		System.out.println(o.contains(new Point2D(50, 150)));
-		o = new Obstacle2D(Polygon2D.rectangle(new Point2D(), 400.0, 400.0), true);
+		o = new Obstacle2D(new Rectangle2D(new Point2D(), 400.0, 400.0), true);
 		Point2D p = new Point2D(396.49833858633343, 400.01435785119656);
 		for (LineSegment2D edge : o.getEdges()) {
 			Point2D nearPoint = p.getNearestPointOn(edge);
@@ -245,6 +277,5 @@ public class MobileSensorNetworkSimulation {
 		System.out.println(new Circle(new Point2D(), 10.0).getDisplacementToAvoidCollisionFrom(new Vector2D(60, 0), new Circle(new Point2D(60, 0), 10.0)).equals(new Vector2D(40, 0)));
 		System.out.println(!new LineSegment2D(new Point2D(), new Point2D(0, 200)).isVisibleFrom(new Point2D(-51, 100), new LineSegment2D(new Point2D(-50, 50), new Point2D(-50, 150))));
 		System.out.println(!new LineSegment2D(new Point2D(), new Point2D(0, 200)).isVisibleFrom(new Point2D(51, 100), new LineSegment2D(new Point2D(50, 50), new Point2D(50, 150))));
-		Circle.test();
 	}
 }

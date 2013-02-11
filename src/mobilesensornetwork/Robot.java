@@ -1,8 +1,11 @@
+package mobilesensornetwork;
+
 import geom.Circle;
 import geom.LineSegment2D;
 import geom.Obstacle2D;
 import geom.Point2D;
 import geom.Vector2D;
+import graph.Node;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,11 +13,10 @@ import java.util.List;
 
 public class Robot extends Node {
 	RobotParameters parameters;
-	Double iterateInterval;
-	Double dampingCoefficient = 0.0;
-	Vector2D speed = new Vector2D();
-	Vector2D virutalForce = new Vector2D();
-	Vector2D dampingForce = new Vector2D();
+	private Double iterateInterval;
+	private Vector2D speed = new Vector2D();
+
+	Vector2D acceleration = new Vector2D();
 	HashMap<Integer, Double> potentials = new HashMap<Integer, Double>();
 
 	Double consumedEnergy = 0.0;
@@ -23,6 +25,18 @@ public class Robot extends Node {
 
 	public Robot(RobotParameters parameters) {
 		this.parameters = parameters;
+	}
+
+	public Point2D getPoint() {
+		return (Point2D) this;
+	}
+
+	public Double getIterateInterval() {
+		return iterateInterval;
+	}
+
+	public void setIterateInterval(Double iterateInterval) {
+		this.iterateInterval = iterateInterval;
 	}
 
 	public Double getSize() {
@@ -53,8 +67,28 @@ public class Robot extends Node {
 		return parameters.maxAcceleration;
 	}
 
-	public Double getMaxBattery() {
-		return parameters.maxBattery;
+	public Double getMaxEnergy() {
+		return parameters.maxEnergy;
+	}
+
+	public Vector2D getSpeed() {
+		return speed;
+	}
+
+	public void setSpeed(Vector2D speed) {
+		this.speed = speed;
+	}
+
+	public Vector2D getAcceleration() {
+		return acceleration;
+	}
+
+	public void setAcceleration(Vector2D acceleration) {
+		if (acceleration.getNorm() > getMaxAcceleration()) {
+			this.acceleration = acceleration.expandTo(getMaxAcceleration());
+		} else {
+			this.acceleration = acceleration;
+		}
 	}
 
 	public Circle getCircle() {
@@ -69,10 +103,6 @@ public class Robot extends Node {
 		return new Circle(this, getSensorRange());
 	}
 
-	public Vector2D getAppliedForce() {
-		return virutalForce.add(dampingForce);
-	}
-
 	public Double getPotential(Integer iterateNo) {
 		Double potential = potentials.get(iterateNo);
 		if (potential == null) {
@@ -82,12 +112,12 @@ public class Robot extends Node {
 		}
 	}
 
-	public Double getRemainedBattery() {
-		return getMaxBattery() - consumedEnergy;
+	public Double getRemainedEnergy() {
+		return getMaxEnergy() - consumedEnergy;
 	}
 
 	public Double getRemainedBatteryRatio() {
-		return getRemainedBattery() / getMaxBattery();
+		return getRemainedEnergy() / getMaxEnergy();
 	}
 
 	public void setPotential(Integer iterateNo, Double value) {
@@ -102,72 +132,38 @@ public class Robot extends Node {
 		memory.put(key, value);
 	}
 
-	public Integer getIterateNo() {
-		return getSensorNetwork().iterateNo;
-	}
-
-	public String toString() {
-		String ret = id + " : ";
-		ret += toPoint2D() + " -> " + getNextPoint() + "\n";
-		ret += "speed : " + speed + "\n";
-		ret += "virtualForce: " + virutalForce + "\ndampingForce: " + dampingForce + "\n";
-		ret += "appliedForce : " + getAppliedForce() + "\n";
-		ret += "acceleration : " + getAcceleration();
-		return ret;
+	public Integer getIterationNo() {
+		return getSensorNetwork().getIterationNo();
 	}
 
 	public void iterate() {
 		resetState();
 		setUpForIteration();
-		calculateForce();
 	}
 
 	public void resetState() {
-		virutalForce = new Vector2D();
-		dampingForce = new Vector2D();
 		setMemory("sensibleRobots", null);
-		clearConnections();
+		clearEdges();
 	}
 
 	public void setUpForIteration() {
 		for (Robot robot : getSensibleRobots()) {
-			sendTo(robot, 1 * 1000.0 * 8);
+			sendTo(robot, 5 * 1000.0 * 8);
 		}
 		// setPotential(getIterateNo(), calculatePotential());
 		createConnections();
 	}
 
 	public Double calculatePotential() {
-		if (id == 0) {
+		if (getId() == 0) {
 			return 0.0;
 		}
-		Double potential = getPotential(getIterateNo() - 1);
+		Double potential = getPotential(getIterationNo() - 1);
 		for (Robot robot : getSensibleRobots()) {
-			potential += (robot.getPotential(getIterateNo() - 1) - getPotential(getIterateNo() - 1)) * 0.9 / getSensibleRobots().size();
+			potential += (robot.getPotential(getIterationNo() - 1) - getPotential(getIterationNo() - 1)) * 0.9 / getSensibleRobots().size();
 		}
 		potential += 0.5;
 		return potential;
-	}
-
-	public void calculateForce() {
-		virutalForce = getVirtualForce();
-		dampingForce = getDampingForce();
-	}
-
-	public Vector2D getVirtualForce() {
-		Vector2D force = new Vector2D();
-		for (Robot robot : getConnectedRobots()) {
-			force = force.add(getVirtualForceFrom(robot));
-		}
-		return force;
-	}
-
-	public Vector2D getVirtualForceFrom(Robot robot) {
-		return new Vector2D();
-	}
-
-	public Vector2D getDampingForce() {
-		return speed.multiply(dampingCoefficient).reverse();
 	}
 
 	public void createConnections() {
@@ -178,7 +174,7 @@ public class Robot extends Node {
 
 	@SuppressWarnings("unchecked")
 	public List<Robot> getConnectedRobots() {
-		return (List<Robot>) (List<?>) connectedNodes;
+		return (List<Robot>) (List<?>) getConnectedNodes();
 	}
 
 	public Boolean canSense(Point2D point) {
@@ -208,7 +204,7 @@ public class Robot extends Node {
 		ArrayList<Robot> sensibleRobots = (ArrayList<Robot>) getMemory("sensibleRobots");
 		if (sensibleRobots == null) {
 			sensibleRobots = new ArrayList<Robot>();
-			for (Robot robot : ((SensorNetwork) graph).getRobots()) {
+			for (Robot robot : getSensorNetwork().getRobots()) {
 				if (canSense(robot)) {
 					sensibleRobots.add(robot);
 				}
@@ -239,15 +235,6 @@ public class Robot extends Node {
 		return walls;
 	}
 
-	public Vector2D getAcceleration() {
-		Vector2D acceleration = getAppliedForce().multiply(1 / getWeight());
-		if (acceleration.getNorm() > getMaxAcceleration()) {
-			return acceleration.expandTo(getMaxAcceleration());
-		} else {
-			return acceleration;
-		}
-	}
-
 	public Double getAccelerateTime(Double seconds) {
 		if (speed.add(getAcceleration().multiply(seconds)).getNorm() > getMaxSpeed()) {
 			return (getMaxSpeed() - speed.getNorm()) / getAcceleration().getNorm();
@@ -270,10 +257,6 @@ public class Robot extends Node {
 			displacement = obstacle.getDisplacementToAvoidCollision(getCircle(), displacement);
 		}
 		return displacement;
-	}
-
-	public Point2D getNextPoint() {
-		return add(getDisplacement(iterateInterval));
 	}
 
 	public Vector2D move(Double seconds) {
@@ -299,8 +282,8 @@ public class Robot extends Node {
 		consumedEnergy += bit * 50 * Math.pow(10, -9);
 	}
 
-	protected SensorNetwork getSensorNetwork() {
-		return (SensorNetwork) graph;
+	protected MobileSensorNetwork getSensorNetwork() {
+		return (MobileSensorNetwork) getGraph();
 	}
 
 	public Boolean isDelaunayTriangle(Node node2, Node node3) {
@@ -350,15 +333,4 @@ public class Robot extends Node {
 			return true;
 		}
 	}
-}
-
-class RobotParameters {
-	Double size;
-	Double weight;
-	Double wirelessRange;
-	Double sensorRange;
-	Double maxSpeed;
-	Double minSpeed;
-	Double maxAcceleration;
-	Double maxBattery;
 }

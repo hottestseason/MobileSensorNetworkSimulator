@@ -1,3 +1,5 @@
+package mobilesensornetwork;
+
 import geom.LineSegment2D;
 import geom.Spring;
 import geom.Vector2D;
@@ -28,17 +30,17 @@ public class YAVFRobot extends SpringVFRobot {
 	}
 
 	public Vector2D getVirtualForceFrom(Robot robot) {
-		if (atSamePoint(robot)) {
+		if (isAtSamePoint(robot)) {
 			return new Vector2D();
 		} else {
-			return Spring.getForce(getVector2DTo(robot), idealDistance, springConstant);
+			return Spring.getForce(getVector2DTo(robot), idealDistance, getSpringConstant());
 		}
 	}
 
 	public Vector2D getVirtualForceFrom(LineSegment2D wall) {
 		Double distanceFromWall = getDistanceFrom(wall);
 		if (distanceFromWall > 0 && distanceFromWall < getSensorRange() / 2) {
-			return Spring.getForce(getVector2DTo(wall), getSensorRange() / 2, springConstant * 8);
+			return Spring.getForce(getVector2DTo(wall), getSensorRange() / 2, getSpringConstant() * 2);
 		} else {
 			return new Vector2D();
 		}
@@ -47,7 +49,7 @@ public class YAVFRobot extends SpringVFRobot {
 
 @SuppressWarnings("serial")
 class YAVFMobileSensorNetworkCanvas extends SpringVFMobileSensorNetworkCanvas {
-	public YAVFMobileSensorNetworkCanvas(SensorNetwork sensorNetwork) {
+	public YAVFMobileSensorNetworkCanvas(MobileSensorNetwork sensorNetwork) {
 		super(sensorNetwork);
 	}
 

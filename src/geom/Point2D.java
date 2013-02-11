@@ -76,7 +76,6 @@ public class Point2D extends Vector2D {
 	}
 
 	public Vector2D getDisplacementToAvoidCollisionFrom(Vector2D displacement, LineSegment2D lineSegment, Boolean stopOnEdge) {
-		Vector2D oldDisplacement = displacement.clone();
 		Point2D intersection = new LineSegment2D(this, displacement).getIntersectionPoint(lineSegment);
 		if (intersection != null) {
 			Vector2D displacementGoThroughLine = intersection.getVector2DTo(add(displacement).toPoint2D());

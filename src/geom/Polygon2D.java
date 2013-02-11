@@ -1,13 +1,11 @@
 package geom;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 
 public class Polygon2D implements Cloneable {
 	Point2D center;
 	public ArrayList<Point2D> vertexes = new ArrayList<Point2D>();
 	protected ArrayList<LineSegment2D> edges = null;
-	protected HashSet<Point2D> points = null;
 
 	public String toString() {
 		return getEdges().toString();
@@ -17,16 +15,6 @@ public class Polygon2D implements Cloneable {
 		Polygon2D polygon = new Polygon2D();
 		polygon.center = center;
 		polygon.vertexes = vertexes;
-		return polygon;
-	}
-
-	public static Polygon2D rectangle(Point2D point, Double width, Double height) {
-		Polygon2D polygon = new Polygon2D();
-		polygon.center = point.add(width / 2, height / 2);
-		polygon.addVertex(point);
-		polygon.addVertex(point.add(width, 0.0));
-		polygon.addVertex(point.add(0.0, height));
-		polygon.addVertex(point.add(width, height));
 		return polygon;
 	}
 
@@ -55,7 +43,6 @@ public class Polygon2D implements Cloneable {
 		}
 		vertexes.add(point);
 		edges = null;
-		points = null;
 	}
 
 	public Polygon2D getSurroundedRectangle() {
@@ -66,7 +53,7 @@ public class Polygon2D implements Cloneable {
 			maxY = Math.max(maxY, vertex.y.intValue());
 			minY = Math.min(minY, vertex.y.intValue());
 		}
-		return Polygon2D.rectangle(new Point2D(minX, minY), maxX - minX, maxY - minY);
+		return new Rectangle2D(new Point2D(minX, minY), maxX - minX, maxY - minY);
 	}
 
 	public Double getAreaSize() {

@@ -1,12 +1,10 @@
 package geom;
 
 import java.util.HashSet;
-import java.util.Random;
 
 public class Circle {
 	public Point2D center;
 	public Double radius;
-	static private Random random = new Random(0);
 
 	public Circle() {
 		center = new Point2D();
@@ -39,14 +37,20 @@ public class Circle {
 		return "Circle(" + center + " - " + radius + ")";
 	}
 
+	public Circle clone() {
+		return new Circle(center.clone(), radius);
+	}
+
 	public HashSet<Point2D> getPoints() {
 		return getPoints(1);
 	}
 
 	public HashSet<Point2D> getPoints(int interval) {
 		HashSet<Point2D> points = new HashSet<Point2D>();
-		for (int x = (int) Math.floor(center.x - radius); x <= Math.floor(center.x + radius); x += interval) {
-			for (int y = (int) Math.floor(center.y - radius); y <= Math.floor(center.y + radius); y += interval) {
+		int xFrom = ((int) Math.floor((center.x - radius) / interval)) * interval;
+		int yFrom = ((int) Math.floor((center.y - radius) / interval)) * interval;
+		for (int x = xFrom; x <= Math.ceil(center.x + radius); x += interval) {
+			for (int y = yFrom; y <= Math.ceil(center.y + radius); y += interval) {
 				Point2D point = new Point2D(x, y);
 				if (contains(point)) {
 					points.add(point);
@@ -74,7 +78,6 @@ public class Circle {
 	}
 
 	public Vector2D getDisplacementToAvoidCollisionFrom(Vector2D displacement, Circle circle) {
-		Vector2D oldDisplacement = displacement.clone();
 		if (center.add(displacement).getDistanceFrom(circle.center) >= radius + circle.radius) {
 			return displacement;
 		} else if (center.getDistanceFrom(circle.center) < radius + circle.radius) {
@@ -106,10 +109,5 @@ public class Circle {
 			Double distanceFromNearestPoint = Math.sqrt(radius * radius - Math.pow(center.getDistanceFrom(nearestPoint), 2));
 			return Math.min(nearestPoint.getDistanceFrom(lineSegment.getStart()), distanceFromNearestPoint) + Math.min(nearestPoint.getDistanceFrom(lineSegment.getEnd()), distanceFromNearestPoint);
 		}
-	}
-
-	public static void test() {
-		// Circle circle = new Circle(new Point2D(), new Point2D(1, 0), new
-		// Point2D(0, 1));
 	}
 }

@@ -1,3 +1,5 @@
+package mobilesensornetwork;
+
 import geom.Circle;
 import geom.Spring;
 import geom.Vector2D;
@@ -6,9 +8,9 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 
-public class SpringVFRobot extends Robot {
+public class SpringVFRobot extends VFRobot {
 	Double idealDistance = 0.0;
-	Double springConstant = 0.0;
+	protected Double springConstant = 0.0;
 
 	public static Double calculateIdealDistance(Double wirelessRange, Double sensorRange) {
 		return sensorRange * Math.sqrt(3);
@@ -19,12 +21,12 @@ public class SpringVFRobot extends Robot {
 		idealDistance = calculateIdealDistance(getWirelessRange(), getSensorRange());
 	}
 
-	public SpringVFRobot clone() {
-		SpringVFRobot cloned = (SpringVFRobot) super.clone();
-		cloned.idealDistance = idealDistance;
-		cloned.springConstant = springConstant;
-		cloned.dampingCoefficient = dampingCoefficient;
-		return cloned;
+	public Double getSpringConstant() {
+		return springConstant;
+	}
+
+	public void setSpringConstant(Double springConstant) {
+		this.springConstant = springConstant;
 	}
 
 	public void createConnections() {
@@ -37,17 +39,17 @@ public class SpringVFRobot extends Robot {
 	}
 
 	public Vector2D getVirtualForceFrom(Robot robot) {
-		if (atSamePoint(robot)) {
+		if (isAtSamePoint(robot)) {
 			return new Vector2D();
 		} else {
-			return Spring.getForce(getVector2DTo(robot), idealDistance, springConstant);
+			return Spring.getForce(getVector2DTo(robot), idealDistance, getSpringConstant());
 		}
 	}
 }
 
 @SuppressWarnings("serial")
 class SpringVFMobileSensorNetworkCanvas extends SensorNetworkCanvas {
-	public SpringVFMobileSensorNetworkCanvas(SensorNetwork sensorNetwork) {
+	public SpringVFMobileSensorNetworkCanvas(MobileSensorNetwork sensorNetwork) {
 		super(sensorNetwork);
 	}
 
