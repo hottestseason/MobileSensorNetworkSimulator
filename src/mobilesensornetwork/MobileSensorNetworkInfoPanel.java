@@ -5,14 +5,11 @@ import java.awt.FlowLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-public class MobileSensorNetworkInfoPanel extends JPanel implements TimerListener {
-	static int refreshRate = 10;
+public class MobileSensorNetworkInfoPanel extends JPanel {
 	private MobileSensorNetwork sensorNetwork;
 	private JLabel iterationNoLabel;
 	private JLabel sumMovedDistanceLabel;
 	private JLabel connectivityLabel;
-
-	private Timer timer;
 
 	public MobileSensorNetworkInfoPanel(MobileSensorNetwork sensorNetwork) {
 		this.sensorNetwork = sensorNetwork;
@@ -26,12 +23,7 @@ public class MobileSensorNetworkInfoPanel extends JPanel implements TimerListene
 		add(connectivityLabel);
 	}
 
-	public void start() {
-		timer = new Timer(this, 1.0 / refreshRate);
-		timer.start();
-	}
-
-	public void iterate() {
+	public void update() {
 		iterationNoLabel.setText("IterationNo: " + sensorNetwork.getIterationNo());
 		sumMovedDistanceLabel.setText("SumMovedDistance: " + sensorNetwork.getSumMovedDistance().intValue());
 		connectivityLabel.setText("Connectivity: " + sensorNetwork.getConnectivity());

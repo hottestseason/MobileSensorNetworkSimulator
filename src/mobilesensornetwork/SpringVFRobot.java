@@ -6,7 +6,6 @@ import geom.Vector2D;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.util.ArrayList;
 
 public class SpringVFRobot extends VFRobot {
 	Double idealDistance = 0.0;
@@ -29,17 +28,8 @@ public class SpringVFRobot extends VFRobot {
 		this.springConstant = springConstant;
 	}
 
-	public void createConnections() {
-		ArrayList<Robot> sensibleRobots = getSensibleRobots();
-		for (Robot robot : sensibleRobots) {
-			if (ggTest(robot)) {
-				connect(robot);
-			}
-		}
-	}
-
 	public Vector2D getVirtualForceFrom(Robot robot) {
-		if (isAtSamePoint(robot)) {
+		if (isAtSamePoint(robot) || !ggTest(robot)) {
 			return new Vector2D();
 		} else {
 			return Spring.getForce(getVector2DTo(robot), idealDistance, getSpringConstant());

@@ -7,7 +7,6 @@ import geom.Obstacle2D;
 import geom.Point2D;
 import geom.Polygon2D;
 import geom.Vector2D;
-import graph.Node;
 
 import java.awt.Canvas;
 import java.awt.Color;
@@ -16,16 +15,14 @@ import java.awt.Graphics;
 import java.awt.Image;
 
 @SuppressWarnings("serial")
-public class SensorNetworkCanvas extends Canvas implements TimerListener {
+public class SensorNetworkCanvas extends Canvas {
 	MobileSensorNetwork sensorNetwork;
 	Vector2D originDisplacement = new Vector2D(50, 50);
 	Double zoom = 1.0;
-	Double minRobotSize = 0.0;
+	Double minRobotSize = 1.0;
 
 	protected Image buffer;
 	protected Graphics bufferG;
-
-	private Timer timer;
 
 	public SensorNetworkCanvas(MobileSensorNetwork sensorNetwork) {
 		this.sensorNetwork = sensorNetwork;
@@ -43,21 +40,11 @@ public class SensorNetworkCanvas extends Canvas implements TimerListener {
 		debug(bufferG);
 	}
 
-	public void drawWirelessRanges(Graphics g) {
-		synchronized (sensorNetwork) {
-			for (Node node : sensorNetwork) {
-				Robot robot = (Robot) node;
-				drawCircle(robot.getWirelessCircle(), g, new Color(0, 255, 0, 32), false);
-			}
-		}
-	}
-
 	public void drawCoverages(Graphics g) {
 		synchronized (sensorNetwork) {
-			for (Node node : sensorNetwork) {
-				Robot robot = (Robot) node;
-				drawCircle(robot.getSensorCircle(), g, new Color(0, 0, 0, 32), false);
-				drawCircle(robot.getSensorCircle(), g, new Color(255, 255, 0, 64), true);
+			for (Robot robot : sensorNetwork.getRobots()) {
+				drawCircle(robot.getSensorCircle(), g, new Color(0, 0, 0, 16), false);
+				drawCircle(robot.getSensorCircle(), g, new Color(255, 255, 0, 32), true);
 			}
 		}
 	}
@@ -67,7 +54,7 @@ public class SensorNetworkCanvas extends Canvas implements TimerListener {
 			for (Robot robot : sensorNetwork.getRobots()) {
 				synchronized (robot.getConnectedNodes()) {
 					for (Robot connectedRobot : robot.getConnectedRobots()) {
-						drawLineSegment2D(robot, connectedRobot, g, Color.gray);
+						drawLineSegment2D(robot, connectedRobot, g, new Color(64, 64, 64, 16));
 					}
 				}
 			}
@@ -76,21 +63,22 @@ public class SensorNetworkCanvas extends Canvas implements TimerListener {
 
 	public void drawRobots(Graphics g) {
 		synchronized (sensorNetwork) {
-			for (Node node : sensorNetwork) {
-				Robot robot = (Robot) node;
+			for (Robot robot : sensorNetwork.getRobots()) {
 				drawRobot(robot, g);
 			}
 		}
 	}
 
 	public void drawRobot(Robot robot, Graphics g) {
-		drawCircle(new Circle(robot, Math.max(robot.getSize(), minRobotSize)), g, Color.black, true);
-		drawCircle(robot.getWirelessCircle(), g, new Color(0, 255, 0, 32), false);
+		if (robot.isRunning()) {
+			drawCircle(new Circle(robot, Math.max(robot.getSize(), minRobotSize)), g, Color.black, true);
+			drawCircle(robot.getWirelessCircle(), g, new Color(0, 255, 0, 16), false);
+		} else {
+			drawCircle(new Circle(robot, Math.max(robot.getSize(), minRobotSize)), g, Color.red, true);
+		}
 		// drawVector(robot, fixForce(robot.virutalForce), g, Color.magenta);
 		// drawVector(robot, fixForce(robot.dampingForce), g, Color.blue);
 		drawString(robot.getId().toString(), robot, g, Color.black);
-		drawString(String.format("%.1f", robot.getRemainedBatteryRatio() * 100.0), robot.add(10.0, 10.0), g, Color.black);
-		drawString(String.format("%.2f", robot.getPotential(sensorNetwork.getIterationNo() - 1)), robot.add(-20.0, 10.0), g, Color.black);
 	}
 
 	public void drawObstacles(Graphics g) {
@@ -182,14 +170,5 @@ public class SensorNetworkCanvas extends Canvas implements TimerListener {
 
 	protected Vector2D fixForce(Vector2D force) {
 		return force.expandTo(force.getNorm());
-	}
-
-	public void start() {
-		timer = new Timer(this, 0.1);
-		timer.start();
-	}
-
-	public void iterate() {
-		repaint();
 	}
 }

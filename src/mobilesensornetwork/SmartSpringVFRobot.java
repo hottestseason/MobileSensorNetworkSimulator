@@ -17,7 +17,7 @@ public class SmartSpringVFRobot extends SpringVFRobot {
 	}
 
 	public SpringVFRobot cloneToSpringVFRobot() {
-		SpringVFRobot cloned = new SpringVFRobot(parameters);
+		SpringVFRobot cloned = new SpringVFRobot(getParameters());
 		cloned.setDampingCoefficient(dampingCoefficient);
 		cloned.setSpringConstant(springConstant);
 		cloned.setIterateInterval(getIterateInterval());
@@ -32,7 +32,7 @@ public class SmartSpringVFRobot extends SpringVFRobot {
 			lastSensedNeighbors = new MobileSensorNetwork();
 			lastSensedNeighbors.add(cloneToSpringVFRobot());
 			neighborConnectedRobots.put(0, getConnectedRobots().size());
-			for (Robot robot : getSensibleRobots()) {
+			for (Robot robot : getConnectedRobots()) {
 				SmartSpringVFRobot smartSpringVFRobot = (SmartSpringVFRobot) robot;
 				lastSensedNeighbors.add(smartSpringVFRobot.cloneToSpringVFRobot());
 				neighborConnectedRobots.put(lastSensedNeighbors.size() - 1, robot.getConnectedRobots().size());

@@ -25,7 +25,7 @@ public class Timer implements Runnable {
 		beforeTime = System.nanoTime();
 
 		while (running) {
-			timerListener.iterate();
+			timerListener.update();
 
 			afterTime = System.nanoTime();
 			timeDiff = afterTime - beforeTime;

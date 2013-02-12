@@ -29,7 +29,7 @@ public class MobileSensorNetworkSimulation {
 		robotParameters.setMaxSpeed(1.0);
 		robotParameters.setMinSpeed(0.01);
 		robotParameters.setMaxAcceleration(0.5);
-		robotParameters.setMaxEnergy(30000.0);
+		robotParameters.setMaxEnergy(1000.0);
 
 		// test();
 		// getYAVFSimulator(20, 0.25, 1.0).start();
@@ -157,11 +157,10 @@ public class MobileSensorNetworkSimulation {
 			robot.setDampingCoefficient(dampingCoefficient);
 			robot.setSpringConstant(springConstant);
 			sensorNetwork.add(robot);
-			robot.setPoint(Vector2D.random(10.0, 10.0, random).add(250.0, 250.0).toPoint2D());
-			// robot.setPoint(new Point2D((i / 10) + 1, (i % 10) + 1));
+			robot.setPoint(Vector2D.random(25.0, 25.0, random).add(250.0, 250.0).toPoint2D());
 		}
 		sensorNetwork.addObstacle(sensingArea);
-		// sensorNetwork.addObstacles(Obstacle2D.getType1(500, 500));
+		sensorNetwork.addObstacles(Obstacle2D.getType1(500, 500));
 
 		SensorNetworkSimulator sensorNetworkSimulator = new SensorNetworkSimulator(sensorNetwork);
 

@@ -2,9 +2,10 @@ package mobilesensornetwork;
 
 @SuppressWarnings("serial")
 public class SensorNetworkSimulator implements TimerListener {
-	private Boolean gui = true;
+	private Boolean usesGui = true;
 	MobileSensorNetwork sensorNetwork;
 	SensorNetworkCanvas sensorNetworkCanvas;
+	MobileSensorNetworkGUI gui;
 
 	public SensorNetworkSimulator(MobileSensorNetwork sensorNetwork, SensorNetworkCanvas sensorNetworkCanvas) {
 		this.sensorNetwork = sensorNetwork;
@@ -17,21 +18,19 @@ public class SensorNetworkSimulator implements TimerListener {
 	}
 
 	public Boolean getGui() {
-		return gui;
+		return usesGui;
 	}
 
 	public void setGui(Boolean gui) {
-		this.gui = gui;
+		this.usesGui = gui;
 	}
 
 	public void start() {
 		sensorNetwork.start();
 		if (getGui()) {
-			Timer timer = new Timer(this, sensorNetwork.get(0).getIterateInterval() / 30);
+			gui = new MobileSensorNetworkGUI(sensorNetwork);
+			Timer timer = new Timer(this, sensorNetwork.get(0).getIterateInterval() / 10);
 			timer.start();
-			MobileSensorNetworkGUI gui = new MobileSensorNetworkGUI(sensorNetwork);
-			gui.start();
-			sensorNetworkCanvas.start();
 		} else {
 			while (!sensorNetwork.stopFlag) {
 				sensorNetwork.iterate();
@@ -43,9 +42,14 @@ public class SensorNetworkSimulator implements TimerListener {
 		}
 	}
 
-	public void iterate() {
+	public void update() {
+		long before = System.nanoTime();
 		sensorNetwork.iterate();
+		System.out.print(sensorNetwork.getIterationNo() + ": " + (System.nanoTime() - before) / 1000000L + "ms");
 		sensorNetwork.move(sensorNetwork.get(0).getIterateInterval());
+		before = System.nanoTime();
+		gui.update();
+		System.out.println(", " + (System.nanoTime() - before) / 1000000L + "ms");
 	}
 
 	// public void run() {

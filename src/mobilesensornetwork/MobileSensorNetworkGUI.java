@@ -43,15 +43,12 @@ public class MobileSensorNetworkGUI extends JFrame implements TimerListener {
 	public void start() {
 		timer = new Timer(this, 1.0 / 30);
 		timer.start();
-		sensorNetworkCanvas.start();
-		// mobileSensorNetworkTable.start();
-		// mobileSensorNetworkInfoPanel.start();
-		// mobileSensorNetworkChartPanel.start();
 	}
 
-	public void iterate() {
-		mobileSensorNetworkTable.iterate();
-		mobileSensorNetworkInfoPanel.iterate();
-		mobileSensorNetworkChartPanel.iterate();
+	public void update() {
+		sensorNetworkCanvas.repaint();
+		mobileSensorNetworkTable.update();
+		mobileSensorNetworkInfoPanel.update();
+		mobileSensorNetworkChartPanel.update();
 	}
 }

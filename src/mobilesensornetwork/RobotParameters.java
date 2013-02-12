@@ -1,5 +1,6 @@
 package mobilesensornetwork;
 
+
 public class RobotParameters {
 	Double size;
 	Double weight;

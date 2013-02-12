@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
 @SuppressWarnings("serial")
@@ -99,19 +100,20 @@ public class MobileSensorNetwork extends Graph {
 
 	public void iterate() {
 		iterationNo++;
-		System.out.println(iterationNo);
 		for (Robot robot : getRobots()) {
-			calculator.sense(iterationNo, robot.getSensorCircle());
-			robot.iterate();
-			connectivity = isConnected();
-			if (!connectivity) {
-				alwaysConnected = false;
-				if (getMustAlwaysConnected()) {
-					stop();
-				}
+			if (robot.isRunning()) {
+				robot.iterate();
+				calculator.sense(iterationNo, robot.getSensorCircle());
 			}
 		}
 		calculator.sensingFinishied(iterationNo);
+		connectivity = isConnected();
+		if (!connectivity) {
+			alwaysConnected = false;
+			if (getMustAlwaysConnected()) {
+				stop();
+			}
+		}
 		if (getIterationNo() > getMaxIteration()) {
 			stop();
 		}
@@ -171,21 +173,6 @@ public class MobileSensorNetwork extends Graph {
 		// stopFlag = true;
 	}
 
-	public Boolean isConnected() {
-		HashSet<Robot> visitedRobots = new HashSet<Robot>();
-		visitForConnectionTest(get(0), visitedRobots);
-		return visitedRobots.containsAll(this);
-	}
-
-	private void visitForConnectionTest(Robot robot, HashSet<Robot> visitedRobots) {
-		visitedRobots.add(robot);
-		for (Robot connectedRobot : robot.getSensibleRobots()) {
-			if (!visitedRobots.contains(connectedRobot)) {
-				visitForConnectionTest(connectedRobot, visitedRobots);
-			}
-		}
-	}
-
 	class Calculator implements TimerListener {
 		private Double calculateInterval = 0.01;
 		private Integer precision = 10;
@@ -204,11 +191,12 @@ public class MobileSensorNetwork extends Graph {
 			timer.start();
 		}
 
-		public void iterate() {
+		public void update() {
 			if (sensingFinishiedIterationNoQueue.size() > 0) {
 				Integer iterationNo = sensingFinishiedIterationNoQueue.get(0);
 				coverageHistroy.put(iterationNo, calculateCoverage(sensedAreasHistory.get(iterationNo)));
 				sensingFinishiedIterationNoQueue.remove(0);
+				sensedAreasHistory.remove(iterationNo);
 			}
 		}
 
@@ -252,4 +240,7 @@ public class MobileSensorNetwork extends Graph {
 			return (double) coveredPoints.size() / (double) allPoints.size();
 		}
 	}
+}
+
+interface RobotIterator extends Iterator<Robot> {
 }

@@ -1,5 +1,5 @@
 package mobilesensornetwork;
 
 public interface TimerListener {
-	void iterate();
+	void update();
 }
