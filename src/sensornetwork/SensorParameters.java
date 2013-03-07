@@ -1,15 +1,11 @@
-package mobilesensornetwork;
+package sensornetwork;
 
-
-public class RobotParameters {
-	Double size;
-	Double weight;
-	Double wirelessRange;
-	Double sensorRange;
-	Double maxSpeed;
-	Double minSpeed;
-	Double maxAcceleration;
-	Double maxEnergy;
+public class SensorParameters {
+	private Double size;
+	private Double weight;
+	private Double wirelessRange;
+	private Double sensorRange;
+	private Double maxEnergy;
 
 	public Double getSize() {
 		return size;
@@ -41,30 +37,6 @@ public class RobotParameters {
 
 	public void setSensorRange(Double sensorRange) {
 		this.sensorRange = sensorRange;
-	}
-
-	public Double getMaxSpeed() {
-		return maxSpeed;
-	}
-
-	public void setMaxSpeed(Double maxSpeed) {
-		this.maxSpeed = maxSpeed;
-	}
-
-	public Double getMinSpeed() {
-		return minSpeed;
-	}
-
-	public void setMinSpeed(Double minSpeed) {
-		this.minSpeed = minSpeed;
-	}
-
-	public Double getMaxAcceleration() {
-		return maxAcceleration;
-	}
-
-	public void setMaxAcceleration(Double maxAcceleration) {
-		this.maxAcceleration = maxAcceleration;
 	}
 
 	public Double getMaxEnergy() {

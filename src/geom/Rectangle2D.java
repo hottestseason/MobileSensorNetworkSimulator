@@ -18,4 +18,14 @@ public class Rectangle2D extends Polygon2D {
 		}
 		return 0.0;
 	}
+
+	public Double getHeight() {
+		for (LineSegment2D edge : getEdges()) {
+			Double yDiff = Math.abs(edge.getStart().y - edge.getEnd().y);
+			if (yDiff > 0) {
+				return yDiff;
+			}
+		}
+		return 0.0;
+	}
 }

@@ -1,9 +1,8 @@
-package mobilesensornetwork;
+package utils;
 
 public class Timer implements Runnable {
 	private TimerListener timerListener;
 	private Double iterationInterval;
-	private Boolean running;
 	private Thread thread;
 
 	public Timer(TimerListener timerListener, Double iterationInterval) {
@@ -12,9 +11,16 @@ public class Timer implements Runnable {
 	}
 
 	public void start() {
-		running = true;
 		thread = new Thread(this);
 		thread.start();
+	}
+
+	public void stop() {
+		thread = null;
+	}
+
+	public Boolean isRunning() {
+		return thread != null;
 	}
 
 	public void run() {
@@ -24,7 +30,7 @@ public class Timer implements Runnable {
 
 		beforeTime = System.nanoTime();
 
-		while (running) {
+		while (isRunning()) {
 			timerListener.update();
 
 			afterTime = System.nanoTime();

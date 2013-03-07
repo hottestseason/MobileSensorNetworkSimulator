@@ -1,4 +1,4 @@
-package mobilesensornetwork;
+package mobilesensornetwork.gui;
 
 import geom.Circle;
 import geom.CircularSector;
@@ -6,6 +6,7 @@ import geom.LineSegment2D;
 import geom.Obstacle2D;
 import geom.Point2D;
 import geom.Polygon2D;
+import geom.Rectangle2D;
 import geom.Vector2D;
 
 import java.awt.Canvas;
@@ -14,21 +15,24 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 
-@SuppressWarnings("serial")
-public class SensorNetworkCanvas extends Canvas {
+import mobilesensornetwork.MobileSensorNetwork;
+import mobilesensornetwork.SensorRobot;
+
+public class MobileSensorNetworkCanvas extends Canvas {
 	MobileSensorNetwork sensorNetwork;
-	Vector2D originDisplacement = new Vector2D(50, 50);
+	Vector2D originDisplacement;
 	Double zoom = 1.0;
-	Double minRobotSize = 1.0;
+	Double minRobotSize = 1.5;
 
 	protected Image buffer;
 	protected Graphics bufferG;
 
-	public SensorNetworkCanvas(MobileSensorNetwork sensorNetwork) {
+	public MobileSensorNetworkCanvas(MobileSensorNetwork sensorNetwork) {
 		this.sensorNetwork = sensorNetwork;
-		Polygon2D surroundedRectangle = sensorNetwork.obstacles.get(0).getSurroundedRectangle();
-		int width = (int) ((surroundedRectangle.vertexes.get(1).x - surroundedRectangle.vertexes.get(0).x) * zoom + originDisplacement.x * 2);
-		int height = (int) ((surroundedRectangle.vertexes.get(3).y - surroundedRectangle.vertexes.get(0).y) * zoom + originDisplacement.x * 2);
+		Rectangle2D surroundedRectangle = sensorNetwork.getObstacles().get(0).getSurroundedRectangle();
+		originDisplacement = new Vector2D(surroundedRectangle.getWidth() / 10, surroundedRectangle.getHeight() / 10);
+		int width = (int) ((surroundedRectangle.getWidth() + originDisplacement.x) * zoom);
+		int height = (int) ((surroundedRectangle.getHeight() + originDisplacement.y * 2) * zoom);
 		setSize(width, height);
 	}
 
@@ -37,57 +41,79 @@ public class SensorNetworkCanvas extends Canvas {
 		drawConnections(bufferG);
 		drawRobots(bufferG);
 		drawObstacles(bufferG);
+		drawEvents(bufferG);
 		debug(bufferG);
 	}
 
 	public void drawCoverages(Graphics g) {
 		synchronized (sensorNetwork) {
-			for (Robot robot : sensorNetwork.getRobots()) {
-				drawCircle(robot.getSensorCircle(), g, new Color(0, 0, 0, 16), false);
-				drawCircle(robot.getSensorCircle(), g, new Color(255, 255, 0, 32), true);
+			for (SensorRobot sensorRobot : sensorNetwork.getSensorRobots()) {
+				if (sensorRobot.isRunning()) {
+					drawCircle(sensorRobot.getSensorCircle(), g, new Color(0, 0, 0, 16), false);
+					drawCircle(sensorRobot.getSensorCircle(), g, new Color(255, 255, 0, 32), true);
+				}
 			}
 		}
 	}
 
 	public void drawConnections(Graphics g) {
 		synchronized (sensorNetwork) {
-			for (Robot robot : sensorNetwork.getRobots()) {
-				synchronized (robot.getConnectedNodes()) {
-					for (Robot connectedRobot : robot.getConnectedRobots()) {
-						drawLineSegment2D(robot, connectedRobot, g, new Color(64, 64, 64, 16));
+			for (SensorRobot sensorRobot : sensorNetwork.getSensorRobots()) {
+				if (sensorRobot.isRunning()) {
+					synchronized (sensorRobot.getConnectedNodes()) {
+						for (SensorRobot connectedRobot : sensorRobot.getConnectedSensorRobots()) {
+							drawConnectionBetween(sensorRobot, connectedRobot, g);
+						}
 					}
 				}
 			}
 		}
 	}
 
+	public void drawConnectionBetween(SensorRobot sensorRobotA, SensorRobot sensorRobotB, Graphics g) {
+		drawLineSegment2D(sensorRobotA, sensorRobotB, g, new Color(64, 64, 64, 64));
+	}
+
 	public void drawRobots(Graphics g) {
 		synchronized (sensorNetwork) {
-			for (Robot robot : sensorNetwork.getRobots()) {
-				drawRobot(robot, g);
+			for (SensorRobot sensorRobot : sensorNetwork.getSensorRobots()) {
+				drawRobot(sensorRobot, g);
 			}
 		}
 	}
 
-	public void drawRobot(Robot robot, Graphics g) {
-		if (robot.isRunning()) {
-			drawCircle(new Circle(robot, Math.max(robot.getSize(), minRobotSize)), g, Color.black, true);
-			drawCircle(robot.getWirelessCircle(), g, new Color(0, 255, 0, 16), false);
+	public void drawRobot(SensorRobot sensorRobot, Graphics g) {
+		if (sensorRobot.isRunning()) {
+			drawCircle(new Circle(sensorRobot, Math.max(sensorRobot.getSize(), minRobotSize * zoom)), g, Color.black, true);
+			drawCircle(sensorRobot.getWirelessCircle(), g, new Color(0, 255, 0, 32), false);
 		} else {
-			drawCircle(new Circle(robot, Math.max(robot.getSize(), minRobotSize)), g, Color.red, true);
+			if (sensorRobot.getRemainedBatteryRatio() > 0.9) {
+				drawCircle(new Circle(sensorRobot, Math.max(sensorRobot.getSize(), minRobotSize * zoom)), g, Color.blue, true);
+			} else {
+				drawCircle(new Circle(sensorRobot, Math.max(sensorRobot.getSize(), minRobotSize * zoom)), g, Color.red, true);
+			}
 		}
 		// drawVector(robot, fixForce(robot.virutalForce), g, Color.magenta);
 		// drawVector(robot, fixForce(robot.dampingForce), g, Color.blue);
-		drawString(robot.getId().toString(), robot, g, Color.black);
+		// drawString(String.format("%.0f",
+		// sensorRobot.getPotential(sensorRobot.getIterationNo() - 1)),
+		// sensorRobot.add(-10.0, 10.0), g, Color.black);
+		drawString(sensorRobot.getId().toString(), sensorRobot, g, Color.black);
 	}
 
 	public void drawObstacles(Graphics g) {
-		for (Obstacle2D obstacle : sensorNetwork.obstacles) {
+		for (Obstacle2D obstacle : sensorNetwork.getObstacles()) {
 			drawPolygon2D(obstacle, g, Color.black);
 		}
 	}
 
-	public void resetBuffer() {
+	public void drawEvents(Graphics g) {
+		for (Point2D point : sensorNetwork.getEventPoints()) {
+			drawCircle(new Circle(point, 1.5), g, Color.blue, true);
+		}
+	}
+
+	private void resetBuffer() {
 		if (buffer == null) {
 			buffer = createImage(getWidth(), getHeight());
 			bufferG = buffer.getGraphics();
@@ -169,6 +195,6 @@ public class SensorNetworkCanvas extends Canvas {
 	}
 
 	protected Vector2D fixForce(Vector2D force) {
-		return force.expandTo(force.getNorm());
+		return force.expandTo(force.getNorm() * 0.1);
 	}
 }

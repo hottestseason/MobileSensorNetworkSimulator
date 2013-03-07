@@ -4,37 +4,38 @@ import geom.LineSegment2D;
 import geom.Spring;
 import geom.Vector2D;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.util.ArrayList;
+import java.util.List;
 
-public class YAVFRobot extends SpringVFRobot {
-	Vector2D forceFromNeighborRobots = new Vector2D();
-	Vector2D expulsiveForceFromWall = new Vector2D();
+public class YaVfRobot extends SpringVFRobot {
+	private Vector2D forceFromNeighborRobots = new Vector2D();
+	private Vector2D attractiveForceFromWall = new Vector2D();
 
-	public YAVFRobot(RobotParameters parameters) {
+	public Vector2D getForceFromNeighborRobots() {
+		return forceFromNeighborRobots;
+	}
+
+	public Vector2D getAttractiveForceFromWall() {
+		return attractiveForceFromWall;
+	}
+
+	public YaVfRobot(SensorRobotParameters parameters) {
 		super(parameters);
 	}
 
-	public Vector2D getVirtualForce() {
+	public void resetState() {
+		super.resetState();
 		forceFromNeighborRobots = new Vector2D();
-		for (Robot robot : getConnectedRobots()) {
-			forceFromNeighborRobots = forceFromNeighborRobots.add(getVirtualForceFrom(robot));
-		}
-		expulsiveForceFromWall = new Vector2D();
-		ArrayList<LineSegment2D> sensibleWalls = getSensibleWalls();
-		for (LineSegment2D wall : sensibleWalls) {
-			expulsiveForceFromWall = expulsiveForceFromWall.add(getVirtualForceFrom(wall).divide((double) sensibleWalls.size()));
-		}
-		return forceFromNeighborRobots.add(expulsiveForceFromWall);
+		attractiveForceFromWall = new Vector2D();
 	}
 
-	public Vector2D getVirtualForceFrom(Robot robot) {
-		if (isAtSamePoint(robot)) {
-			return new Vector2D();
-		} else {
-			return Spring.getForce(getVector2DTo(robot), idealDistance, getSpringConstant());
+	public Vector2D getVirtualForce() {
+		for (SensorRobot sensorRobot : getSpringConnectedRobots()) {
+			forceFromNeighborRobots = forceFromNeighborRobots.add(getVirtualForceFrom(sensorRobot));
 		}
+		if (isEdgeNode()) {
+			attractiveForceFromWall = calculateAttractiveForceFromWall();
+		}
+		return forceFromNeighborRobots.add(attractiveForceFromWall);
 	}
 
 	public Vector2D getVirtualForceFrom(LineSegment2D wall) {
@@ -45,21 +46,54 @@ public class YAVFRobot extends SpringVFRobot {
 			return new Vector2D();
 		}
 	}
-}
 
-@SuppressWarnings("serial")
-class YAVFMobileSensorNetworkCanvas extends SpringVFMobileSensorNetworkCanvas {
-	public YAVFMobileSensorNetworkCanvas(MobileSensorNetwork sensorNetwork) {
-		super(sensorNetwork);
+	public Double getIdealSpringLength() {
+		return super.getSpringLengthFor(null);
 	}
 
-	public void drawRobot(Robot robot, Graphics g) {
-		super.drawRobot(robot, g);
-		YAVFRobot yavfRobot = (YAVFRobot) robot;
-		drawVector(yavfRobot, fixForce(yavfRobot.expulsiveForceFromWall), g, Color.green);
+	public Double getSpringLengthFor(SensorRobot sensorRobot) {
+		if (getRemainedBatteryRatio() < 0.25) {
+			Double idealDistance = calculateIdealDistance(getWirelessRange(), getSensorRange()) / 2;
+			idealDistance += getRemainedBatteryRatio() * idealDistance;
+			return idealDistance;
+		} else {
+			return super.getSpringLengthFor(sensorRobot);
+		}
+		// return super.getSpringLengthFor(sensorRobot);
 	}
 
-	public void debug(Graphics g) {
-		// System.out.println(sensorNetwork.get(5).point.getDistanceFrom(sensorNetwork.get(11).point));
+	public Vector2D calculateAttractiveForceFromWall() {
+		Vector2D force = new Vector2D();
+		Double sumCoefficient = 0.0;
+		List<LineSegment2D> visibleWalls = getVisibleWalls();
+		// Double minNearCoefficient = getMinNearCoefficient();
+		Double maxNorm = 0.0;
+		for (SpringVFRobot robot : getSpringConnectedRobots()) {
+			maxNorm += getWirelessRange() - getDistanceFrom(robot);
+		}
+		for (LineSegment2D wall : visibleWalls) {
+			Vector2D vector = getVector2DTo(wall);
+			if (vector.getNorm() > maxNorm) {
+				vector = vector.expandTo(maxNorm);
+			}
+			Double coefficient = Math.pow(getNearCoefficientFor(wall) + getIdealSpringLength(), 4);
+			// force = force.add(Spring.getForce(vector, getSensorRange() / 2.0,
+			// getSpringConstant()).multiply(coefficient));
+			force = force.add(Spring.getForce(vector, 0.0, getSpringConstant()).multiply(coefficient));
+			sumCoefficient += coefficient;
+		}
+		if (sumCoefficient > 0) {
+			return force.divide(sumCoefficient);
+		} else {
+			return new Vector2D();
+		}
+	}
+
+	public Double getNearCoefficientFor(LineSegment2D wall) {
+		Double coefficient = 0.0;
+		for (SensorRobot sensorRobot : getConnectedSensorRobots()) {
+			coefficient += sensorRobot.getDistanceFrom(wall) - getDistanceFrom(wall);
+		}
+		return coefficient / getConnectedSensorRobots().size();
 	}
 }

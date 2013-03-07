@@ -45,7 +45,7 @@ public class Polygon2D implements Cloneable {
 		edges = null;
 	}
 
-	public Polygon2D getSurroundedRectangle() {
+	public Rectangle2D getSurroundedRectangle() {
 		Double maxX = Double.MIN_VALUE, minX = Double.MAX_VALUE, maxY = Double.MIN_VALUE, minY = Double.MAX_VALUE;
 		for (Point2D vertex : vertexes) {
 			maxX = Math.max(maxX, vertex.x.intValue());

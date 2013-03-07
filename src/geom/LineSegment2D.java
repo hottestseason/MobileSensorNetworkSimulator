@@ -1,5 +1,8 @@
 package geom;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class LineSegment2D extends Line2D {
 	public LineSegment2D(Point2D start, Vector2D vector) {
 		super(start, vector);
@@ -105,5 +108,13 @@ public class LineSegment2D extends Line2D {
 			}
 		}
 		return true;
+	}
+
+	public List<Point2D> getPoints(double precision) {
+		List<Point2D> points = new ArrayList<Point2D>();
+		for (int i = 0; i * precision < getLength(); i++) {
+			points.add((new LineSegment2D(getStart(), normalize().multiply(i * precision))).getEnd());
+		}
+		return points;
 	}
 }

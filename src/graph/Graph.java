@@ -7,6 +7,18 @@ import java.util.HashSet;
 public class Graph extends ArrayList<Node> {
 	private Boolean directed = false;
 
+	public boolean add(Node node) {
+		return add(node, true);
+	}
+
+	public boolean add(Node node, Boolean setsId) {
+		node.setGraph(this);
+		if (setsId) {
+			node.setId(size());
+		}
+		return super.add(node);
+	}
+
 	public Boolean isDirected() {
 		return directed;
 	}

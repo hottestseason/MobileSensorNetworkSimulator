@@ -2,12 +2,12 @@ package mobilesensornetwork;
 
 import geom.Vector2D;
 
-public class VFRobot extends Robot {
+public class VFRobot extends SensorRobot {
 	protected Double dampingCoefficient = 0.0;
 	Vector2D virutalForce = new Vector2D();
 	Vector2D dampingForce = new Vector2D();
 
-	public VFRobot(RobotParameters parameters) {
+	public VFRobot(SensorRobotParameters parameters) {
 		super(parameters);
 	}
 
@@ -17,11 +17,6 @@ public class VFRobot extends Robot {
 
 	public void setDampingCoefficient(Double dampingCoefficient) {
 		this.dampingCoefficient = dampingCoefficient;
-	}
-
-	public void iterate() {
-		super.iterate();
-		calculateForce();
 	}
 
 	public Vector2D getAppliedForce() {
@@ -34,7 +29,7 @@ public class VFRobot extends Robot {
 		super.resetState();
 	}
 
-	public void calculateForce() {
+	public void calculateVirtualForce() {
 		virutalForce = getVirtualForce();
 		dampingForce = getDampingForce();
 		setAcceleration(getAppliedForce().multiply(1 / getWeight()));
@@ -42,13 +37,13 @@ public class VFRobot extends Robot {
 
 	public Vector2D getVirtualForce() {
 		Vector2D force = new Vector2D();
-		for (Robot robot : getConnectedRobots()) {
-			force = force.add(getVirtualForceFrom(robot));
+		for (SensorRobot sensorRobot : getConnectedSensorRobots()) {
+			force = force.add(getVirtualForceFrom(sensorRobot));
 		}
 		return force;
 	}
 
-	public Vector2D getVirtualForceFrom(Robot robot) {
+	public Vector2D getVirtualForceFrom(SensorRobot sensorRobot) {
 		return new Vector2D();
 	}
 

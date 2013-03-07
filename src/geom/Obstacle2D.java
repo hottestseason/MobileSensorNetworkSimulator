@@ -7,46 +7,6 @@ public class Obstacle2D extends Polygon2D {
 	public Boolean innerBlank = false;
 	public Boolean preknown = false;
 
-	static public ArrayList<Obstacle2D> getType1(double width, double height) {
-		ArrayList<Obstacle2D> obstacles = new ArrayList<Obstacle2D>();
-		obstacles.add(new Obstacle2D(new Rectangle2D(new Point2D(width * 1 / 10, height * 0 / 10), width * 1 / 10, height * 4 / 10)));
-		obstacles.add(new Obstacle2D(new Rectangle2D(new Point2D(width * 3 / 10, height * 0 / 10), width * 1 / 10, height * 4 / 10)));
-		obstacles.add(new Obstacle2D(new Rectangle2D(new Point2D(width * 4.5 / 10, height * 0 / 10), width * 1 / 10, height * 4 / 10)));
-		obstacles.add(new Obstacle2D(new Rectangle2D(new Point2D(width * 6 / 10, height * 0 / 10), width * 1 / 10, height * 4 / 10)));
-		obstacles.add(new Obstacle2D(new Rectangle2D(new Point2D(width * 8 / 10, height * 0 / 10), width * 1 / 10, height * 4 / 10)));
-		obstacles.add(new Obstacle2D(new Rectangle2D(new Point2D(width * 1 / 10, height * 6 / 10), width * 1 / 10, height * 4 / 10)));
-		obstacles.add(new Obstacle2D(new Rectangle2D(new Point2D(width * 3 / 10, height * 6 / 10), width * 1 / 10, height * 4 / 10)));
-		obstacles.add(new Obstacle2D(new Rectangle2D(new Point2D(width * 4.5 / 10, height * 6 / 10), width * 1 / 10, height * 4 / 10)));
-		obstacles.add(new Obstacle2D(new Rectangle2D(new Point2D(width * 6 / 10, height * 6 / 10), width * 1 / 10, height * 4 / 10)));
-		obstacles.add(new Obstacle2D(new Rectangle2D(new Point2D(width * 8 / 10, height * 6 / 10), width * 1 / 10, height * 4 / 10)));
-		obstacles.add(new Obstacle2D(new Rectangle2D(new Point2D(width * 0 / 10, height * 4.5 / 10), width * 3 / 10, height * 1 / 10)));
-		obstacles.add(new Obstacle2D(new Rectangle2D(new Point2D(width * 7 / 10, height * 4.5 / 10), width * 3 / 10, height * 1 / 10)));
-		return obstacles;
-	}
-
-	static public ArrayList<Obstacle2D> getType2() {
-		ArrayList<Obstacle2D> obstacles = new ArrayList<Obstacle2D>();
-		obstacles.add(new Obstacle2D(new Rectangle2D(new Point2D(25.0, 25.0), 12.5, 12.5)));
-		obstacles.add(new Obstacle2D(new Rectangle2D(new Point2D(0, 50), 37.5, 12.5)));
-		obstacles.add(new Obstacle2D(new Rectangle2D(new Point2D(12.5, 68.775), 30.0, 31.225)));
-		// obstacles.add(new Obstacle2D(Polygon2D.rectangle(new Point2D(12.5,
-		// 87.5), 25.0, 12.5)));
-		// obstacles.add(new Obstacle2D(Polygon2D.rectangle(new Point2D(12.5,
-		// 75.0), 12.5, 12.5)));
-		obstacles.add(new Obstacle2D(new Rectangle2D(new Point2D(75, 50), 12.5, 12.5)));
-		obstacles.add(new Obstacle2D(new Rectangle2D(new Point2D(50, 75), 12.5, 12.5)));
-		obstacles.add(new Obstacle2D(new Rectangle2D(new Point2D(75, 75), 12.5, 12.5)));
-		obstacles.add(new Obstacle2D(new Rectangle2D(new Point2D(62.5, 0.0), 12.5, 25.0)));
-		obstacles.add(new Obstacle2D(new Rectangle2D(new Point2D(75.0, 12.5), 12.5, 12.5)));
-		// obstacles.add(new Obstacle2D(new Rectangle2D(new Point2D(75.0, 0.0),
-		// 50.0, 25.0)));
-		// obstacles.add(new Obstacle2D(new Rectangle2D(new Point2D(0, 75),
-		// 50.0, 25.0)));
-		// obstacles.add(new Obstacle2D(new Rectangle2D(new Point2D(100.0,
-		// 75.0), 25.0, 50.0)));
-		return obstacles;
-	}
-
 	public Obstacle2D(Polygon2D polygon) {
 		center = polygon.center;
 		vertexes = polygon.vertexes;

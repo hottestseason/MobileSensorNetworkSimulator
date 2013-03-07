@@ -1,23 +1,21 @@
 package mobilesensornetwork;
 
-import geom.Circle;
 import geom.Spring;
 import geom.Vector2D;
 
-import java.awt.Color;
-import java.awt.Graphics;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SpringVFRobot extends VFRobot {
-	Double idealDistance = 0.0;
 	protected Double springConstant = 0.0;
+	protected ArrayList<SpringVFRobot> springConnectedRobots = new ArrayList<SpringVFRobot>();
 
 	public static Double calculateIdealDistance(Double wirelessRange, Double sensorRange) {
 		return sensorRange * Math.sqrt(3);
 	}
 
-	public SpringVFRobot(RobotParameters parameters) {
+	public SpringVFRobot(SensorRobotParameters parameters) {
 		super(parameters);
-		idealDistance = calculateIdealDistance(getWirelessRange(), getSensorRange());
 	}
 
 	public Double getSpringConstant() {
@@ -28,23 +26,36 @@ public class SpringVFRobot extends VFRobot {
 		this.springConstant = springConstant;
 	}
 
-	public Vector2D getVirtualForceFrom(Robot robot) {
-		if (isAtSamePoint(robot) || !ggTest(robot)) {
-			return new Vector2D();
-		} else {
-			return Spring.getForce(getVector2DTo(robot), idealDistance, getSpringConstant());
+	public List<SpringVFRobot> getSpringConnectedRobots() {
+		return springConnectedRobots;
+	}
+
+	public void resetState() {
+		springConnectedRobots.clear();
+		super.resetState();
+	}
+
+	public void createSpringConnections() {
+		for (SensorRobot robot : getConnectedSensorRobots()) {
+			if (canCreateSpringWith(robot)) {
+				springConnectedRobots.add((SpringVFRobot) robot);
+			}
 		}
 	}
-}
 
-@SuppressWarnings("serial")
-class SpringVFMobileSensorNetworkCanvas extends SensorNetworkCanvas {
-	public SpringVFMobileSensorNetworkCanvas(MobileSensorNetwork sensorNetwork) {
-		super(sensorNetwork);
+	public Vector2D getVirtualForceFrom(SensorRobot sensorRobot) {
+		if (springConnectedRobots.contains(sensorRobot)) {
+			return Spring.getForce(getVector2DTo(sensorRobot), getSpringLengthFor(sensorRobot), getSpringConstant());
+		} else {
+			return new Vector2D();
+		}
 	}
 
-	public void drawRobot(Robot robot, Graphics g) {
-		super.drawRobot(robot, g);
-		drawCircle(new Circle(robot, ((SpringVFRobot) robot).idealDistance), g, new Color(0, 0, 0, 32), false);
+	public Boolean canCreateSpringWith(SensorRobot sensorRobot) {
+		return !isAtSamePoint(sensorRobot) && ggTest(sensorRobot);
+	}
+
+	public Double getSpringLengthFor(SensorRobot sensorRobot) {
+		return calculateIdealDistance(getWirelessRange(), getSensorRange());
 	}
 }

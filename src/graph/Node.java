@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import mobilesensornetwork.Robot;
-
 public class Node extends Point2D {
 	private Graph graph;
 	private Integer id;
@@ -87,12 +85,14 @@ public class Node extends Point2D {
 		}
 	}
 
-	protected Double getMaxEdgeDistance() {
-		Double maxDistance = 0.0;
+	public Node getMostFarthestConnectedNode() {
+		Node farthestNode = null;
 		for (Node node : connectedNodes) {
-			maxDistance = Math.max(maxDistance, getDistanceFrom(node));
+			if (farthestNode == null || getDistanceFrom(node) > getDistanceFrom(farthestNode)) {
+				farthestNode = node;
+			}
 		}
-		return maxDistance;
+		return farthestNode;
 	}
 
 	public Boolean isDelaunayTriangle(Node node2, Node node3) {
@@ -111,13 +111,13 @@ public class Node extends Point2D {
 		}
 	}
 
-	public Boolean ggTest(Robot robot) {
-		if (robot.equals(this)) {
+	public Boolean ggTest(Node node) {
+		if (node == null || equals(node)) {
 			return false;
 		} else {
-			Circle circle = new Circle(new LineSegment2D(this, robot));
+			Circle circle = new Circle(new LineSegment2D(this, node));
 			for (Node another : getConnectedNodes()) {
-				if (!another.equals(this) && !another.equals(robot)) {
+				if (!another.equals(this) && !another.equals(node)) {
 					if (circle.containsExcludeEdge(another)) {
 						return false;
 					}
@@ -127,14 +127,14 @@ public class Node extends Point2D {
 		}
 	}
 
-	public Boolean rngTest(Robot robot) {
-		if (robot.equals(this)) {
+	public Boolean rngTest(Node node) {
+		if (node.equals(this)) {
 			return false;
 		} else {
-			Double distance = getDistanceFrom(robot);
+			Double distance = getDistanceFrom(node);
 			for (Node another : getConnectedNodes()) {
-				if (!another.equals(this) && !another.equals(robot)) {
-					if (Math.max(getDistanceFrom(another), robot.getDistanceFrom(another)) < distance) {
+				if (!another.equals(this) && !another.equals(node)) {
+					if (Math.max(getDistanceFrom(another), node.getDistanceFrom(another)) < distance) {
 						return false;
 					}
 				}

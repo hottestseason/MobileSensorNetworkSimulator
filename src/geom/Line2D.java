@@ -1,4 +1,5 @@
 package geom;
+
 public class Line2D extends Vector2D implements Cloneable {
 	Point2D point;
 
