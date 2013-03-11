@@ -16,9 +16,9 @@ public class MobileSensorNetworkSimulation {
 	static Double size = 500.0;
 	static SensingArea sensingArea = SensingArea.getType3(size, size);
 	static Double iterateInterval = 0.2;
-	static Integer robotCount = 250;
+	static Integer robotCount = 200;
 	static Double springConstant = 5.0;
-	static Double dampingCoefficient = 4.0;
+	static Double dampingCoefficient = 2.5;
 	static SensorRobotParameters sensorRobotParameters;
 
 	public static void main(String[] args) {
@@ -27,12 +27,12 @@ public class MobileSensorNetworkSimulation {
 		sensorRobotParameters.setWeight(1.0);
 		sensorRobotParameters.setWirelessRange(80.0);
 		sensorRobotParameters.setSensorRange(30.0);
-		sensorRobotParameters.setMaxSpeed(2.5);
-		sensorRobotParameters.setMaxEnergy(5000.0);
+		sensorRobotParameters.setMaxSpeed(5.0);
+		sensorRobotParameters.setMaxEnergy(7500.0);
 
 		// getSpringConstantAndDampingCoefficientRelation(0.5);
-		// startYaVfDemo();
-		startSpringVfDemo();
+		startYaVfDemo();
+		// startSpringVfDemo();
 
 		// test();
 		// getYAVFSimulator(20, 0.25, 1.0).start();
