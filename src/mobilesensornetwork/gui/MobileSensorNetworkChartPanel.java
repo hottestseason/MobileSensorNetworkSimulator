@@ -1,5 +1,6 @@
 package mobilesensornetwork.gui;
 
+import java.awt.Color;
 import java.awt.Dimension;
 
 import javax.swing.JPanel;
@@ -10,6 +11,7 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
@@ -27,6 +29,11 @@ public class MobileSensorNetworkChartPanel extends JPanel {
 		// coverageDataset.addSeries(eventCoverageSeries);
 		coverageDataset.addSeries(startedNodesSeries);
 		coverageChart = ChartFactory.createXYLineChart(null, "IterationNo", "ratio", coverageDataset, PlotOrientation.VERTICAL, true, true, false);
+		XYPlot plot = (XYPlot) coverageChart.getPlot();
+		plot.setBackgroundPaint(Color.white);
+		plot.setDomainGridlinePaint(Color.lightGray);
+		plot.setRangeGridlinePaint(Color.lightGray);
+		plot.getRangeAxis().setRange(0.0, 1.0);
 		ChartPanel coveragePanel = new ChartPanel(coverageChart);
 		coveragePanel.setPreferredSize(new Dimension(750, 593));
 		add(coveragePanel);
