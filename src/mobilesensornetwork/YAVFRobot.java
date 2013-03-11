@@ -3,6 +3,7 @@ package mobilesensornetwork;
 import geom.LineSegment2D;
 import geom.Spring;
 import geom.Vector2D;
+import graph.Node;
 
 import java.util.List;
 
@@ -66,7 +67,6 @@ public class YaVfRobot extends SpringVFRobot {
 		Vector2D force = new Vector2D();
 		Double sumCoefficient = 0.0;
 		List<LineSegment2D> visibleWalls = getVisibleWalls();
-		// Double minNearCoefficient = getMinNearCoefficient();
 		Double maxNorm = 0.0;
 		for (SpringVFRobot robot : getSpringConnectedRobots()) {
 			maxNorm += getWirelessRange() - getDistanceFrom(robot);
@@ -76,9 +76,7 @@ public class YaVfRobot extends SpringVFRobot {
 			if (vector.getNorm() > maxNorm) {
 				vector = vector.expandTo(maxNorm);
 			}
-			Double coefficient = Math.pow(getNearCoefficientFor(wall) + getIdealSpringLength(), 4);
-			// force = force.add(Spring.getForce(vector, getSensorRange() / 2.0,
-			// getSpringConstant()).multiply(coefficient));
+			Double coefficient = getNearCoefficientFor(wall);
 			force = force.add(Spring.getForce(vector, 0.0, getSpringConstant()).multiply(coefficient));
 			sumCoefficient += coefficient;
 		}
@@ -91,9 +89,9 @@ public class YaVfRobot extends SpringVFRobot {
 
 	public Double getNearCoefficientFor(LineSegment2D wall) {
 		Double coefficient = 0.0;
-		for (SensorRobot sensorRobot : getConnectedSensorRobots()) {
-			coefficient += sensorRobot.getDistanceFrom(wall) - getDistanceFrom(wall);
+		for (Node node : getConnectedNodes()) {
+			coefficient += node.getDistanceFrom(wall) - getDistanceFrom(wall) + getIdealSpringLength();
 		}
-		return coefficient / getConnectedSensorRobots().size();
+		return Math.pow(coefficient / getConnectedNodes().size(), 4);
 	}
 }
