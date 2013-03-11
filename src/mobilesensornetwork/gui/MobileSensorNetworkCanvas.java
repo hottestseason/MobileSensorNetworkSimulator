@@ -30,9 +30,11 @@ public class MobileSensorNetworkCanvas extends Canvas {
 	public MobileSensorNetworkCanvas(MobileSensorNetwork sensorNetwork) {
 		this.sensorNetwork = sensorNetwork;
 		Rectangle2D surroundedRectangle = sensorNetwork.getObstacles().get(0).getSurroundedRectangle();
-		originDisplacement = new Vector2D(surroundedRectangle.getWidth() / 10, surroundedRectangle.getHeight() / 10);
-		int width = (int) ((surroundedRectangle.getWidth() + originDisplacement.x) * zoom);
-		int height = (int) ((surroundedRectangle.getHeight() + originDisplacement.y * 2) * zoom);
+		originDisplacement = new Vector2D(50, 50);
+		// originDisplacement = new Vector2D(surroundedRectangle.getWidth() /
+		// 20, surroundedRectangle.getHeight() / 20);
+		int width = (int) ((surroundedRectangle.getWidth() + originDisplacement.x * 2) * zoom);
+		int height = (int) ((surroundedRectangle.getHeight() + originDisplacement.y * 3) * zoom);
 		setSize(width, height);
 	}
 
@@ -42,7 +44,6 @@ public class MobileSensorNetworkCanvas extends Canvas {
 		drawRobots(bufferG);
 		drawObstacles(bufferG);
 		drawEvents(bufferG);
-		debug(bufferG);
 	}
 
 	public void drawCoverages(Graphics g) {
@@ -86,12 +87,6 @@ public class MobileSensorNetworkCanvas extends Canvas {
 		if (sensorRobot.isRunning()) {
 			drawCircle(new Circle(sensorRobot, Math.max(sensorRobot.getSize(), minRobotSize * zoom)), g, Color.black, true);
 			drawCircle(sensorRobot.getWirelessCircle(), g, new Color(0, 255, 0, 32), false);
-		} else {
-			if (sensorRobot.getRemainedBatteryRatio() > 0.9) {
-				drawCircle(new Circle(sensorRobot, Math.max(sensorRobot.getSize(), minRobotSize * zoom)), g, Color.blue, true);
-			} else {
-				drawCircle(new Circle(sensorRobot, Math.max(sensorRobot.getSize(), minRobotSize * zoom)), g, Color.red, true);
-			}
 		}
 		// drawVector(robot, fixForce(robot.virutalForce), g, Color.magenta);
 		// drawVector(robot, fixForce(robot.dampingForce), g, Color.blue);
@@ -188,10 +183,6 @@ public class MobileSensorNetworkCanvas extends Canvas {
 	protected Point2D fixPoint(Point2D point) {
 		point = point.multiply(zoom).toPoint2D().add(originDisplacement);
 		return new Point2D(point.x, getHeight() - point.y);
-	}
-
-	protected void debug(Graphics g) {
-
 	}
 
 	protected Vector2D fixForce(Vector2D force) {
