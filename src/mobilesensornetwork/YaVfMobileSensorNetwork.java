@@ -1,6 +1,11 @@
 package mobilesensornetwork;
 
 public class YaVfMobileSensorNetwork extends SpringVfMobileSensorNetwork {
+	public String toString() {
+		YaVfRobot node = (YaVfRobot) getSinkNode();
+		return "Damping: " + node.getDampingCoefficient() + ", Spring: " + node.getSpringConstant();
+	}
+
 	public void prepareNodes(Integer size, SensorRobotParameters parameters, Double dampingCoefficient, Double springConstant) {
 		for (int i = 0; i < size; i++) {
 			YaVfRobot robot = new YaVfRobot(parameters);

@@ -13,9 +13,10 @@ import mobilesensornetwork.MobileSensorNetwork;
 
 public class MobileSensorNetworkInfoPanel extends JPanel {
 	private MobileSensorNetwork sensorNetwork;
-	private JLabel iterationNoLabel;
-	private JLabel runningRobotsLabel;
-	private JLabel sensedPointsLabel;
+	private JLabel iterationNoLabel = new JLabel();
+	private JLabel runningRobotsLabel = new JLabel();
+	private JLabel sensedPointsLabel = new JLabel();
+	private JLabel otherLabel = new JLabel();
 	private ArrayList<JButton> controlButton = new ArrayList<JButton>();
 
 	public MobileSensorNetworkInfoPanel(MobileSensorNetwork sensorNetwork, ActionListener actionListener) {
@@ -25,12 +26,10 @@ public class MobileSensorNetworkInfoPanel extends JPanel {
 
 		JPanel pageStartPanel = new JPanel();
 		pageStartPanel.setLayout(new FlowLayout());
-		iterationNoLabel = new JLabel();
 		pageStartPanel.add(iterationNoLabel);
-		runningRobotsLabel = new JLabel();
 		pageStartPanel.add(runningRobotsLabel);
-		sensedPointsLabel = new JLabel();
 		pageStartPanel.add(sensedPointsLabel);
+		pageStartPanel.add(otherLabel);
 		add(pageStartPanel, BorderLayout.PAGE_START);
 
 		JPanel centerPanel = new JPanel();
@@ -51,7 +50,8 @@ public class MobileSensorNetworkInfoPanel extends JPanel {
 
 	public void update() {
 		iterationNoLabel.setText("IterationNo: " + sensorNetwork.getIterationNo());
-		runningRobotsLabel.setText("RunningRobots: " + sensorNetwork.getRunningNodeSize());
+		runningRobotsLabel.setText("RunningRobots: " + sensorNetwork.getRunningNodes().size());
 		sensedPointsLabel.setText("SensedPoints: " + sensorNetwork.sensedAreas);
+		otherLabel.setText(sensorNetwork.toString());
 	}
 }
