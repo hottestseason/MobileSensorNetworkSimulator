@@ -9,7 +9,7 @@ import java.util.Set;
 
 public class CoverageCalculator {
 	private SensorNetwork sensorNetwork;
-	private Integer precision = 10;
+	private Integer precision = 25;
 	private HashMap<Integer, HashSet<Point2D>> sensedPointsHistory = new HashMap<Integer, HashSet<Point2D>>();
 	private HashMap<Integer, HashSet<Point2D>> allPointsHistory = new HashMap<Integer, HashSet<Point2D>>();
 	private Integer finishedNo = -1;
