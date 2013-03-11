@@ -60,22 +60,21 @@ public class Network extends Graph {
 	}
 
 	public void resetConnections() {
-		for (NetworkNode networkNode : getNetworkNodes()) {
-			if (networkNode.isRunning()) {
-				networkNode.clearEdges();
-			}
+		long before = System.nanoTime();
+		ArrayList<NetworkNode> runningNodes = getRunningNodes();
+		for (NetworkNode networkNode : runningNodes) {
+			networkNode.clearEdges();
 		}
-		for (int i = 0; i < size(); i++) {
-			NetworkNode networkNodeA = get(i);
-			if (networkNodeA.isRunning()) {
-				for (int j = i + 1; j < size(); j++) {
-					NetworkNode networkNodeB = get(j);
-					if (networkNodeB.isRunning() && networkNodeA.canConnect(networkNodeB)) {
-						networkNodeA.connect(networkNodeB);
-					}
+		for (int i = 0; i < runningNodes.size(); i++) {
+			NetworkNode networkNodeA = runningNodes.get(i);
+			for (int j = i + 1; j < runningNodes.size(); j++) {
+				NetworkNode networkNodeB = runningNodes.get(j);
+				if (networkNodeA.canConnect(networkNodeB)) {
+					networkNodeA.connect(networkNodeB);
 				}
 			}
 		}
+		System.out.print("connections " + (System.nanoTime() - before) / 1000L + "us ");
 	}
 
 	public void resetState() {
