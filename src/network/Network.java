@@ -94,13 +94,13 @@ public class Network extends Graph {
 		}
 	}
 
-	public Integer getRunningNodeSize() {
-		Integer size = 0;
-		for (NetworkNode networkNode : getNetworkNodes()) {
-			if (networkNode.isRunning()) {
-				size++;
+	public ArrayList<NetworkNode> getRunningNodes() {
+		ArrayList<NetworkNode> nodes = new ArrayList<NetworkNode>();
+		for (NetworkNode node : getNetworkNodes()) {
+			if (node.isRunning()) {
+				nodes.add(node);
 			}
 		}
-		return size;
+		return nodes;
 	}
 }
