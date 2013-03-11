@@ -13,7 +13,7 @@ public class YaVfMobileSensorNetworkCanvas extends SpringVFMobileSensorNetworkCa
 	}
 
 	public void drawRobot(SensorRobot sensorRobot, Graphics g) {
-		if (!sensorRobot.isRunning() && sensorRobot.getRemainedBatteryRatio() > 0.9) {
+		if (!sensorRobot.isRunning()) {
 			return;
 		}
 		super.drawRobot(sensorRobot, g);
