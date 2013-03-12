@@ -34,48 +34,45 @@ public class YaVfMobileSensorNetworkGuiSimulator extends SpringVfMobileSensorNet
 		}
 		long start = System.nanoTime();
 		getYavfMobileSensorNetwork().incrementIterationNo();
-		System.out.print(getYavfMobileSensorNetwork().getIterationNo() + ":");
+		System.out.print(getYavfMobileSensorNetwork().getIterationNo() + ": ");
 
 		long before = System.nanoTime();
 		getYavfMobileSensorNetwork().resetState();
-		System.out.print(" state " + (System.nanoTime() - before) / 1000L + "us");
 		getYavfMobileSensorNetwork().sendBeacon();
-
-		before = System.nanoTime();
 		getYavfMobileSensorNetwork().resetConnections();
-		System.out.print(", connections " + (System.nanoTime() - before) / 1000L + "us");
 
 		before = System.nanoTime();
 		getYavfMobileSensorNetwork().updatePotential();
-		System.out.print(", potential " + (System.nanoTime() - before) / 1000L + "us");
+		System.out.print("potential " + (System.nanoTime() - before) / 1000L + "us");
 
 		before = System.nanoTime();
 		getYavfMobileSensorNetwork().createSpringConnections();
-		System.out.print(", springs " + (System.nanoTime() - before) / 1000L + "us");
+		System.out.print(" springs " + (System.nanoTime() - before) / 1000L + "us");
 
 		before = System.nanoTime();
 		getYavfMobileSensorNetwork().calculateVirtualForce();
-		System.out.print(", virtualForce " + (System.nanoTime() - before) / 1000L + "us");
+		System.out.print(" virtualForce " + (System.nanoTime() - before) / 1000L + "us");
 
 		before = System.nanoTime();
 		getYavfMobileSensorNetwork().updateAreaCoverageCalculator();
 		getYavfMobileSensorNetwork().getSensingData();
-		System.out.print(", areaData " + (System.nanoTime() - before) / 1000L + "us");
+		System.out.print(" areaData " + (System.nanoTime() - before) / 1000L + "us");
 
 		before = System.nanoTime();
 		getYavfMobileSensorNetwork().updateEventCoverageCalculator(iterateInterval);
 		getYavfMobileSensorNetwork().getEventsData();
-		System.out.print(", eventsData " + (System.nanoTime() - before) / 1000L + "us");
+		System.out.print(" eventsData " + (System.nanoTime() - before) / 1000L + "us");
 
 		before = System.nanoTime();
 		getYavfMobileSensorNetwork().transferMessages();
-		System.out.print(", transfer " + (System.nanoTime() - before) / 1000L + "us");
-		getYavfMobileSensorNetwork().adjustNodeSize();
-		getYavfMobileSensorNetwork().move(getYavfMobileSensorNetwork().getIterateInterval());
-
+		System.out.print(" transfer " + (System.nanoTime() - before) / 1000L + "us");
 		before = System.nanoTime();
+		getYavfMobileSensorNetwork().adjustNodeSize();
+		System.out.print(" adjustNodes " + (System.nanoTime() - before) / 1000L + "us");
+		before = System.nanoTime();
+		getYavfMobileSensorNetwork().move(getYavfMobileSensorNetwork().getIterateInterval());
+		System.out.print(" move " + (System.nanoTime() - before) / 1000L + "us ");
+
 		updateGui();
-		System.out.print(", updateGui " + (System.nanoTime() - before) / 1000L + "us");
-		System.out.println(", " + (System.nanoTime() - start) / 1000L + "us");
 	}
 }

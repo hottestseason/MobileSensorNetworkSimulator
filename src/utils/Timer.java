@@ -1,5 +1,9 @@
 package utils;
 
+import java.lang.reflect.InvocationTargetException;
+
+import javax.swing.SwingUtilities;
+
 public class Timer implements Runnable {
 	private TimerListener timerListener;
 	private Double iterationInterval;
@@ -31,12 +35,23 @@ public class Timer implements Runnable {
 		beforeTime = System.nanoTime();
 
 		while (isRunning()) {
-			timerListener.update();
+			try {
+				SwingUtilities.invokeAndWait(new Runnable() {
+					public void run() {
+						timerListener.update();
+					}
+				});
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			} catch (InvocationTargetException e1) {
+				e1.printStackTrace();
+			}
 
 			afterTime = System.nanoTime();
 			timeDiff = afterTime - beforeTime;
+			System.out.print(timeDiff / 1000L + "us ");
 			sleepTime = idealSleepTime - timeDiff - overSleepTime;
-
+			System.out.println(sleepTime / 1000L + "us");
 			if (sleepTime > 0) {
 				try {
 					Thread.sleep(sleepTime / 1000000L); // nano->ms
