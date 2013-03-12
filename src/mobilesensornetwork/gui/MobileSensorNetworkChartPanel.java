@@ -28,45 +28,30 @@ public class MobileSensorNetworkChartPanel extends JPanel {
 		coverageDataset.addSeries(areaCoverageSeries);
 		// coverageDataset.addSeries(eventCoverageSeries);
 		coverageDataset.addSeries(startedNodesSeries);
-		coverageChart = ChartFactory.createXYLineChart(null, "IterationNo", "ratio", coverageDataset, PlotOrientation.VERTICAL, true, true, false);
+		coverageChart = ChartFactory.createXYLineChart(null, "Time (s)", "Ratio (%)", coverageDataset, PlotOrientation.VERTICAL, true, true, false);
 		XYPlot plot = (XYPlot) coverageChart.getPlot();
 		plot.setBackgroundPaint(Color.white);
 		plot.setDomainGridlinePaint(Color.lightGray);
 		plot.setRangeGridlinePaint(Color.lightGray);
-		plot.getRangeAxis().setRange(0.0, 1.0);
+		plot.getRangeAxis().setRange(0.0, 100.0);
 		ChartPanel coveragePanel = new ChartPanel(coverageChart);
 		coveragePanel.setPreferredSize(new Dimension(750, 593));
 		add(coveragePanel);
 	}
 
 	public void update() {
-		startedNodesSeries.add((Number) mobileSensorNetwork.getIterationNo(), (double) mobileSensorNetwork.getStartedNodeSize() / mobileSensorNetwork.size());
-		// if (mobileSensorNetwork.getIterationNo() %
-		// (mobileSensorNetwork.getMaxMessageHop() / 2) != 0) {
-		// return;
-		// }
+		startedNodesSeries.add(mobileSensorNetwork.getIterationNo() * mobileSensorNetwork.getIterateInterval(), (double) mobileSensorNetwork.getStartedNodeSize() * 100.0 / mobileSensorNetwork.size());
 		for (int i = Math.max(0, mobileSensorNetwork.getIterationNo() - mobileSensorNetwork.getMaxMessageHop()); i < mobileSensorNetwork.getIterationNo(); i++) {
-			// if (i % 5 != 0) {
-			// continue;
-			// }
 			Double areaCoverage = mobileSensorNetwork.getAreaCoverage(i);
 			if (areaCoverage != null) {
-				try {
-					areaCoverageSeries.remove((Number) i);
-				} catch (ArrayIndexOutOfBoundsException e) {
+				int updateIndex = areaCoverageSeries.indexOf(i * mobileSensorNetwork.getIterateInterval());
+				if (updateIndex >= 0) {
+					areaCoverageSeries.remove(updateIndex);
 				}
-				areaCoverageSeries.add((Number) i, areaCoverage);
+				areaCoverageSeries.add(i * mobileSensorNetwork.getIterateInterval(), (double) areaCoverage * 100.0, false);
 			}
-			// Double eventCoverage =
-			// mobileSensorNetwork.getEventCoverage(i);
-			// if (eventCoverage != null) {
-			// try {
-			// eventCoverageSeries.remove((Number) i);
-			// } catch (ArrayIndexOutOfBoundsException e) {
-			// }
-			// eventCoverageSeries.add((Number) i, eventCoverage);
-			// }
 		}
+		areaCoverageSeries.fireSeriesChanged();
 		eventCoverageSeries.fireSeriesChanged();
 	}
 }
