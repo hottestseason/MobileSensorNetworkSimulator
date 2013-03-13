@@ -5,6 +5,7 @@ import geom.Vector2D;
 import java.util.ArrayList;
 import java.util.Random;
 
+import network.NetworkNode;
 import sensornetwork.SensorNetwork;
 
 public class MobileSensorNetwork extends SensorNetwork {
@@ -32,11 +33,11 @@ public class MobileSensorNetwork extends SensorNetwork {
 	public Double move(Double seconds) {
 		long before = System.nanoTime();
 		Double movedDistance = 0.0;
-		for (SensorRobot sensorRobot : getSensorRobots()) {
-			if (sensorRobot.getId() == 0) {
-				continue;
+		for (NetworkNode node : getRunningNodes()) {
+			if (node.getId() != 0) {
+				SensorRobot sensorRobot = (SensorRobot) node;
+				movedDistance += sensorRobot.move(seconds).getNorm();
 			}
-			movedDistance += sensorRobot.move(seconds).getNorm();
 		}
 		sumMovedDistance += movedDistance;
 		System.out.print("move " + (System.nanoTime() - before) / 1000L + "us ");

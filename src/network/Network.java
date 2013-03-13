@@ -8,6 +8,8 @@ public class Network extends Graph {
 	private Double iterationInterval = 0.1;
 	private Integer iterationNo = 0;
 
+	private ArrayList<NetworkNode> runningNodes = new ArrayList<NetworkNode>();
+
 	public Double getIterationInterval() {
 		return iterationInterval;
 	}
@@ -98,12 +100,16 @@ public class Network extends Graph {
 	}
 
 	public ArrayList<NetworkNode> getRunningNodes() {
-		ArrayList<NetworkNode> nodes = new ArrayList<NetworkNode>();
+		return runningNodes;
+	}
+
+	public void startIteration() {
+		incrementIterationNo();
+		runningNodes = new ArrayList<NetworkNode>();
 		for (NetworkNode node : getNetworkNodes()) {
 			if (node.isRunning()) {
-				nodes.add(node);
+				runningNodes.add(node);
 			}
 		}
-		return nodes;
 	}
 }

@@ -170,7 +170,7 @@ public class SensorNode extends PotentialNode {
 	}
 
 	public Boolean canSense(LineSegment2D lineSegment) {
-		return getWirelessCircle().contains(lineSegment);
+		return getSensorCircle().contains(lineSegment);
 	}
 
 	public List<LineSegment2D> getSensibleWalls() {
@@ -238,7 +238,7 @@ public class SensorNode extends PotentialNode {
 	}
 
 	public Boolean isEdgeNode() {
-		int splitSize = 360;
+		int splitSize = 36;
 		double radius = getWirelessRange() * 1.01;
 		for (int i = 0; i < splitSize; i++) {
 			Double angle = 2 * Math.PI * i / splitSize;

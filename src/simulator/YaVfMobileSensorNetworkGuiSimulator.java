@@ -33,7 +33,7 @@ public class YaVfMobileSensorNetworkGuiSimulator extends SpringVfMobileSensorNet
 			return;
 		}
 		long start = System.nanoTime();
-		getYavfMobileSensorNetwork().incrementIterationNo();
+		getYavfMobileSensorNetwork().startIteration();
 		System.out.print(getYavfMobileSensorNetwork().getIterationNo() + ": ");
 
 		long before = System.nanoTime();

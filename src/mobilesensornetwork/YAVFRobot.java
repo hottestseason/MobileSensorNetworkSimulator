@@ -3,7 +3,6 @@ package mobilesensornetwork;
 import geom.LineSegment2D;
 import geom.Spring;
 import geom.Vector2D;
-import graph.Node;
 
 import java.util.List;
 
@@ -89,8 +88,8 @@ public class YaVfRobot extends SpringVFRobot {
 
 	public Double getNearCoefficientFor(LineSegment2D wall) {
 		Double coefficient = 0.0;
-		for (Node node : getConnectedNodes()) {
-			coefficient += node.getDistanceFrom(wall) - getDistanceFrom(wall) + getIdealSpringLength();
+		for (SpringVFRobot robot : getSpringConnectedRobots()) {
+			coefficient += robot.getDistanceFrom(wall) - getDistanceFrom(wall) + getIdealSpringLength();
 		}
 		return Math.pow(coefficient / getConnectedNodes().size(), 4);
 	}
