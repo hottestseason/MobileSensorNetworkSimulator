@@ -30,11 +30,11 @@ public class SpringVfMobileSensorNetworkGuiSimulator extends MobileSensorNetwork
 	}
 
 	public void update() {
-		if (!getSpringVfMobileSensorNetwork().isRunning() || getSpringVfMobileSensorNetwork().getIterationNo() > maxIteration) {
+		if (getSpringVfMobileSensorNetwork().getIterationNo() >= maxIteration) {
 			stop();
 			return;
 		}
-		getSpringVfMobileSensorNetwork().incrementIterationNo();
+		getSpringVfMobileSensorNetwork().startIteration();
 		getSpringVfMobileSensorNetwork().resetState();
 		getSpringVfMobileSensorNetwork().sendBeacon();
 		getSpringVfMobileSensorNetwork().resetConnections();
@@ -47,6 +47,7 @@ public class SpringVfMobileSensorNetworkGuiSimulator extends MobileSensorNetwork
 		getSpringVfMobileSensorNetwork().getEventsData();
 		getSpringVfMobileSensorNetwork().transferMessages();
 		getSpringVfMobileSensorNetwork().move(getSpringVfMobileSensorNetwork().getIterationInterval());
+		getSpringVfMobileSensorNetwork().finishIteration();
 		updateGui();
 	}
 }

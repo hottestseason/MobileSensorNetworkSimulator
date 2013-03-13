@@ -28,7 +28,7 @@ public class YaVfMobileSensorNetworkGuiSimulator extends SpringVfMobileSensorNet
 	}
 
 	public void update() {
-		if (getYavfMobileSensorNetwork().getIterationNo() > maxIteration) {
+		if (getYavfMobileSensorNetwork().getIterationNo() >= maxIteration) {
 			stop();
 			return;
 		}
