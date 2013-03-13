@@ -83,10 +83,17 @@ public class SensorNetwork extends PotentialNetwork {
 		if (getIterationNo() > getMaxMessageHop()) {
 			eventCoverageCalculator.sensingFinishied(getIterationNo() - getMaxMessageHop());
 		}
+
+	public void sensed(Integer iterationNo, Circle circle) {
+		areaCoverageCalculator.sense(iterationNo, circle);
+	}
+
+	public void sensed(Circle circle) {
+		sensed(getIterationNo(), circle);
 	}
 
 	public void sensedAreaDataDelivered(SensedData sensedData) {
-		areaCoverageCalculator.sense(sensedData.getIterationNo(), sensedData.getSensedCircle());
+		sensed(sensedData.getIterationNo(), sensedData.getSensedCircle());
 	}
 
 	public void eventDataDelivered(EventData eventData) {

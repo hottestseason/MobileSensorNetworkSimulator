@@ -129,6 +129,9 @@ public class SensorNode extends PotentialNode {
 
 	public void getSensingData() {
 		addToBuffer(getIterationNo(), new SensedData(this, getSinkNode(), getIterationNo(), getSensorCircle()));
+		if (isSinkNode()) {
+			getSensorNetwork().sensed(getSensorCircle());
+		}
 	}
 
 	public void getEventData(Point2D point) {
