@@ -22,6 +22,8 @@ public class MobileSensorNetworkChartPanel extends JPanel {
 	private XYSeries startedNodesSeries = new XYSeries("Started Nodes");
 	private JFreeChart coverageChart;
 
+	private Integer lastAddedNo = 0;
+
 	public MobileSensorNetworkChartPanel(MobileSensorNetwork mobileSensorNetwork) {
 		this.mobileSensorNetwork = mobileSensorNetwork;
 		XYSeriesCollection coverageDataset = new XYSeriesCollection();
@@ -40,8 +42,12 @@ public class MobileSensorNetworkChartPanel extends JPanel {
 	}
 
 	public void update() {
-		startedNodesSeries.add(mobileSensorNetwork.getIterationNo() * mobileSensorNetwork.getIterationInterval(), (double) mobileSensorNetwork.getStartedNodeSize() * 100.0 / mobileSensorNetwork.size());
-		for (int i = Math.max(0, mobileSensorNetwork.getIterationNo() - mobileSensorNetwork.getMaxMessageHop()); i < mobileSensorNetwork.getIterationNo(); i++) {
+		for (int i = lastAddedNo + 1; i <= mobileSensorNetwork.getIterationNo(); i++) {
+			startedNodesSeries.add(i * mobileSensorNetwork.getIterationInterval(), (double) mobileSensorNetwork.getStartedNodeSize(i) * 100.0 / mobileSensorNetwork.size());
+		}
+		int start = Math.max(1, Math.min(lastAddedNo + 1, mobileSensorNetwork.getIterationNo()) - mobileSensorNetwork.getMaxMessageHop() * mobileSensorNetwork.getSensingInterval());
+		start = ((int) (start / mobileSensorNetwork.getSensingInterval())) * mobileSensorNetwork.getSensingInterval();
+		for (int i = start; i < mobileSensorNetwork.getIterationNo(); i += mobileSensorNetwork.getSensingInterval()) {
 			Double areaCoverage = mobileSensorNetwork.getAreaCoverage(i);
 			if (areaCoverage != null) {
 				int updateIndex = areaCoverageSeries.indexOf(i * mobileSensorNetwork.getIterationInterval());
@@ -52,5 +58,6 @@ public class MobileSensorNetworkChartPanel extends JPanel {
 			}
 		}
 		areaCoverageSeries.fireSeriesChanged();
+		lastAddedNo = mobileSensorNetwork.getIterationNo();
 	}
 }

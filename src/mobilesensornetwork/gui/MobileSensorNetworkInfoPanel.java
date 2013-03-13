@@ -21,6 +21,7 @@ public class MobileSensorNetworkInfoPanel extends JPanel {
 	private ArrayList<JButton> controlButton = new ArrayList<JButton>();
 	private JCheckBox updatesCanvas = new JCheckBox("UpdatesCanvas", null, true);
 	private JCheckBox updatesNodesTable = new JCheckBox("UpdatesNodesTable", null, true);
+	private JCheckBox updatesChart = new JCheckBox("UpdatesChart", null, true);
 
 	public MobileSensorNetworkInfoPanel(MobileSensorNetwork sensorNetwork, ActionListener actionListener) {
 		this.sensorNetwork = sensorNetwork;
@@ -44,6 +45,7 @@ public class MobileSensorNetworkInfoPanel extends JPanel {
 		JPanel preferencesPanel = new JPanel();
 		preferencesPanel.add(updatesCanvas);
 		preferencesPanel.add(updatesNodesTable);
+		preferencesPanel.add(updatesChart);
 		pageEndPanel.add(preferencesPanel, BorderLayout.PAGE_START);
 
 		JPanel controlPanel = new JPanel();
@@ -73,5 +75,9 @@ public class MobileSensorNetworkInfoPanel extends JPanel {
 
 	public boolean updatesNodesTable() {
 		return updatesNodesTable.isSelected();
+	}
+
+	public boolean updatesChart() {
+		return updatesChart.isSelected();
 	}
 }

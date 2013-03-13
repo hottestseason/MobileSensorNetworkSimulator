@@ -9,17 +9,22 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeMap;
 
 import network.PotentialNetwork;
 
 public class SensorNetwork extends PotentialNetwork {
 	protected SensingArea sensingArea;
 
+	public TreeMap<Integer, Integer> startedNodesHistory = new TreeMap<Integer, Integer>();
+
 	public Integer sensedAreas = 0;
 	public Integer sensedEvents = 0;
 
 	protected CoverageCalculator areaCoverageCalculator = new CoverageCalculator(this);
 	protected CoverageCalculator eventCoverageCalculator = new CoverageCalculator(this);
+
+	private TreeMap<Integer, Double> areaCoverageHistory = new TreeMap<Integer, Double>();
 
 	public void setSensingArea(SensingArea sensingArea) {
 		this.sensingArea = sensingArea;
@@ -30,11 +35,20 @@ public class SensorNetwork extends PotentialNetwork {
 	}
 
 	public Double getAreaCoverage(Integer iterationNo) {
-		return areaCoverageCalculator.getCoverage(iterationNo);
+		Double coverage = areaCoverageHistory.get(iterationNo);
+		if (coverage != null) {
+			return coverage;
+		} else {
+			return areaCoverageCalculator.getCoverage(iterationNo);
+		}
 	}
 
 	public Double getEventCoverage(Integer iterationNo) {
 		return eventCoverageCalculator.getCoverage(iterationNo);
+	}
+
+	public Integer getStartedNodeSize(Integer iterationNo) {
+		return startedNodesHistory.get(iterationNo);
 	}
 
 	public Integer getStartedNodeSize() {
@@ -63,19 +77,16 @@ public class SensorNetwork extends PotentialNetwork {
 		return (int) (Math.sqrt(size()) * Math.sqrt(2));
 	}
 
+	public Integer getLastSensingFinishedNo() {
+		return getIterationNo() - getMaxMessageHop() * getSensingInterval();
+	}
+
 	public Collection<Point2D> getEventPoints() {
 		return sensingArea.getEventPoints();
 	}
 
 	public void updateAreaCoverageCalculator() {
 		areaCoverageCalculator.setAllPoints(getIterationNo(), sensingArea.getAllPoints());
-		if (getIterationNo() > getMaxMessageHop()) {
-			Set<Point2D> sensedPoints = areaCoverageCalculator.getSensedPoints(getIterationNo() - getMaxMessageHop());
-			if (sensedPoints != null) {
-				sensedAreas += sensedPoints.size();
-			}
-			areaCoverageCalculator.sensingFinishied(getIterationNo() - getMaxMessageHop());
-		}
 	}
 
 	public void updateEventCoverageCalculator(Double iterationInterval) {
@@ -123,6 +134,19 @@ public class SensorNetwork extends PotentialNetwork {
 			if (sensorNode.isRunning()) {
 				sensorNode.getEventsData();
 			}
+		}
+	}
+
+	public void finishIteration() {
+		startedNodesHistory.put(getIterationNo(), getStartedNodeSize());
+		if (getIterationNo() > getMaxMessageHop()) {
+			Integer finishedNo = getIterationNo() - getMaxMessageHop();
+			Set<Point2D> sensedPoints = areaCoverageCalculator.getSensedPoints(finishedNo);
+			if (sensedPoints != null) {
+				sensedAreas += sensedPoints.size();
+			}
+			areaCoverageHistory.put(finishedNo, getAreaCoverage(finishedNo));
+			areaCoverageCalculator.sensingFinishied(finishedNo);
 		}
 	}
 }
