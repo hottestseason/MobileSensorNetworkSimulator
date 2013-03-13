@@ -9,8 +9,8 @@ import sensornetwork.SensingArea;
 public abstract class MobileSensorNetworkSimulator {
 	public long seed = 0;
 	public SensingArea sensingArea;
-	public Integer maxIteration = 12500;
-	public Double iterateInterval;
+	public Integer maxIteration = 8000;
+	public double iterationInterval;
 	public SensorRobotParameters sensorRobotParameters;
 	public Integer robotCount;
 
