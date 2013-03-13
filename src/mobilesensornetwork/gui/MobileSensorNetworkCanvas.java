@@ -21,7 +21,7 @@ import mobilesensornetwork.SensorRobot;
 public class MobileSensorNetworkCanvas extends Canvas {
 	MobileSensorNetwork sensorNetwork;
 	Vector2D originDisplacement;
-	Double zoom = 1.0;
+	Double zoom = 0.7;
 	Double minRobotSize = 1.5;
 
 	protected Image buffer;
@@ -87,13 +87,16 @@ public class MobileSensorNetworkCanvas extends Canvas {
 		if (sensorRobot.isRunning()) {
 			drawCircle(new Circle(sensorRobot, Math.max(sensorRobot.getSize(), minRobotSize * zoom)), g, Color.black, true);
 			drawCircle(sensorRobot.getWirelessCircle(), g, new Color(0, 255, 0, 32), false);
+			drawString(sensorRobot.getId().toString(), sensorRobot, g, Color.black);
+		} else if (sensorRobot.getRemainedBatteryRatio() < 0.5) {
+			drawCircle(new Circle(sensorRobot, Math.max(sensorRobot.getSize(), minRobotSize * zoom)), g, Color.red, true);
+			drawString(sensorRobot.getId().toString(), sensorRobot, g, Color.red);
 		}
 		// drawVector(robot, fixForce(robot.virutalForce), g, Color.magenta);
 		// drawVector(robot, fixForce(robot.dampingForce), g, Color.blue);
 		// drawString(String.format("%.0f",
 		// sensorRobot.getPotential(sensorRobot.getIterationNo() - 1)),
 		// sensorRobot.add(-10.0, 10.0), g, Color.black);
-		drawString(sensorRobot.getId().toString(), sensorRobot, g, Color.black);
 	}
 
 	public void drawObstacles(Graphics g) {

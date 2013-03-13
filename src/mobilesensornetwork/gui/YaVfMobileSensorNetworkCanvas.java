@@ -13,12 +13,11 @@ public class YaVfMobileSensorNetworkCanvas extends SpringVFMobileSensorNetworkCa
 	}
 
 	public void drawRobot(SensorRobot sensorRobot, Graphics g) {
-		if (!sensorRobot.isRunning()) {
-			return;
-		}
 		super.drawRobot(sensorRobot, g);
-		YaVfRobot yavfRobot = (YaVfRobot) sensorRobot;
-		drawVector(yavfRobot, fixForce(yavfRobot.getForceFromNeighborRobots()), g, Color.blue);
-		drawVector(yavfRobot, fixForce(yavfRobot.getAttractiveForceFromWall()), g, Color.red);
+		if (sensorRobot.isRunning()) {
+			YaVfRobot yavfRobot = (YaVfRobot) sensorRobot;
+			drawVector(yavfRobot, fixForce(yavfRobot.getForceFromNeighborRobots()), g, Color.blue);
+			drawVector(yavfRobot, fixForce(yavfRobot.getAttractiveForceFromWall()), g, Color.red);
+		}
 	}
 }
