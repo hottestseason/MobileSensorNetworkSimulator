@@ -63,7 +63,7 @@ public class MobileSensorNetworkInfoPanel extends JPanel {
 	public void update() {
 		iterationNoLabel.setText("IterationNo: " + sensorNetwork.getIterationNo());
 		runningRobotsLabel.setText("RunningRobots: " + sensorNetwork.getRunningNodes().size());
-		sensedPointsLabel.setText("SensedPoints: " + sensorNetwork.sensedPoints.size());
+		sensedPointsLabel.setText("SensedPoints: " + sensorNetwork.sensedAreas);
 		otherLabel.setText(sensorNetwork.toString());
 	}
 

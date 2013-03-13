@@ -1,5 +1,6 @@
 package sensornetwork;
 
+import geom.Circle;
 import geom.Obstacle2D;
 import geom.Point2D;
 
@@ -83,6 +84,7 @@ public class SensorNetwork extends PotentialNetwork {
 		if (getIterationNo() > getMaxMessageHop()) {
 			eventCoverageCalculator.sensingFinishied(getIterationNo() - getMaxMessageHop());
 		}
+	}
 
 	public void sensed(Integer iterationNo, Circle circle) {
 		areaCoverageCalculator.sense(iterationNo, circle);
