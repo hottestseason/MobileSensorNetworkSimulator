@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
+import utils.MapUtils;
+
 public class NetworkNode extends Node {
 	private Boolean running = true;
 	private Double transmissionConsumedEnergy = 0.0;
@@ -56,7 +58,7 @@ public class NetworkNode extends Node {
 	}
 
 	public void resetState() {
-		clearOldBuffers(3);
+		MapUtils.clearOld(buffers, 3);
 	}
 
 	public void transferMessages() {
@@ -88,14 +90,6 @@ public class NetworkNode extends Node {
 			buffers.put(iterationNo, buffer);
 		}
 		buffer.add(message);
-	}
-
-	public void clearOldBuffers(Integer clearCount) {
-		if (buffers != null && buffers.size() > clearCount) {
-			while (buffers.size() > clearCount) {
-				buffers.remove(buffers.firstKey());
-			}
-		}
 	}
 
 	public void send(Integer bit, Double distance) {

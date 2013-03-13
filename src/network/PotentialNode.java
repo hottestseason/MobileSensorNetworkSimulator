@@ -1,14 +1,18 @@
 package network;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.TreeMap;
+
+import utils.MapUtils;
 
 public class PotentialNode extends NetworkNode {
 	protected Double potentialAlpha = 0.9;
-	private HashMap<Integer, Double> potentials = new HashMap<Integer, Double>();
 
-	public List<PotentialNode> getConnectedPotentialNodes() {
-		return (List<PotentialNode>) (List<?>) getConnectedNodes();
+	private TreeMap<Integer, Double> potentials = new TreeMap<Integer, Double>();
+
+	public void resetState() {
+		super.resetState();
+		MapUtils.clearOld(potentials, 5);
 	}
 
 	public Double getPotential() {
@@ -46,7 +50,7 @@ public class PotentialNode extends NetworkNode {
 	}
 
 	protected PotentialNode getMinPotentialNode() {
-		return getMinPotentialNode(getConnectedPotentialNodes());
+		return getMinPotentialNode((List<PotentialNode>) (List<?>) getConnectedNodes());
 	}
 
 	protected PotentialNode getMinPotentialNode(List<PotentialNode> from) {
