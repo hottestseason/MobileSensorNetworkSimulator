@@ -238,7 +238,7 @@ public class SensorNode extends PotentialNode {
 	}
 
 	public Boolean isEdgeNode() {
-		int splitSize = 36;
+		int splitSize = 180;
 		double radius = getWirelessRange() * 1.01;
 		for (int i = 0; i < splitSize; i++) {
 			Double angle = 2 * Math.PI * i / splitSize;
