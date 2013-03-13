@@ -18,7 +18,7 @@ import utils.TimerListener;
 
 public abstract class MobileSensorNetworkGuiSimulator extends MobileSensorNetworkSimulator implements TimerListener, ActionListener {
 	static int width = 1366, height = 768;
-	static Double speed = 100.0;
+	static Double speed = 1000.0;
 
 	protected MobileSensorNetworkCanvas mobileSensorNetworkCanvas;
 	protected MobileSensorNetworkTable mobileSensorNetworkTable;

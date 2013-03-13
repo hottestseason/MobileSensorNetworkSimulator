@@ -13,12 +13,12 @@ import simulator.SpringVfMobileSensorNetworkSimulator;
 import simulator.YaVfMobileSensorNetworkGuiSimulator;
 
 public class MobileSensorNetworkSimulation {
-	static Double size = 500.0;
+	static Double size = 750.0;
 	static SensingArea sensingArea = SensingArea.getType3(size, size);
 	static Double iterationInterval = 0.2;
-	static Integer robotCount = 50;
-	static Double springConstant = 5.0;
-	static Double dampingCoefficient = 5.0;
+	static Integer robotCount = 300;
+	static Double springConstant = 0.5;
+	static Double dampingCoefficient = 0.42;
 	static SensorRobotParameters sensorRobotParameters;
 
 	public static void main(String[] args) {
@@ -28,7 +28,7 @@ public class MobileSensorNetworkSimulation {
 		sensorRobotParameters.setWirelessRange(80.0);
 		sensorRobotParameters.setSensorRange(30.0);
 		sensorRobotParameters.setMaxSpeed(5.0);
-		sensorRobotParameters.setMaxEnergy(7500.0);
+		sensorRobotParameters.setMaxEnergy(100000.0);
 
 		// getSpringConstantAndDampingCoefficientRelation(0.5);
 		startYaVfDemo();
