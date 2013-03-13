@@ -14,6 +14,8 @@ import java.util.TreeMap;
 import network.PotentialNetwork;
 
 public class SensorNetwork extends PotentialNetwork {
+	static public Integer precision = 50;
+
 	protected SensingArea sensingArea;
 
 	public TreeMap<Integer, Integer> startedNodesHistory = new TreeMap<Integer, Integer>();

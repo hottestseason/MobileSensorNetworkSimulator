@@ -15,7 +15,7 @@ import utils.MathUtils;
 
 public class SensingArea {
 	private Random random = new Random();
-	private Integer precision = 25;
+	private Integer precision = SensorNetwork.precision;
 	private Double eventsPerSeconds = 0.0001;
 	private Integer maxEventsPerPoint = 5;
 	private List<Obstacle2D> obstacles = new ArrayList<Obstacle2D>();
