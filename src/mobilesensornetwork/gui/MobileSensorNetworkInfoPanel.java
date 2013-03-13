@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -18,6 +19,8 @@ public class MobileSensorNetworkInfoPanel extends JPanel {
 	private JLabel sensedPointsLabel = new JLabel();
 	private JLabel otherLabel = new JLabel();
 	private ArrayList<JButton> controlButton = new ArrayList<JButton>();
+	private JCheckBox updatesCanvas = new JCheckBox("UpdatesCanvas", null, true);
+	private JCheckBox updatesNodesTable = new JCheckBox("UpdatesNodesTable", null, true);
 
 	public MobileSensorNetworkInfoPanel(MobileSensorNetwork sensorNetwork, ActionListener actionListener) {
 		this.sensorNetwork = sensorNetwork;
@@ -36,13 +39,22 @@ public class MobileSensorNetworkInfoPanel extends JPanel {
 		add(centerPanel, BorderLayout.CENTER);
 
 		JPanel pageEndPanel = new JPanel();
+		pageEndPanel.setLayout(new BorderLayout());
+
+		JPanel preferencesPanel = new JPanel();
+		preferencesPanel.add(updatesCanvas);
+		preferencesPanel.add(updatesNodesTable);
+		pageEndPanel.add(preferencesPanel, BorderLayout.PAGE_START);
+
+		JPanel controlPanel = new JPanel();
 		String[] controls = { "start", "stop", "resume", "restart" };
 		for (String control : controls) {
 			JButton controlButton = new JButton(control.substring(0, 1).toUpperCase() + control.substring(1));
 			controlButton.setActionCommand(control);
 			controlButton.addActionListener(actionListener);
-			pageEndPanel.add(controlButton);
+			controlPanel.add(controlButton);
 		}
+		pageEndPanel.add(controlPanel, BorderLayout.CENTER);
 		add(pageEndPanel, BorderLayout.PAGE_END);
 
 		update();
@@ -51,7 +63,15 @@ public class MobileSensorNetworkInfoPanel extends JPanel {
 	public void update() {
 		iterationNoLabel.setText("IterationNo: " + sensorNetwork.getIterationNo());
 		runningRobotsLabel.setText("RunningRobots: " + sensorNetwork.getRunningNodes().size());
-		sensedPointsLabel.setText("SensedPoints: " + sensorNetwork.sensedAreas);
+		sensedPointsLabel.setText("SensedPoints: " + sensorNetwork.sensedPoints.size());
 		otherLabel.setText(sensorNetwork.toString());
+	}
+
+	public boolean updatesCanvas() {
+		return updatesCanvas.isSelected();
+	}
+
+	public boolean updatesNodesTable() {
+		return updatesNodesTable.isSelected();
 	}
 }

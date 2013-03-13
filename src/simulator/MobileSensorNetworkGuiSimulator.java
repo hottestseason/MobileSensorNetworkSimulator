@@ -82,11 +82,19 @@ public abstract class MobileSensorNetworkGuiSimulator extends MobileSensorNetwor
 	}
 
 	protected void updateGui() {
-		mobileSensorNetworkCanvas.repaint();
-		mobileSensorNetworkTable.update();
 		long before = System.nanoTime();
 		mobileSensorNetworkInfoPanel.update();
 		System.out.print("infoPanel " + (System.nanoTime() - before) / 1000L + "us ");
+		if (mobileSensorNetworkInfoPanel.updatesCanvas()) {
+			before = System.nanoTime();
+			mobileSensorNetworkCanvas.repaint();
+			System.out.print("canvas " + (System.nanoTime() - before) / 1000L + "us ");
+		}
+		if (mobileSensorNetworkInfoPanel.updatesNodesTable()) {
+			before = System.nanoTime();
+			mobileSensorNetworkTable.update();
+			System.out.print("table " + (System.nanoTime() - before) / 1000L + "us ");
+		}
 		before = System.nanoTime();
 		mobileSensorNetworkChartPanel.update();
 		System.out.print("chart " + (System.nanoTime() - before) / 1000L + "us ");
