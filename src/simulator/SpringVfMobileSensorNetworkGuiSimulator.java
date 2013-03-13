@@ -18,7 +18,7 @@ public class SpringVfMobileSensorNetworkGuiSimulator extends MobileSensorNetwork
 	public void setup() {
 		random = new Random(seed);
 		setMobileSensorNetwork(new SpringVfMobileSensorNetwork());
-		getSpringVfMobileSensorNetwork().setIterateInterval(iterateInterval);
+		getSpringVfMobileSensorNetwork().setIterateInterval(iterationInterval);
 		getSpringVfMobileSensorNetwork().setSensingArea(sensingArea);
 		getSpringVfMobileSensorNetwork().prepareNodes(robotCount, sensorRobotParameters, dampingCoefficient, springConstant);
 		getSpringVfMobileSensorNetwork().scatter(25.0, 25.0, random);
@@ -43,7 +43,7 @@ public class SpringVfMobileSensorNetworkGuiSimulator extends MobileSensorNetwork
 		getSpringVfMobileSensorNetwork().calculateVirtualForce();
 		getSpringVfMobileSensorNetwork().updateAreaCoverageCalculator();
 		getSpringVfMobileSensorNetwork().getSensingData();
-		getSpringVfMobileSensorNetwork().updateEventCoverageCalculator(iterateInterval);
+		getSpringVfMobileSensorNetwork().updateEventCoverageCalculator(iterationInterval);
 		getSpringVfMobileSensorNetwork().getEventsData();
 		getSpringVfMobileSensorNetwork().transferMessages();
 		getSpringVfMobileSensorNetwork().move(getSpringVfMobileSensorNetwork().getIterateInterval());

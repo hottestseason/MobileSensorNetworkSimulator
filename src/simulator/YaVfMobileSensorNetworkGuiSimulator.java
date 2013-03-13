@@ -16,7 +16,7 @@ public class YaVfMobileSensorNetworkGuiSimulator extends SpringVfMobileSensorNet
 	public void setup() {
 		random = new Random(seed);
 		setMobileSensorNetwork(new YaVfMobileSensorNetwork());
-		getYavfMobileSensorNetwork().setIterateInterval(iterateInterval);
+		getYavfMobileSensorNetwork().setIterateInterval(iterationInterval);
 		getYavfMobileSensorNetwork().setSensingArea(sensingArea);
 		getYavfMobileSensorNetwork().prepareNodes(robotCount, sensorRobotParameters, dampingCoefficient, springConstant);
 		getYavfMobileSensorNetwork().scatter(25.0, 25.0, random);
@@ -59,7 +59,7 @@ public class YaVfMobileSensorNetworkGuiSimulator extends SpringVfMobileSensorNet
 		System.out.print(" areaData " + (System.nanoTime() - before) / 1000L + "us");
 
 		before = System.nanoTime();
-		getYavfMobileSensorNetwork().updateEventCoverageCalculator(iterateInterval);
+		getYavfMobileSensorNetwork().updateEventCoverageCalculator(iterationInterval);
 		getYavfMobileSensorNetwork().getEventsData();
 		System.out.print(" eventsData " + (System.nanoTime() - before) / 1000L + "us");
 

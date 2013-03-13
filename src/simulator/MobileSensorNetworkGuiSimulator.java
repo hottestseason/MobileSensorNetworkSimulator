@@ -52,7 +52,7 @@ public abstract class MobileSensorNetworkGuiSimulator extends MobileSensorNetwor
 
 	public void start() {
 		if (timer == null || !timer.isRunning()) {
-			timer = new Timer(this, iterateInterval / speed);
+			timer = new Timer(this, iterationInterval / speed);
 			timer.start();
 		}
 	}
