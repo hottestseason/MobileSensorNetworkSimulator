@@ -39,6 +39,8 @@ public class MobileSensorNetworkChartPanel extends JPanel {
 		ChartPanel coveragePanel = new ChartPanel(coverageChart);
 		coveragePanel.setPreferredSize(new Dimension(750, 593));
 		add(coveragePanel);
+
+		areaCoverageSeries.add(0.0, 0.0);
 	}
 
 	public void update() {
