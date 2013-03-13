@@ -88,11 +88,13 @@ public class Network extends Graph {
 	}
 
 	public void transferMessages() {
+		long before = System.nanoTime();
 		for (NetworkNode networkNode : getNetworkNodes()) {
 			if (networkNode.isRunning()) {
 				networkNode.transferMessages();
 			}
 		}
+		System.out.print("transfer " + (System.nanoTime() - before) / 1000L + "us ");
 	}
 
 	public ArrayList<NetworkNode> getRunningNodes() {

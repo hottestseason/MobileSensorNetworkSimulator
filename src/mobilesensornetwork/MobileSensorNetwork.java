@@ -30,6 +30,7 @@ public class MobileSensorNetwork extends SensorNetwork {
 	}
 
 	public Double move(Double seconds) {
+		long before = System.nanoTime();
 		Double movedDistance = 0.0;
 		for (SensorRobot sensorRobot : getSensorRobots()) {
 			if (sensorRobot.getId() == 0) {
@@ -38,6 +39,7 @@ public class MobileSensorNetwork extends SensorNetwork {
 			movedDistance += sensorRobot.move(seconds).getNorm();
 		}
 		sumMovedDistance += movedDistance;
+		System.out.print("move " + (System.nanoTime() - before) / 1000L + "us ");
 		return movedDistance;
 	}
 }

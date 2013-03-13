@@ -19,6 +19,7 @@ public class YaVfMobileSensorNetwork extends SpringVfMobileSensorNetwork {
 	}
 
 	public void adjustNodeSize() {
+		long before = System.nanoTime();
 		SpringVFRobot springVFSinkRobot = (SpringVFRobot) getSinkNode();
 		for (SpringVFRobot springVFRobot : springVFSinkRobot.getSpringConnectedRobots()) {
 			if (springVFSinkRobot.getDistanceFrom(springVFRobot) >= springVFSinkRobot.getSpringLengthFor(springVFRobot) * 0.99) {
@@ -31,5 +32,6 @@ public class YaVfMobileSensorNetwork extends SpringVfMobileSensorNetwork {
 				}
 			}
 		}
+		System.out.print("adjustNodes " + (System.nanoTime() - before) / 1000L + "us ");
 	}
 }

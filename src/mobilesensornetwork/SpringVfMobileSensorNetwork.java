@@ -11,10 +11,12 @@ public class SpringVfMobileSensorNetwork extends VfMobileSensorNetwork {
 	}
 
 	public void createSpringConnections() {
+		long before = System.nanoTime();
 		for (SensorRobot sensorRobot : getSensorRobots()) {
 			if (sensorRobot.isRunning()) {
 				((SpringVFRobot) sensorRobot).createSpringConnections();
 			}
 		}
+		System.out.print("springs " + (System.nanoTime() - before) / 1000L + "us ");
 	}
 }
