@@ -59,6 +59,7 @@ public abstract class MobileSensorNetworkGuiSimulator extends MobileSensorNetwor
 
 	public void stop() {
 		timer.stop();
+		updateGui(true);
 	}
 
 	public void resume() {
@@ -82,20 +83,24 @@ public abstract class MobileSensorNetworkGuiSimulator extends MobileSensorNetwor
 	}
 
 	protected void updateGui() {
+		updateGui(false);
+	}
+
+	protected void updateGui(Boolean force) {
 		long before = System.nanoTime();
 		mobileSensorNetworkInfoPanel.update();
 		System.out.print("infoPanel " + (System.nanoTime() - before) / 1000L + "us ");
-		if (mobileSensorNetworkInfoPanel.updatesCanvas()) {
+		if (force || mobileSensorNetworkInfoPanel.updatesCanvas()) {
 			before = System.nanoTime();
 			mobileSensorNetworkCanvas.repaint();
 			System.out.print("canvas " + (System.nanoTime() - before) / 1000L + "us ");
 		}
-		if (mobileSensorNetworkInfoPanel.updatesNodesTable()) {
+		if (force || mobileSensorNetworkInfoPanel.updatesNodesTable()) {
 			before = System.nanoTime();
 			mobileSensorNetworkTable.update();
 			System.out.print("table " + (System.nanoTime() - before) / 1000L + "us ");
 		}
-		if (mobileSensorNetworkInfoPanel.updatesChart()) {
+		if (force || mobileSensorNetworkInfoPanel.updatesChart()) {
 			before = System.nanoTime();
 			mobileSensorNetworkChartPanel.update();
 			System.out.print("chart " + (System.nanoTime() - before) / 1000L + "us ");
