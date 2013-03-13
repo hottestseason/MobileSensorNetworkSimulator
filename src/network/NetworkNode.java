@@ -3,14 +3,13 @@ package network;
 import graph.Node;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.TreeMap;
 
 public class NetworkNode extends Node {
 	private Boolean running = true;
 	private Double transmissionConsumedEnergy = 0.0;
-	private HashMap<Integer, ArrayList<Message>> buffers;
+	private TreeMap<Integer, ArrayList<Message>> buffers;
 
 	public Network getNetwork() {
 		return (Network) getGraph();
@@ -81,7 +80,7 @@ public class NetworkNode extends Node {
 
 	protected void addToBuffer(Integer iterationNo, Message message) {
 		if (buffers == null) {
-			buffers = new HashMap<Integer, ArrayList<Message>>();
+			buffers = new TreeMap<Integer, ArrayList<Message>>();
 		}
 		ArrayList<Message> buffer = buffers.get(iterationNo);
 		if (buffer == null) {
@@ -92,18 +91,9 @@ public class NetworkNode extends Node {
 	}
 
 	public void clearOldBuffers(Integer clearCount) {
-		if (buffers == null) {
-			return;
-		}
-		ArrayList<Integer> removeBufferKeys = new ArrayList<Integer>();
-		for (Map.Entry<Integer, ArrayList<Message>> entry : buffers.entrySet()) {
-			if (entry.getKey() < getIterationNo() - clearCount) {
-				removeBufferKeys.add(entry.getKey());
-			}
-		}
-		for (Integer key : removeBufferKeys) {
-			if (buffers.get(key) != null) {
-				buffers.remove(key);
+		if (buffers != null && buffers.size() > clearCount) {
+			while (buffers.size() > clearCount) {
+				buffers.remove(buffers.firstKey());
 			}
 		}
 	}
