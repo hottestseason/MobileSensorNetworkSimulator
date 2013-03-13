@@ -16,6 +16,7 @@ public class MobileSensorNetworkSimulation {
 	static Double size = 750.0;
 	static SensingArea sensingArea = SensingArea.getType3(size, size);
 	static Double iterationInterval = 0.2;
+	static Integer sensingInterval = (int) (60.0 / iterationInterval);
 	static Integer robotCount = 300;
 	static Double springConstant = 0.5;
 	static Double dampingCoefficient = 0.42;
@@ -48,6 +49,7 @@ public class MobileSensorNetworkSimulation {
 		simulator.seed = 0;
 		simulator.sensingArea = sensingArea;
 		simulator.iterationInterval = iterationInterval;
+		simulator.sensingInterval = sensingInterval;
 		simulator.sensorRobotParameters = sensorRobotParameters;
 		simulator.robotCount = robotCount;
 		simulator.springConstant = springConstant;
@@ -61,6 +63,7 @@ public class MobileSensorNetworkSimulation {
 		simulator.seed = 0;
 		simulator.sensingArea = sensingArea;
 		simulator.iterationInterval = iterationInterval;
+		simulator.sensingInterval = sensingInterval;
 		simulator.sensorRobotParameters = sensorRobotParameters;
 		simulator.robotCount = robotCount;
 		simulator.springConstant = springConstant;

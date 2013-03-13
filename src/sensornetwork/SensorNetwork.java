@@ -26,6 +26,7 @@ public class SensorNetwork extends PotentialNetwork {
 	protected CoverageCalculator areaCoverageCalculator = new CoverageCalculator(this);
 	protected CoverageCalculator eventCoverageCalculator = new CoverageCalculator(this);
 
+	private Integer sensingInterval;
 	private TreeMap<Integer, Double> areaCoverageHistory = new TreeMap<Integer, Double>();
 
 	public void setSensingArea(SensingArea sensingArea) {
@@ -137,6 +138,14 @@ public class SensorNetwork extends PotentialNetwork {
 				sensorNode.getEventsData();
 			}
 		}
+	}
+
+	public Integer getSensingInterval() {
+		return sensingInterval;
+	}
+
+	public void setSensingInterval(Integer sensingInterval) {
+		this.sensingInterval = sensingInterval;
 	}
 
 	public void finishIteration() {

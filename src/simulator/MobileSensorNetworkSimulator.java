@@ -11,6 +11,7 @@ public abstract class MobileSensorNetworkSimulator {
 	public SensingArea sensingArea;
 	public Integer maxIteration = 144000;
 	public Double iterationInterval;
+	public Integer sensingInterval;
 	public SensorRobotParameters sensorRobotParameters;
 	public Integer robotCount;
 
