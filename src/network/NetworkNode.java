@@ -61,19 +61,22 @@ public class NetworkNode extends Node {
 	}
 
 	public void transferMessages() {
-		for (Message message : getBuffer(getIterationNo())) {
-			if (!equals(message.getTo())) {
-				send(message);
+		List<Message> messages = getBuffer(getIterationNo());
+		if (messages != null) {
+			for (Message message : getBuffer(getIterationNo())) {
+				if (!equals(message.getTo())) {
+					send(message);
+				}
 			}
 		}
 	}
 
-	protected ArrayList<Message> getBuffer(Integer iterationNo) {
-		ArrayList<Message> buffer = buffers.get(iterationNo);
-		if (buffer == null) {
-			buffer = new ArrayList<Message>();
+	protected List<Message> getBuffer(Integer iterationNo) {
+		if (buffers == null) {
+			return null;
+		} else {
+			return buffers.get(iterationNo);
 		}
-		return buffer;
 	}
 
 	protected void addToBuffer(Integer iterationNo, Message message) {
@@ -133,12 +136,12 @@ public class NetworkNode extends Node {
 
 	public void receive(Message message) {
 		receive(message.getBit());
-		 if (equals(message.getTo())) {
-		 message.clearHoppedNodes();
-		 } else {
-		 message.addHoppedNetworkNode(this);
-		 }
-		 addToBuffer(getIterationNo() + 1, message);
+		if (equals(message.getTo())) {
+			message.clearHoppedNodes();
+		} else {
+			message.addHoppedNetworkNode(this);
+		}
+		addToBuffer(getIterationNo() + 1, message);
 	}
 
 	protected NetworkNode getNextHop(Message message) {
