@@ -5,15 +5,15 @@ import graph.Graph;
 import java.util.ArrayList;
 
 public class Network extends Graph {
-	private Double iterateInterval = 0.1;
+	private Double iterationInterval = 0.1;
 	private Integer iterationNo = 0;
 
-	public Double getIterateInterval() {
-		return iterateInterval;
+	public Double getIterationInterval() {
+		return iterationInterval;
 	}
 
 	public void setIterateInterval(Double iterateInterval) {
-		this.iterateInterval = iterateInterval;
+		this.iterationInterval = iterateInterval;
 	}
 
 	public Integer getIterationNo() {

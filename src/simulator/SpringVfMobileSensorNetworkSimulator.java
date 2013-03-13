@@ -25,11 +25,11 @@ public class SpringVfMobileSensorNetworkSimulator extends MobileSensorNetworkSim
 		Double movedDistance = 0.0;
 		do {
 			iterate();
-			movedDistance = getSpringVfMobileSensorNetwork().move(getSpringVfMobileSensorNetwork().getIterateInterval());
+			movedDistance = getSpringVfMobileSensorNetwork().move(getSpringVfMobileSensorNetwork().getIterationInterval());
 		} while (movedDistance > 0.0 && getSpringVfMobileSensorNetwork().isConnected() && getSpringVfMobileSensorNetwork().getIterationNo() < maxIteration);
 		SpringVFRobot robot = (SpringVFRobot) getSpringVfMobileSensorNetwork().getSinkNode();
 		Boolean converged = getMobileSensorNetwork().getIterationNo() < maxIteration;
-		System.out.println(getMobileSensorNetwork().size() + "," + getMobileSensorNetwork().getIterateInterval() + "," + robot.getSpringConstant() + "," + robot.getDampingCoefficient() + "," + getMobileSensorNetwork().getIterationNo() + "," + getSpringVfMobileSensorNetwork().isConnected() + "," + converged + "," + getMobileSensorNetwork().getSumMovedDistance() + "," + getMobileSensorNetwork().getsumConsumedEnergy() + "," + getMobileSensorNetwork().getMaxConsumedEnergy());
+		System.out.println(getMobileSensorNetwork().size() + "," + getMobileSensorNetwork().getIterationInterval() + "," + robot.getSpringConstant() + "," + robot.getDampingCoefficient() + "," + getMobileSensorNetwork().getIterationNo() + "," + getSpringVfMobileSensorNetwork().isConnected() + "," + converged + "," + getMobileSensorNetwork().getSumMovedDistance() + "," + getMobileSensorNetwork().getsumConsumedEnergy() + "," + getMobileSensorNetwork().getMaxConsumedEnergy());
 	}
 
 	public void iterate() {

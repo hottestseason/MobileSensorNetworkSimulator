@@ -46,7 +46,7 @@ public class SpringVfMobileSensorNetworkGuiSimulator extends MobileSensorNetwork
 		getSpringVfMobileSensorNetwork().updateEventCoverageCalculator(iterationInterval);
 		getSpringVfMobileSensorNetwork().getEventsData();
 		getSpringVfMobileSensorNetwork().transferMessages();
-		getSpringVfMobileSensorNetwork().move(getSpringVfMobileSensorNetwork().getIterateInterval());
+		getSpringVfMobileSensorNetwork().move(getSpringVfMobileSensorNetwork().getIterationInterval());
 		updateGui();
 	}
 }

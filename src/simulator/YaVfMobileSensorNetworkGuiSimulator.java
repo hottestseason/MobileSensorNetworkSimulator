@@ -57,7 +57,7 @@ public class YaVfMobileSensorNetworkGuiSimulator extends SpringVfMobileSensorNet
 		getYavfMobileSensorNetwork().transferMessages();
 		getYavfMobileSensorNetwork().adjustNodeSize();
 
-		getYavfMobileSensorNetwork().move(getYavfMobileSensorNetwork().getIterateInterval());
+		getYavfMobileSensorNetwork().move(getYavfMobileSensorNetwork().getIterationInterval());
 
 		updateGui();
 	}

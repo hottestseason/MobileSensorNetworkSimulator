@@ -40,18 +40,17 @@ public class MobileSensorNetworkChartPanel extends JPanel {
 	}
 
 	public void update() {
-		startedNodesSeries.add(mobileSensorNetwork.getIterationNo() * mobileSensorNetwork.getIterateInterval(), (double) mobileSensorNetwork.getStartedNodeSize() * 100.0 / mobileSensorNetwork.size());
+		startedNodesSeries.add(mobileSensorNetwork.getIterationNo() * mobileSensorNetwork.getIterationInterval(), (double) mobileSensorNetwork.getStartedNodeSize() * 100.0 / mobileSensorNetwork.size());
 		for (int i = Math.max(0, mobileSensorNetwork.getIterationNo() - mobileSensorNetwork.getMaxMessageHop()); i < mobileSensorNetwork.getIterationNo(); i++) {
 			Double areaCoverage = mobileSensorNetwork.getAreaCoverage(i);
 			if (areaCoverage != null) {
-				int updateIndex = areaCoverageSeries.indexOf(i * mobileSensorNetwork.getIterateInterval());
+				int updateIndex = areaCoverageSeries.indexOf(i * mobileSensorNetwork.getIterationInterval());
 				if (updateIndex >= 0) {
 					areaCoverageSeries.remove(updateIndex);
 				}
-				areaCoverageSeries.add(i * mobileSensorNetwork.getIterateInterval(), (double) areaCoverage * 100.0, false);
+				areaCoverageSeries.add(i * mobileSensorNetwork.getIterationInterval(), (double) areaCoverage * 100.0, false);
 			}
 		}
 		areaCoverageSeries.fireSeriesChanged();
-		eventCoverageSeries.fireSeriesChanged();
 	}
 }
