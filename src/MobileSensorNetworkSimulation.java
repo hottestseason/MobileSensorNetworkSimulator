@@ -15,8 +15,8 @@ import simulator.YaVfMobileSensorNetworkGuiSimulator;
 public class MobileSensorNetworkSimulation {
 	static Double size = 500.0;
 	static SensingArea sensingArea = SensingArea.getType3(size, size);
-	static Double iterateInterval = 0.2;
 	static Integer robotCount = 200;
+	static Double iterationInterval = 0.2;
 	static Double springConstant = 5.0;
 	static Double dampingCoefficient = 2.5;
 	static SensorRobotParameters sensorRobotParameters;
@@ -47,7 +47,7 @@ public class MobileSensorNetworkSimulation {
 		YaVfMobileSensorNetworkGuiSimulator simulator = new YaVfMobileSensorNetworkGuiSimulator();
 		simulator.seed = 0;
 		simulator.sensingArea = sensingArea;
-		simulator.iterateInterval = iterateInterval;
+		simulator.iterationInterval = iterationInterval;
 		simulator.sensorRobotParameters = sensorRobotParameters;
 		simulator.robotCount = robotCount;
 		simulator.springConstant = springConstant;
@@ -60,7 +60,7 @@ public class MobileSensorNetworkSimulation {
 		SpringVfMobileSensorNetworkGuiSimulator simulator = new SpringVfMobileSensorNetworkGuiSimulator();
 		simulator.seed = 0;
 		simulator.sensingArea = sensingArea;
-		simulator.iterateInterval = iterateInterval;
+		simulator.iterationInterval = iterationInterval;
 		simulator.sensorRobotParameters = sensorRobotParameters;
 		simulator.robotCount = robotCount;
 		simulator.springConstant = springConstant;
@@ -82,7 +82,7 @@ public class MobileSensorNetworkSimulation {
 					SpringVfMobileSensorNetworkSimulator simulator = new SpringVfMobileSensorNetworkSimulator();
 					simulator.seed = seed;
 					simulator.sensingArea = sensingArea;
-					simulator.iterateInterval = iterateInterval;
+					simulator.iterationInterval = iterationInterval;
 					simulator.maxIteration = 6000;
 					simulator.sensorRobotParameters = sensorRobotParameters;
 					simulator.robotCount = robotCount;
