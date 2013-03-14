@@ -32,6 +32,7 @@ public class SpringVfMobileSensorNetworkGuiSimulator extends MobileSensorNetwork
 			stop();
 			return;
 		}
+		long before = System.nanoTime();
 		getSpringVfMobileSensorNetwork().startIteration();
 		getSpringVfMobileSensorNetwork().resetState();
 		getSpringVfMobileSensorNetwork().sendBeacon();
@@ -39,10 +40,19 @@ public class SpringVfMobileSensorNetworkGuiSimulator extends MobileSensorNetwork
 		getSpringVfMobileSensorNetwork().updatePotential();
 		getSpringVfMobileSensorNetwork().createSpringConnections();
 		getSpringVfMobileSensorNetwork().calculateVirtualForce();
-		getSpringVfMobileSensorNetwork().updateAreaCoverageCalculator();
-		getSpringVfMobileSensorNetwork().getSensingData();
+
+		if (getSpringVfMobileSensorNetwork().getIterationNo() % sensingInterval == 0) {
+			before = System.nanoTime();
+			getSpringVfMobileSensorNetwork().updateAreaCoverageCalculator();
+			getSpringVfMobileSensorNetwork().getSensingData();
+			System.out.print("areaData " + (System.nanoTime() - before) / 1000L + "us ");
+		}
+
+		before = System.nanoTime();
 		getSpringVfMobileSensorNetwork().updateEventCoverageCalculator(iterationInterval);
 		getSpringVfMobileSensorNetwork().getEventsData();
+		System.out.print("eventsData " + (System.nanoTime() - before) / 1000L + "us ");
+
 		getSpringVfMobileSensorNetwork().transferMessages();
 		getSpringVfMobileSensorNetwork().move(getSpringVfMobileSensorNetwork().getIterationInterval());
 		getSpringVfMobileSensorNetwork().finishIteration();
