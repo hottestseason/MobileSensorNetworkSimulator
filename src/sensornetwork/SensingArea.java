@@ -62,6 +62,20 @@ public class SensingArea {
 		return new SensingArea(obstacles);
 	}
 
+	public static SensingArea getType5(Double width, Double height) {
+		ArrayList<Obstacle2D> obstacles = new ArrayList<Obstacle2D>();
+		obstacles.add(new Obstacle2D(new Rectangle2D(new Point2D(), width, height), true, true));
+		obstacles.add(new Obstacle2D(new Rectangle2D(new Point2D(width * 3 / 10, height * 1 / 10), width * 1 / 10, height * 1 / 10)));
+		obstacles.add(new Obstacle2D(new Rectangle2D(new Point2D(width * 3 / 10, height * 3 / 10), width * 1 / 10, height * 1 / 10)));
+		obstacles.add(new Obstacle2D(new Rectangle2D(new Point2D(width * 4 / 10, height * 2 / 10), width * 1 / 10, height * 1 / 10)));
+		obstacles.add(new Obstacle2D(new Rectangle2D(new Point2D(width * 7 / 10, height * 0 / 10), width * 1 / 10, height * 4 / 10)));
+		obstacles.add(new Obstacle2D(new Rectangle2D(new Point2D(width * 8 / 10, height * 3 / 10), width * 1 / 10, height * 1 / 10)));
+		obstacles.add(new Obstacle2D(new Rectangle2D(new Point2D(width * 0 / 10, height * 5 / 10), width * 5 / 10, height * 1 / 10)));
+		obstacles.add(new Obstacle2D(new Rectangle2D(new Point2D(width * 2 / 10, height * 7 / 10), width * 3 / 10, height * 3 / 10)));
+		obstacles.add(new Obstacle2D(new Rectangle2D(new Point2D(width * 7 / 10, height * 7 / 10), width * 2 / 10, height * 2 / 10)));
+		return new SensingArea(obstacles);
+	}
+
 	public SensingArea() {
 	}
 

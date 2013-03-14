@@ -1,5 +1,7 @@
 package mobilesensornetwork;
 
+import geom.Point2D;
+
 import java.util.ArrayList;
 
 import network.NetworkNode;
@@ -12,6 +14,12 @@ public class MobileSensorNetwork extends SensorNetwork {
 	public void scatter(Double width, Double height) {
 		for (SensorRobot robot : getSensorRobots()) {
 			robot.setPoint(RandomUtils.nextVector(width, height).add(sensingArea.getWidth() / 2, sensingArea.getWidth() / 2).toPoint2D());
+		}
+	}
+
+	public void scatter(Point2D point, Double width, Double height) {
+		for (SensorRobot robot : getSensorRobots()) {
+			robot.setPoint(RandomUtils.nextVector(width, height).add(point).toPoint2D());
 		}
 	}
 
