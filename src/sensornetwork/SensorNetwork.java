@@ -28,6 +28,7 @@ public class SensorNetwork extends PotentialNetwork {
 
 	public TreeMap<Integer, Double> areaCoverageHistory = new TreeMap<Integer, Double>();
 	public TreeMap<Integer, Integer> startedNodesHistory = new TreeMap<Integer, Integer>();
+	public TreeMap<Integer, Integer> endedNodesHistory = new TreeMap<Integer, Integer>();
 
 	public void setSensingArea(SensingArea sensingArea) {
 		this.sensingArea = sensingArea;
@@ -58,6 +59,20 @@ public class SensorNetwork extends PotentialNetwork {
 		Integer size = 0;
 		for (SensorNode sensorNode : getSensorNodes()) {
 			if (sensorNode.getConsumedEnergy() > 0) {
+				size++;
+			}
+		}
+		return size;
+	}
+
+	public Integer getEndedNodeSize(Integer iterationNo) {
+		return endedNodesHistory.get(iterationNo);
+	}
+
+	public Integer getEndedNodeSize() {
+		Integer size = 0;
+		for (SensorNode sensorNode : getSensorNodes()) {
+			if (!sensorNode.isRunning() && sensorNode.getRemainedBatteryRatio() < 0.5) {
 				size++;
 			}
 		}
@@ -150,6 +165,7 @@ public class SensorNetwork extends PotentialNetwork {
 
 	public void finishIteration() {
 		startedNodesHistory.put(getIterationNo(), getStartedNodeSize());
+		endedNodesHistory.put(getIterationNo(), getEndedNodeSize());
 		if (getIterationNo() > getMaxMessageHop()) {
 			Integer finishedNo = getIterationNo() - getMaxMessageHop();
 			Set<Point2D> sensedPoints = areaCoverageCalculator.getSensedPoints(finishedNo);
@@ -164,6 +180,7 @@ public class SensorNetwork extends PotentialNetwork {
 	public void clearOldHistory() {
 		if (getIterationNo() > dateSavedPeriods) {
 			startedNodesHistory.headMap(getIterationNo() - dateSavedPeriods).clear();
+			endedNodesHistory.headMap(getIterationNo() - dateSavedPeriods).clear();
 			areaCoverageHistory.headMap(getIterationNo() - dateSavedPeriods).clear();
 		}
 	}

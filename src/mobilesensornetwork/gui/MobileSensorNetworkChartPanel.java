@@ -20,6 +20,7 @@ public class MobileSensorNetworkChartPanel extends JPanel {
 	private XYSeries areaCoverageSeries = new XYSeries("Area Coverage");
 	private XYSeries eventCoverageSeries = new XYSeries("Event Coverage");
 	private XYSeries startedNodesSeries = new XYSeries("Started Nodes");
+	private XYSeries endedNodesSeries = new XYSeries("Ended Nodes");
 	private JFreeChart coverageChart;
 
 	private Integer lastAddedNo = 0;
@@ -30,6 +31,7 @@ public class MobileSensorNetworkChartPanel extends JPanel {
 		coverageDataset.addSeries(areaCoverageSeries);
 		// coverageDataset.addSeries(eventCoverageSeries);
 		coverageDataset.addSeries(startedNodesSeries);
+		coverageDataset.addSeries(endedNodesSeries);
 		coverageChart = ChartFactory.createXYLineChart(null, "Time (s)", "Ratio (%)", coverageDataset, PlotOrientation.VERTICAL, true, true, false);
 		XYPlot plot = (XYPlot) coverageChart.getPlot();
 		plot.setBackgroundPaint(Color.white);
@@ -45,8 +47,11 @@ public class MobileSensorNetworkChartPanel extends JPanel {
 
 	public void update() {
 		for (int i = lastAddedNo + 1; i <= mobileSensorNetwork.getIterationNo(); i++) {
-			startedNodesSeries.add(i * mobileSensorNetwork.getIterationInterval(), (double) mobileSensorNetwork.getStartedNodeSize(i) * 100.0 / mobileSensorNetwork.size());
+			startedNodesSeries.add(i * mobileSensorNetwork.getIterationInterval(), (double) mobileSensorNetwork.getStartedNodeSize(i) * 100.0 / mobileSensorNetwork.size(), false);
+			endedNodesSeries.add(i * mobileSensorNetwork.getIterationInterval(), (double) mobileSensorNetwork.getEndedNodeSize(i) * 100.0 / mobileSensorNetwork.size(), false);
 		}
+		startedNodesSeries.fireSeriesChanged();
+		endedNodesSeries.fireSeriesChanged();
 		int start = Math.max(1, Math.min(lastAddedNo + 1, mobileSensorNetwork.getIterationNo()) - mobileSensorNetwork.getMaxMessageHop() * mobileSensorNetwork.getSensingInterval());
 		start = ((int) (start / mobileSensorNetwork.getSensingInterval())) * mobileSensorNetwork.getSensingInterval();
 		for (int i = start; i < mobileSensorNetwork.getIterationNo(); i += mobileSensorNetwork.getSensingInterval()) {
