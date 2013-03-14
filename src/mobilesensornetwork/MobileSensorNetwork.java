@@ -1,19 +1,17 @@
 package mobilesensornetwork;
 
-import geom.Vector2D;
-
 import java.util.ArrayList;
-import java.util.Random;
 
 import network.NetworkNode;
 import sensornetwork.SensorNetwork;
+import utils.RandomUtils;
 
 public class MobileSensorNetwork extends SensorNetwork {
 	private Double sumMovedDistance = 0.0;
 
-	public void scatter(Double width, Double height, Random random) {
+	public void scatter(Double width, Double height) {
 		for (SensorRobot robot : getSensorRobots()) {
-			robot.setPoint(Vector2D.random(width, height, random).add(sensingArea.getWidth() / 2, sensingArea.getWidth() / 2).toPoint2D());
+			robot.setPoint(RandomUtils.nextVector(width, height).add(sensingArea.getWidth() / 2, sensingArea.getWidth() / 2).toPoint2D());
 		}
 	}
 

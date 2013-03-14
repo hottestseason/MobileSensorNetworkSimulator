@@ -1,23 +1,9 @@
 package geom;
 
-import java.util.Random;
 
 public class Vector2D implements Cloneable {
 	public Double x;
 	public Double y;
-	static private Random random = new Random();
-
-	static public Vector2D random(Double xRange, Double yRange) {
-		return random(xRange, yRange, random);
-	}
-
-	static public Vector2D random(Double xRange, Double yRange, Random random) {
-		return new Vector2D((random.nextDouble() - random.nextDouble()) * xRange, (random.nextDouble() - random.nextDouble()) * yRange);
-	}
-
-	static public Vector2D random() {
-		return random(1.0, 1.0);
-	}
 
 	public Vector2D() {
 		this(0, 0);

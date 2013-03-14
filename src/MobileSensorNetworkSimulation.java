@@ -46,7 +46,6 @@ public class MobileSensorNetworkSimulation {
 
 	public static void startYaVfDemo() {
 		YaVfMobileSensorNetworkGuiSimulator simulator = new YaVfMobileSensorNetworkGuiSimulator();
-		simulator.seed = 0;
 		simulator.sensingArea = sensingArea;
 		simulator.iterationInterval = iterationInterval;
 		simulator.sensingInterval = sensingInterval;
@@ -60,7 +59,6 @@ public class MobileSensorNetworkSimulation {
 
 	public static void startSpringVfDemo() {
 		SpringVfMobileSensorNetworkGuiSimulator simulator = new SpringVfMobileSensorNetworkGuiSimulator();
-		simulator.seed = 0;
 		simulator.sensingArea = sensingArea;
 		simulator.iterationInterval = iterationInterval;
 		simulator.sensingInterval = sensingInterval;
@@ -83,7 +81,6 @@ public class MobileSensorNetworkSimulation {
 				for (Double dampingCoefficient = dampingCoefficientFrom; dampingCoefficient < dampingCoefficientTo; dampingCoefficient += dampingCoefficientStep) {
 					System.out.print(seed + ",");
 					SpringVfMobileSensorNetworkSimulator simulator = new SpringVfMobileSensorNetworkSimulator();
-					simulator.seed = seed;
 					simulator.sensingArea = sensingArea;
 					simulator.iterationInterval = iterationInterval;
 					simulator.maxIteration = 6000;

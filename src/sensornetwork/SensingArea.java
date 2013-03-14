@@ -8,13 +8,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 
 import utils.MathUtils;
+import utils.RandomUtils;
 
 public class SensingArea {
-	private Random random = new Random();
 	private Integer precision = SensorNetwork.precision;
 	private Double eventsPerSeconds = 0.0001;
 	private Integer maxEventsPerPoint = 5;
@@ -71,10 +70,6 @@ public class SensingArea {
 		addObstacles(obstacles);
 	}
 
-	public void setRandomSeed(long seed) {
-		random = new Random(seed);
-	}
-
 	public Double getWidth() {
 		return obstacles.get(0).getSurroundedRectangle().getWidth();
 	}
@@ -110,7 +105,7 @@ public class SensingArea {
 		for (Point2D point : getAllPoints()) {
 			for (int i = 1; i <= maxEventsPerPoint; i++) {
 				Double poisson = MathUtils.getPoisson(eventsAverage, i);
-				if (random.nextDouble() < poisson) {
+				if (RandomUtils.nextDouble() < poisson) {
 					for (int j = 1; j <= i; j++) {
 						points.add(point.clone());
 					}

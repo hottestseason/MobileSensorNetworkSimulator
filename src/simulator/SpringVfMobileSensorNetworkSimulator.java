@@ -1,7 +1,5 @@
 package simulator;
 
-import java.util.Random;
-
 import mobilesensornetwork.SpringVFRobot;
 import mobilesensornetwork.SpringVfMobileSensorNetwork;
 
@@ -13,13 +11,12 @@ public class SpringVfMobileSensorNetworkSimulator extends MobileSensorNetworkSim
 	}
 
 	public void setup() {
-		random = new Random(seed);
 		setMobileSensorNetwork(new SpringVfMobileSensorNetwork());
 		getSpringVfMobileSensorNetwork().setIterateInterval(iterationInterval);
 		getSpringVfMobileSensorNetwork().setSensingInterval(sensingInterval);
 		getSpringVfMobileSensorNetwork().setSensingArea(sensingArea);
 		getSpringVfMobileSensorNetwork().prepareNodes(robotCount, sensorRobotParameters, dampingCoefficient, springConstant);
-		getSpringVfMobileSensorNetwork().scatter(25.0, 25.0, random);
+		getSpringVfMobileSensorNetwork().scatter(25.0, 25.0);
 	}
 
 	public void start() {

@@ -2,6 +2,8 @@ package geom;
 
 import java.util.HashSet;
 
+import utils.RandomUtils;
+
 public class Circle {
 	public Point2D center;
 	public Double radius;
@@ -83,7 +85,7 @@ public class Circle {
 		} else if (center.getDistanceFrom(circle.center) < radius + circle.radius) {
 			Vector2D vectorFromCircleCenter = null;
 			if (center.equals(circle.center)) {
-				vectorFromCircleCenter = Vector2D.random().expandTo(radius);
+				vectorFromCircleCenter = RandomUtils.nextVector().expandTo(radius);
 			} else {
 				vectorFromCircleCenter = circle.center.getVector2DTo(center);
 			}

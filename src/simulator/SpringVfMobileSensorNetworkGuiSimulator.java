@@ -1,7 +1,5 @@
 package simulator;
 
-import java.util.Random;
-
 import mobilesensornetwork.SpringVfMobileSensorNetwork;
 import mobilesensornetwork.gui.MobileSensorNetworkChartPanel;
 import mobilesensornetwork.gui.MobileSensorNetworkInfoPanel;
@@ -16,13 +14,12 @@ public class SpringVfMobileSensorNetworkGuiSimulator extends MobileSensorNetwork
 	}
 
 	public void setup() {
-		random = new Random(seed);
 		setMobileSensorNetwork(new SpringVfMobileSensorNetwork());
 		getSpringVfMobileSensorNetwork().setIterateInterval(iterationInterval);
 		getSpringVfMobileSensorNetwork().setSensingInterval(sensingInterval);
 		getSpringVfMobileSensorNetwork().setSensingArea(sensingArea);
 		getSpringVfMobileSensorNetwork().prepareNodes(robotCount, sensorRobotParameters, dampingCoefficient, springConstant);
-		getSpringVfMobileSensorNetwork().scatter(25.0, 25.0, random);
+		getSpringVfMobileSensorNetwork().scatter(25.0, 25.0);
 
 		mobileSensorNetworkCanvas = new SpringVFMobileSensorNetworkCanvas(getSpringVfMobileSensorNetwork());
 		mobileSensorNetworkTable = new MobileSensorNetworkTable(getSpringVfMobileSensorNetwork());
