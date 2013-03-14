@@ -47,10 +47,12 @@ public class MobileSensorNetworkChartPanel extends JPanel {
 
 	public void update() {
 		for (int i = lastAddedNo + 1; i <= mobileSensorNetwork.getIterationNo(); i++) {
-			startedNodesSeries.add(i * mobileSensorNetwork.getIterationInterval(), (double) mobileSensorNetwork.getStartedNodeSize(i) * 100.0 / mobileSensorNetwork.size(), false);
-			Integer endedNodeSize = mobileSensorNetwork.getEndedNodeSize(i);
-			if (endedNodeSize > 0) {
-				endedNodesSeries.add(i * mobileSensorNetwork.getIterationInterval(), (double) endedNodeSize * 100.0 / mobileSensorNetwork.size(), false);
+			if (i % 5 == 0) {
+				startedNodesSeries.add(i * mobileSensorNetwork.getIterationInterval(), (double) mobileSensorNetwork.getStartedNodeSize(i) * 100.0 / mobileSensorNetwork.size(), false);
+				Integer endedNodeSize = mobileSensorNetwork.getEndedNodeSize(i);
+				if (endedNodeSize > 0) {
+					endedNodesSeries.add(i * mobileSensorNetwork.getIterationInterval(), (double) endedNodeSize * 100.0 / mobileSensorNetwork.size(), false);
+				}
 			}
 		}
 		startedNodesSeries.fireSeriesChanged();
