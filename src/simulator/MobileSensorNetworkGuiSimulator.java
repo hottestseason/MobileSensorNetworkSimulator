@@ -90,7 +90,7 @@ public abstract class MobileSensorNetworkGuiSimulator extends MobileSensorNetwor
 	protected void updateGui(Boolean force) {
 		long before = System.nanoTime();
 		mobileSensorNetworkInfoPanel.update();
-		if (getMobileSensorNetwork().getIterationNo() % (Network.dateSavedPeriods * 0.8) == 0) {
+		if (getMobileSensorNetwork().getIterationNo() % ((int) (Network.dateSavedPeriods * 0.8)) == 0) {
 			force = true;
 		}
 		System.out.print("infoPanel " + (System.nanoTime() - before) / 1000L + "us ");

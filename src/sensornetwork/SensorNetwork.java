@@ -175,6 +175,7 @@ public class SensorNetwork extends PotentialNetwork {
 			areaCoverageHistory.put(finishedNo, getAreaCoverage(finishedNo));
 			areaCoverageCalculator.sensingFinishied(finishedNo);
 		}
+		clearOldHistory();
 	}
 
 	public void clearOldHistory() {
