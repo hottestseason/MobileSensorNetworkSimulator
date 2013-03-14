@@ -3,8 +3,12 @@ package mobilesensornetwork;
 import geom.Obstacle2D;
 import geom.Vector2D;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import network.Message;
+import network.NetworkNode;
+import network.PotentialNode;
 import sensornetwork.SensorNode;
 
 public class SensorRobot extends SensorNode {
@@ -125,5 +129,24 @@ public class SensorRobot extends SensorNode {
 
 	private Double calculateMoveEnergy(Double distance) {
 		return distance * 0.6 * getWeight();
+	}
+
+	protected List<NetworkNode> getNextHops(Message message) {
+		List<NetworkNode> nodes = new ArrayList<NetworkNode>();
+		List<PotentialNode> unhoppedConnectedNodes = (List<PotentialNode>) (List<?>) getUnhoppedConnectedNodes(message);
+		NetworkNode nextNode = getMinPotentialNode(unhoppedConnectedNodes);
+		if (nextNode != null) {
+			nodes.add(nextNode);
+			while (((SensorRobot) nextNode).getRemainedBatteryRatio() < 0.05) {
+				unhoppedConnectedNodes.remove(nextNode);
+				nextNode = getMinPotentialNode(unhoppedConnectedNodes);
+				if (nextNode != null) {
+					nodes.add(nextNode);
+				} else {
+					break;
+				}
+			}
+		}
+		return nodes;
 	}
 }
