@@ -29,7 +29,7 @@ public class MobileSensorNetworkSimulation {
 		sensorRobotParameters.setWirelessRange(80.0);
 		sensorRobotParameters.setSensorRange(30.0);
 		sensorRobotParameters.setMaxSpeed(5.0);
-		sensorRobotParameters.setMaxEnergy(100000.0);
+		sensorRobotParameters.setMaxEnergy(150000.0);
 
 		// getSpringConstantAndDampingCoefficientRelation(0.5);
 		startYaVfDemo();
