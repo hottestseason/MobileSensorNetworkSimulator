@@ -108,10 +108,17 @@ public class NetworkNode extends Node {
 	}
 
 	public void send(Message message) {
-		NetworkNode nextNetworkNode = getNextHop(message);
-		if (nextNetworkNode != null) {
-			send(message, nextNetworkNode);
+		Double maxDistance = 0.0;
+		for (NetworkNode to : getNextHops(message)) {
+			if (!equals(to)) {
+				to.receive(message);
+				Double distance = getDistanceFrom(to);
+				if (distance > maxDistance) {
+					maxDistance = distance;
+				}
+			}
 		}
+		send(message.getBit(), maxDistance);
 	}
 
 	public void receive(Integer bit) {
@@ -128,8 +135,13 @@ public class NetworkNode extends Node {
 		addToBuffer(getIterationNo() + 1, message);
 	}
 
-	protected NetworkNode getNextHop(Message message) {
-		return getUnhoppedConnectedNodes(message).get(0);
+	protected List<NetworkNode> getNextHops(Message message) {
+		List<NetworkNode> nodes = new ArrayList<NetworkNode>();
+		NetworkNode nextNode = getUnhoppedConnectedNodes(message).get(0);
+		if (nextNode != null) {
+			nodes.add(nextNode);
+		}
+		return nodes;
 	}
 
 	protected ArrayList<NetworkNode> getUnhoppedConnectedNodes(Message message) {

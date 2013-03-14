@@ -1,5 +1,6 @@
 package network;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -63,7 +64,12 @@ public class PotentialNode extends NetworkNode {
 		return minPotentialNode;
 	}
 
-	protected NetworkNode getNextHop(Message message) {
-		return getMinPotentialNode((List<PotentialNode>) (List<?>) getUnhoppedConnectedNodes(message));
+	protected List<NetworkNode> getNextHops(Message message) {
+		List<NetworkNode> nodes = new ArrayList<NetworkNode>();
+		NetworkNode nextNode = getMinPotentialNode((List<PotentialNode>) (List<?>) getUnhoppedConnectedNodes(message));
+		if (nextNode != null) {
+			nodes.add(nextNode);
+		}
+		return nodes;
 	}
 }
