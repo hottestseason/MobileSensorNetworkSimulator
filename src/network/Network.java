@@ -5,6 +5,8 @@ import graph.Graph;
 import java.util.ArrayList;
 
 public class Network extends Graph {
+	static public Integer dateSavedPeriods = 250000;
+
 	private Double iterationInterval = 0.1;
 	private Integer iterationNo = 0;
 

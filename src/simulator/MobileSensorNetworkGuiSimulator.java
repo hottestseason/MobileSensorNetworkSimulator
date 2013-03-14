@@ -13,6 +13,7 @@ import mobilesensornetwork.gui.MobileSensorNetworkCanvas;
 import mobilesensornetwork.gui.MobileSensorNetworkChartPanel;
 import mobilesensornetwork.gui.MobileSensorNetworkInfoPanel;
 import mobilesensornetwork.gui.MobileSensorNetworkTable;
+import network.Network;
 import utils.Timer;
 import utils.TimerListener;
 
@@ -89,6 +90,9 @@ public abstract class MobileSensorNetworkGuiSimulator extends MobileSensorNetwor
 	protected void updateGui(Boolean force) {
 		long before = System.nanoTime();
 		mobileSensorNetworkInfoPanel.update();
+		if (getMobileSensorNetwork().getIterationNo() % (Network.dateSavedPeriods * 0.8) == 0) {
+			force = true;
+		}
 		System.out.print("infoPanel " + (System.nanoTime() - before) / 1000L + "us ");
 		if (force || mobileSensorNetworkInfoPanel.updatesCanvas()) {
 			before = System.nanoTime();

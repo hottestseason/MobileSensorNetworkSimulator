@@ -18,8 +18,6 @@ public class SensorNetwork extends PotentialNetwork {
 
 	protected SensingArea sensingArea;
 
-	public TreeMap<Integer, Integer> startedNodesHistory = new TreeMap<Integer, Integer>();
-
 	public Integer sensedAreas = 0;
 	public Integer sensedEvents = 0;
 
@@ -27,7 +25,9 @@ public class SensorNetwork extends PotentialNetwork {
 	protected CoverageCalculator eventCoverageCalculator = new CoverageCalculator(this);
 
 	private Integer sensingInterval;
-	private TreeMap<Integer, Double> areaCoverageHistory = new TreeMap<Integer, Double>();
+
+	public TreeMap<Integer, Double> areaCoverageHistory = new TreeMap<Integer, Double>();
+	public TreeMap<Integer, Integer> startedNodesHistory = new TreeMap<Integer, Integer>();
 
 	public void setSensingArea(SensingArea sensingArea) {
 		this.sensingArea = sensingArea;
@@ -158,6 +158,13 @@ public class SensorNetwork extends PotentialNetwork {
 			}
 			areaCoverageHistory.put(finishedNo, getAreaCoverage(finishedNo));
 			areaCoverageCalculator.sensingFinishied(finishedNo);
+		}
+	}
+
+	public void clearOldHistory() {
+		if (getIterationNo() > dateSavedPeriods) {
+			startedNodesHistory.headMap(getIterationNo() - dateSavedPeriods).clear();
+			areaCoverageHistory.headMap(getIterationNo() - dateSavedPeriods).clear();
 		}
 	}
 }
