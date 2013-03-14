@@ -54,13 +54,12 @@ public class YaVfRobot extends SpringVFRobot {
 
 	public Double getSpringLengthFor(SensorRobot sensorRobot) {
 		if (getRemainedBatteryRatio() < 0.25) {
-			Double idealDistance = calculateIdealDistance(getWirelessRange(), getSensorRange()) / 2;
-			idealDistance += getRemainedBatteryRatio() * idealDistance;
+			Double idealDistance = getWirelessRange() / 2;
+			idealDistance += getRemainedBatteryRatio() * (calculateIdealDistance(getWirelessRange(), getSensorRange()) - getWirelessRange() / 2) / 0.25;
 			return idealDistance;
 		} else {
 			return super.getSpringLengthFor(sensorRobot);
 		}
-		// return super.getSpringLengthFor(sensorRobot);
 	}
 
 	public Vector2D calculateAttractiveForceFromWall() {
@@ -68,8 +67,8 @@ public class YaVfRobot extends SpringVFRobot {
 		Double sumCoefficient = 0.0;
 		List<LineSegment2D> visibleWalls = getVisibleWalls();
 		Double maxNorm = 0.0;
-		for (SpringVFRobot robot : getSpringConnectedRobots()) {
-			maxNorm += getWirelessRange() - getDistanceFrom(robot);
+		for (Node node : getConnectedNodes()) {
+			maxNorm += getWirelessRange() - getDistanceFrom(node);
 		}
 		for (LineSegment2D wall : visibleWalls) {
 			Vector2D vector = getVector2DTo(wall);
