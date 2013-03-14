@@ -22,11 +22,13 @@ public class MobileSensorNetworkTable extends JTable {
 	public void update() {
 		for (int i = 0; i < sensorNetwork.size(); i++) {
 			SensorRobot sensorRobot = sensorNetwork.get(i);
-			tableModel.setValueAt(sensorRobot.getId(), i, 0);
-			tableModel.setValueAt(sensorRobot.getSpeed().getNorm(), i, 1);
-			tableModel.setValueAt(sensorRobot.getRemainedEnergy(), i, 2);
-			tableModel.setValueAt(sensorRobot.getTransmissionConsumedEnergy(), i, 3);
-			tableModel.setValueAt(sensorRobot.getMovementConsumedEnergy(), i, 4);
+			if (sensorRobot.isRunning()) {
+				tableModel.setValueAt(sensorRobot.getId(), i, 0);
+				tableModel.setValueAt(sensorRobot.getSpeed().getNorm(), i, 1);
+				tableModel.setValueAt(sensorRobot.getRemainedEnergy(), i, 2);
+				tableModel.setValueAt(sensorRobot.getTransmissionConsumedEnergy(), i, 3);
+				tableModel.setValueAt(sensorRobot.getMovementConsumedEnergy(), i, 4);
+			}
 		}
 		tableModel.fireTableDataChanged();
 	}
