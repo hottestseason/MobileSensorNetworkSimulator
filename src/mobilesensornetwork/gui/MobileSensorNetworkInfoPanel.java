@@ -19,9 +19,9 @@ public class MobileSensorNetworkInfoPanel extends JPanel {
 	private JLabel sensedPointsLabel = new JLabel();
 	private JLabel otherLabel = new JLabel();
 	private ArrayList<JButton> controlButton = new ArrayList<JButton>();
-	private JCheckBox updatesCanvas = new JCheckBox("UpdatesCanvas", null, true);
-	private JCheckBox updatesNodesTable = new JCheckBox("UpdatesNodesTable", null, true);
-	private JCheckBox updatesChart = new JCheckBox("UpdatesChart", null, true);
+	private JCheckBox updatesCanvas = new JCheckBox("UpdatesCanvas");
+	private JCheckBox updatesNodesTable = new JCheckBox("UpdatesNodesTable");
+	private JCheckBox updatesChart = new JCheckBox("UpdatesChart");
 
 	public MobileSensorNetworkInfoPanel(MobileSensorNetwork sensorNetwork, ActionListener actionListener) {
 		this.sensorNetwork = sensorNetwork;

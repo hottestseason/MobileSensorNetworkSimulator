@@ -1,5 +1,6 @@
 package simulator;
 
+import geom.Point2D;
 import mobilesensornetwork.YaVfMobileSensorNetwork;
 import mobilesensornetwork.gui.MobileSensorNetworkChartPanel;
 import mobilesensornetwork.gui.MobileSensorNetworkInfoPanel;
@@ -18,6 +19,8 @@ public class YaVfMobileSensorNetworkGuiSimulator extends SpringVfMobileSensorNet
 		getYavfMobileSensorNetwork().setSensingArea(sensingArea);
 		getYavfMobileSensorNetwork().prepareNodes(robotCount, sensorRobotParameters, dampingCoefficient, springConstant);
 		getYavfMobileSensorNetwork().scatter(25.0, 25.0);
+		getYavfMobileSensorNetwork().scatter(new Point2D(60.0, 60.0), 50.0, 50.0);
+		getYavfMobileSensorNetwork().getSinkNode().setPoint(new Point2D(10.0, 10.0));
 
 		mobileSensorNetworkCanvas = new YaVfMobileSensorNetworkCanvas(getYavfMobileSensorNetwork());
 		mobileSensorNetworkTable = new MobileSensorNetworkTable(getYavfMobileSensorNetwork());

@@ -22,7 +22,7 @@ public class YaVfMobileSensorNetwork extends SpringVfMobileSensorNetwork {
 		long before = System.nanoTime();
 		SpringVFRobot springVFSinkRobot = (SpringVFRobot) getSinkNode();
 		for (SpringVFRobot springVFRobot : springVFSinkRobot.getSpringConnectedRobots()) {
-			if (springVFSinkRobot.getDistanceFrom(springVFRobot) >= springVFSinkRobot.getSpringLengthFor(springVFRobot) * 0.99) {
+			if (springVFSinkRobot.getDistanceFrom(springVFRobot) >= springVFSinkRobot.getSpringLengthFor(springVFRobot) * 0.95) {
 				for (SensorRobot sensorRobot : getSensorRobots()) {
 					if (!sensorRobot.isRunning() && sensorRobot.getRemainedBatteryRatio() > 0.9) {
 						sensorRobot.setPoint(springVFSinkRobot.multiply(0.5).add(springVFRobot.multiply(0.5)).toPoint2D());

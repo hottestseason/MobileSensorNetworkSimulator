@@ -1,5 +1,6 @@
 package simulator;
 
+import geom.Point2D;
 import mobilesensornetwork.SpringVfMobileSensorNetwork;
 import mobilesensornetwork.gui.MobileSensorNetworkChartPanel;
 import mobilesensornetwork.gui.MobileSensorNetworkInfoPanel;
@@ -20,6 +21,8 @@ public class SpringVfMobileSensorNetworkGuiSimulator extends MobileSensorNetwork
 		getSpringVfMobileSensorNetwork().setSensingArea(sensingArea);
 		getSpringVfMobileSensorNetwork().prepareNodes(robotCount, sensorRobotParameters, dampingCoefficient, springConstant);
 		getSpringVfMobileSensorNetwork().scatter(25.0, 25.0);
+		getSpringVfMobileSensorNetwork().scatter(new Point2D(60.0, 60.0), 50.0, 50.0);
+		getSpringVfMobileSensorNetwork().getSinkNode().setPoint(new Point2D(10.0, 10.0));
 
 		mobileSensorNetworkCanvas = new SpringVFMobileSensorNetworkCanvas(getSpringVfMobileSensorNetwork());
 		mobileSensorNetworkTable = new MobileSensorNetworkTable(getSpringVfMobileSensorNetwork());

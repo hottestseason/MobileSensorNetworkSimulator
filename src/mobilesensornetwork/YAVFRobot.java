@@ -55,7 +55,7 @@ public class YaVfRobot extends SpringVFRobot {
 	public Double getSpringLengthFor(SensorRobot sensorRobot) {
 		if (getRemainedBatteryRatio() < 0.25) {
 			Double idealDistance = getWirelessRange() / 2;
-			idealDistance += getRemainedBatteryRatio() * (calculateIdealDistance(getWirelessRange(), getSensorRange()) - getWirelessRange() / 2) / 0.25;
+			idealDistance += (getRemainedBatteryRatio() - 0.1) * (calculateIdealDistance(getWirelessRange(), getSensorRange()) - getWirelessRange() / 2) / 0.15;
 			return idealDistance;
 		} else {
 			return super.getSpringLengthFor(sensorRobot);
@@ -80,7 +80,7 @@ public class YaVfRobot extends SpringVFRobot {
 			sumCoefficient += coefficient;
 		}
 		if (sumCoefficient > 0) {
-			return force.divide(sumCoefficient);
+			return force.divide(sumCoefficient).multiply(getRemainedBatteryRatio());
 		} else {
 			return new Vector2D();
 		}

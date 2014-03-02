@@ -14,12 +14,12 @@ import simulator.YaVfMobileSensorNetworkGuiSimulator;
 
 public class MobileSensorNetworkSimulation {
 	static Double size = 750.0;
-	static SensingArea sensingArea = SensingArea.getType3(size, size);
+	static SensingArea sensingArea = SensingArea.getType5(size, size);
 	static Double iterationInterval = 0.2;
 	static Integer sensingInterval = (int) (60.0 / iterationInterval);
-	static Integer robotCount = 300;
+	static Integer robotCount = 100;
 	static Double springConstant = 0.5;
-	static Double dampingCoefficient = 0.42;
+	static Double dampingCoefficient = 0.35;
 	static SensorRobotParameters sensorRobotParameters;
 
 	public static void main(String[] args) {
