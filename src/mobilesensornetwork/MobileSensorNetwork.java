@@ -37,7 +37,6 @@ public class MobileSensorNetwork extends SensorNetwork {
 	}
 
 	public Double move(Double seconds) {
-		long before = System.nanoTime();
 		Double movedDistance = 0.0;
 		for (NetworkNode node : getRunningNodes()) {
 			if (node.getId() != 0) {
@@ -46,7 +45,6 @@ public class MobileSensorNetwork extends SensorNetwork {
 			}
 		}
 		sumMovedDistance += movedDistance;
-		System.out.print("move " + (System.nanoTime() - before) / 1000L + "us ");
 		return movedDistance;
 	}
 }

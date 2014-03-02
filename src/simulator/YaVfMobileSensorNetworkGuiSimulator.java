@@ -33,11 +33,9 @@ public class YaVfMobileSensorNetworkGuiSimulator extends SpringVfMobileSensorNet
 			stop();
 			return;
 		}
-		long start = System.nanoTime();
 		getYavfMobileSensorNetwork().startIteration();
 		System.out.print(getYavfMobileSensorNetwork().getIterationNo() + ": ");
 
-		long before = System.nanoTime();
 		getYavfMobileSensorNetwork().resetState();
 		getYavfMobileSensorNetwork().sendBeacon();
 		getYavfMobileSensorNetwork().resetConnections();
@@ -46,16 +44,12 @@ public class YaVfMobileSensorNetworkGuiSimulator extends SpringVfMobileSensorNet
 		getYavfMobileSensorNetwork().calculateVirtualForce();
 
 		if (getYavfMobileSensorNetwork().getIterationNo() % sensingInterval == 0) {
-			before = System.nanoTime();
 			getYavfMobileSensorNetwork().updateAreaCoverageCalculator();
 			getYavfMobileSensorNetwork().getSensingData();
-			System.out.print("areaData " + (System.nanoTime() - before) / 1000L + "us ");
 		}
 
-		before = System.nanoTime();
 		getYavfMobileSensorNetwork().updateEventCoverageCalculator(iterationInterval);
 		getYavfMobileSensorNetwork().getEventsData();
-		System.out.print("eventsData " + (System.nanoTime() - before) / 1000L + "us ");
 
 		getYavfMobileSensorNetwork().transferMessages();
 		getYavfMobileSensorNetwork().adjustNodeSize();

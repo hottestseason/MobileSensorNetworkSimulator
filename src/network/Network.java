@@ -64,7 +64,6 @@ public class Network extends Graph {
 	}
 
 	public void resetConnections() {
-		long before = System.nanoTime();
 		ArrayList<NetworkNode> runningNodes = getRunningNodes();
 		for (NetworkNode networkNode : runningNodes) {
 			networkNode.clearEdges();
@@ -78,27 +77,22 @@ public class Network extends Graph {
 				}
 			}
 		}
-		System.out.print("connections " + (System.nanoTime() - before) / 1000L + "us ");
 	}
 
 	public void resetState() {
-		long before = System.nanoTime();
 		for (NetworkNode networkNode : getNetworkNodes()) {
 			if (networkNode.isRunning()) {
 				networkNode.resetState();
 			}
 		}
-		System.out.print("states " + (System.nanoTime() - before) / 1000L + "us ");
 	}
 
 	public void transferMessages() {
-		long before = System.nanoTime();
 		for (NetworkNode networkNode : getNetworkNodes()) {
 			if (networkNode.isRunning()) {
 				networkNode.transferMessages();
 			}
 		}
-		System.out.print("transfer " + (System.nanoTime() - before) / 1000L + "us ");
 	}
 
 	public ArrayList<NetworkNode> getRunningNodes() {
