@@ -29,6 +29,7 @@ public class SensorNetwork extends PotentialNetwork {
 	public TreeMap<Integer, Double> areaCoverageHistory = new TreeMap<Integer, Double>();
 	public TreeMap<Integer, Integer> startedNodesHistory = new TreeMap<Integer, Integer>();
 	public TreeMap<Integer, Integer> endedNodesHistory = new TreeMap<Integer, Integer>();
+	public TreeMap<Integer, Double> remainedBatteryHistory = new TreeMap<Integer, Double>();
 
 	public void setSensingArea(SensingArea sensingArea) {
 		this.sensingArea = sensingArea;
@@ -77,6 +78,18 @@ public class SensorNetwork extends PotentialNetwork {
 			}
 		}
 		return size;
+	}
+	
+	public Double getRemainedBatteryRatio(Integer iterationNo) {
+		return remainedBatteryHistory.get(iterationNo);
+	}
+	
+	public Double getRemainedBatteryRatio() {
+		Double remainedBatteryRatio = 0.0;
+		for (SensorNode sensorNode : getSensorNodes()) {
+			remainedBatteryRatio += sensorNode.getRemainedBatteryRatio();
+		}
+		return remainedBatteryRatio / getSensorNodes().size();
 	}
 
 	public SensorNode get(int index) {
@@ -166,6 +179,7 @@ public class SensorNetwork extends PotentialNetwork {
 	public void finishIteration() {
 		startedNodesHistory.put(getIterationNo(), getStartedNodeSize());
 		endedNodesHistory.put(getIterationNo(), getEndedNodeSize());
+		remainedBatteryHistory.put(getIterationNo(), getRemainedBatteryRatio());
 		if (getIterationNo() > getMaxMessageHop()) {
 			Integer finishedNo = getIterationNo() - getMaxMessageHop();
 			Set<Point2D> sensedPoints = areaCoverageCalculator.getSensedPoints(finishedNo);
